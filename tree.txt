@@ -1,0 +1,24 @@
+.
+|-- Backend
+|   |-- HELP.md
+|   |-- mvnw
+|   |-- mvnw.cmd
+|   |-- pom.xml
+|   |-- src
+|   `-- target
+|-- HCMUT_E-commerce.iml
+|-- Readme.md
+|-- frontend
+|   |-- README.md
+|   |-- eslint.config.js
+|   |-- index.html
+|   |-- node_modules
+|   |-- package-lock.json
+|   |-- package.json
+|   |-- public
+|   |-- src
+|   `-- vite.config.js
+|-- frontend.iml
+`-- tree.txt
+
+7 directories, 14 files
