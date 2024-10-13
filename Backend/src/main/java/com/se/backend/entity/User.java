@@ -1,15 +1,19 @@
 package com.se.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "user")
 public class User {
 	@Id
 	private String username;
@@ -18,6 +22,6 @@ public class User {
 	private String lastName;
 	private String email;
 	private String phone;
-	//.dateOfBirth
-	// create dateOfBirth field
+	private LocalDate dob;
+	private LocalDate createdDate;
 }
