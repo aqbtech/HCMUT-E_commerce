@@ -32,7 +32,7 @@ public class Buyer extends Business {
 	private List<Follow> follow;
 	// mapping admin
 	@ManyToMany
-	@JoinTable(name = "shop_policy_buyer",
+	@JoinTable(name = "admin_buyer",
 			joinColumns = @JoinColumn(name = "buyer_id", referencedColumnName = "username"),
 			inverseJoinColumns = @JoinColumn(name = "admin_id", referencedColumnName = "username"))
 	private List<Admin> admins;
