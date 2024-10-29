@@ -1,12 +1,19 @@
 // src/api/apiAccount.js
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:3000/user';
+const BASE_URL = 'http://localhost:8080/auth/token';
 
 // Hàm lấy thông tin account từ server
-export const fetchAccount = async (userId) => {
+export const fetchAccount = async (account) => {
   try {
-    const response = await axios.get(`${BASE_URL}/${userId}`);
+    const response = await axios.post(`${BASE_URL}`, account,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+    // const response = await axios.get(`${BASE_URL}/${userId}`);
+    console.log('Lấy thông tin account thành công:', response);
     return response.data;
   } catch (error) {
     console.error('Lỗi khi lấy thông tin account:', error);

@@ -35,7 +35,6 @@ public interface OrderMapper {
             String id = product.getProductInstance().getId();
             ProductResponse prd = ProductResponse.builder()
                     .name(name)
-                    .price(price)
                     .id(id)
                     .build();
             quantity.add(product.getQuantity());

@@ -16,17 +16,14 @@ const Login = () => {
     
     try {
       // Đợi kết quả từ fetchAccount
-      const response = await fetchAccount(id);
-      if(pass != response.pass) {
-        toast.error("Sai mật khẩu rồi!");
-        return;
+      const account = {"username":id, "password":pass};
+      const response = await fetchAccount(account);
+      if(response.ok) {
+        setAccount(response);
+        toast.success('Đăng nhập thành công!');
+        navigate('/');
+        setCurState('Login');
       }
-      setAccount(response);  
-      toast.success('Đăng nhập thành công!');
-      navigate('/');
-      setCurState('Login');
-
-
     } catch (error) {
       console.error("Error fetching account:", error);
       toast.error('Có lỗi xảy ra khi đăng nhập.');
