@@ -12,7 +12,6 @@ import com.se.backend.dto.request.RefreshRequest;
 import com.se.backend.dto.response.AuthenticationResponse;
 import com.se.backend.dto.response.IntrospectResponse;
 import com.se.backend.entity.InvalidatedToken;
-import com.se.backend.entity.User;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.repository.InvalidatedTokenRepository;
@@ -37,7 +36,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(makeFinal = true)
-public class AuthenticationService {
+public class AuthenticationService implements AuthenticationProvider {
 	UserRepository userRepository;
 	InvalidatedTokenRepository invalidatedTokenRepository;
 	@NonFinal
@@ -63,13 +62,13 @@ public class AuthenticationService {
 
 	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-		var user = userRepository.findByUsername(request.getUsername())
-				.orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
-		boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
+		var user = userRepository.findUserWithRoleByUsername(request.getUsername());
+		assert user != null : new WebServerException(ErrorCode.USER_NOT_FOUND);
+		boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getFirst()[1].toString());
 		if (!authenticated) {
 			throw new WebServerException(ErrorCode.UNAUTHENTICATED);
 		}
-		String token = generateToken(user);
+		String token = generateToken(user.getFirst()[0].toString(), user.getFirst()[2].toString());
 		return AuthenticationResponse.builder().token(token).authenticatedToken(true).build();
 	}
 
@@ -101,23 +100,23 @@ public class AuthenticationService {
 		 invalidatedTokenRepository.save(invalidatedToken);
 
 		var username = signedJWT.getJWTClaimsSet().getSubject();
-		var user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new WebServerException(ErrorCode.UNAUTHENTICATED));
-		var token = generateToken(user);
+		if (!userRepository.existsByUsername(username))
+			throw new WebServerException(ErrorCode.USER_NOT_FOUND);
+		var token = generateToken(username);
 		return AuthenticationResponse.builder().token(token).authenticatedToken(true).build();
 	}
 
-	private String generateToken(User user) {
+	private String generateToken(String username, String... authorities) {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS512).build();
 
 		JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-				.subject(user.getUsername())
+				.subject(username)
 				.issuer("hcmut.se")
 				.issueTime(new Date())
 				.expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS)
 						.toEpochMilli()))
 				.jwtID((UUID.randomUUID()).toString())
-				.claim("authorities", "USER")
+				.claim("authorities", buildScope(authorities))
 				.build();
 
 		Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -151,9 +150,9 @@ public class AuthenticationService {
 		return signedJWT;
 	}
 
-	private String buildScope(User user) {
-		StringJoiner joiner = new StringJoiner(" ");
-//		if(!CollectionUtils.isEmpty())
-		return null;
+	private String buildScope(Object[] result) {
+		return new StringJoiner(" ")
+				.add(result[0].toString())
+				.toString();
 	}
 }
