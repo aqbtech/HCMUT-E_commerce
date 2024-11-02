@@ -15,11 +15,12 @@ public class GuestController {
 	@GetMapping("/query_product_detail")
 	public ResponseAPITemplate<ProductDetail> queryProductDetail(@RequestParam String productId) {
 		// Xử lý dữ liệu productId ở đây
-		guestService.getProductDetail(productId);
+		var res = guestService.getProductDetail(productId);
 		System.out.println("Product ID: " + productId);
 		return ResponseAPITemplate.<ProductDetail>builder()
 				.code(200)
 				.message("Success")
+				.result(res)
 				.build();
 	}
 }
