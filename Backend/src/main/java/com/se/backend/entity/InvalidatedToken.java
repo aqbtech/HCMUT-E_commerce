@@ -16,7 +16,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class InvalidatedToken {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private String id;
 	private Date expiryTime;
 }
