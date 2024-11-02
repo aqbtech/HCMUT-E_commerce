@@ -102,7 +102,7 @@ public class AuthenticationService implements AuthenticationProvider {
 		var username = signedJWT.getJWTClaimsSet().getSubject();
 		if (!userRepository.existsByUsername(username))
 			throw new WebServerException(ErrorCode.USER_NOT_FOUND);
-		var token = generateToken(username);
+		var token = generateToken(username, signedJWT.getJWTClaimsSet().getClaim("authorities").toString());
 		return AuthenticationResponse.builder().token(token).authenticatedToken(true).build();
 	}
 
@@ -146,6 +146,7 @@ public class AuthenticationService implements AuthenticationProvider {
 		// check if token is invalidated
 		if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
 			throw new WebServerException(ErrorCode.UNAUTHENTICATED);
+//			 throw new WebServerException(ErrorCode.INVALID_TOKEN);
 		}
 		return signedJWT;
 	}

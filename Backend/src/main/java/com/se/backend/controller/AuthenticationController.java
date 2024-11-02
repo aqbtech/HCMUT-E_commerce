@@ -8,6 +8,7 @@ import com.se.backend.dto.request.RefreshRequest;
 import com.se.backend.dto.response.AuthenticationResponse;
 import com.se.backend.dto.response.IntrospectResponse;
 import com.se.backend.dto.response.ResponseAPITemplate;
+import com.se.backend.exception.WebServerException;
 import com.se.backend.service.AuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
