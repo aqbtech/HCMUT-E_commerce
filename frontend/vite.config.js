@@ -1,15 +1,11 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import dotenv from 'dotenv';
 
-// https://vitejs.dev/config/
+// Load từ file public.env
+dotenv.config({ path: './public.env' });
+
 export default defineConfig({
   plugins: [react()],
-  server: {
-    proxy: {
-      '/auth': {
-        target: 'http://localhost:8080',
-            changeOrigin: true,
-      },
-    },
-  },
-})
+  // các cấu hình khác
+});

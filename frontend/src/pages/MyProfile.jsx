@@ -5,9 +5,9 @@ import ProfileTab from '../components/profilePage/ProfileTab'
 import PasswordTab from '../components/profilePage/PasswordTab';
 import AddressTab from '../components/profilePage/AddressTab';
 import { delAdress, updAddress, getAddress } from '../fetchAPI/fetchAddress';
-import { updateAccount, fetchAccount } from '../fetchAPI/fetchAccount';
+import { updateAccount, getInfo } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
-
+//---
 const MyProfile = () => {
     const { account, setAccount } = useContext(ShopContext);
     const [addresses, setAddresses] = useState([]);
@@ -26,7 +26,7 @@ const MyProfile = () => {
             const response = await updateAccount(account, updatedAccount);
             if (response.status === 200) {
                 alert("Cập nhật thông tin thành công!");
-                const freshAccount = await fetchAccount(account.id);
+                const freshAccount = await getInfo(account.id);
                 setAccount(freshAccount);
             } else {
                 alert("Cập nhật thất bại.");
@@ -48,7 +48,7 @@ const MyProfile = () => {
             const response = await updateAccount(account.id, updateData);
             if (response.status === 200) {
                 alert("Đổi mật khẩu thành công!");
-                const freshAccount = await fetchAccount(account.id);
+                const freshAccount = await getInfo(account.id);
                 setAccount(freshAccount);
             } else {
                 alert("Cập nhật thất bại.");
