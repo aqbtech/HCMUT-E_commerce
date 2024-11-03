@@ -5,17 +5,17 @@ spring:
     config:
         import: optional:file:.env
     datasource:
-        url: "${SPRING_DATASOURCE_URL}"
-        driverClassName: "${SPRING_DATASOURCE_DRIVER_CLASS_NAME}"
-        username: ${SPRING_DATASOURCE_USERNAME}
-        password: ${SPRING_DATASOURCE_PASSWORD}
+        url: "jdbc:mysql://localhost:3306/ecommerce"
+        driverClassName: "com.mysql.cj.jdbc.Driver"
+        username: root
+        password: Chinhtran5504
     jpa:
         hibernate:
-            ddl-auto: validate
+            ddl-auto: update
         show-sql: true
         open-in-view: false
 
 jwt:
-    signerKey: ${JWT_SIGNER_KEY}
+    signerKey: "-Lo6pGNIOrFouISapR74-s_BkjNLrHu3hq5SGnstXmvrZeDWzIAdcNRYIGWxUV6cygjL2euOfONvfKXdFZ4tEw"
     valid-duration: 3600 # in second
-    refreshable-duration: 36000 # in seconds
+    refreshable-duration: 36000 # in secondss

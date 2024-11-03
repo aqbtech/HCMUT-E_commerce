@@ -1,6 +1,8 @@
 import axios from "axios";
 import Cookies from 'js-cookie'
 
+
+
 export const axiosClient = axios.create({
 
     baseURL: `http://localhost:3000`,
@@ -11,18 +13,13 @@ export const axiosClient = axios.create({
 
 });
 
-
-
 export const axiosClient2 = axios.create({
-
-    baseURL: `http://localhost:8080`,
+    baseURL: import.meta.env.VITE_BASE_URL,
     timeout: 10000,
-    headers : {
-        'Content-Type' : 'application/json'
+    headers: {
+        'Content-Type': 'application/json'
     }
-
 });
-
 
 axiosClient2.interceptors.request.use(
     async (config) => {
