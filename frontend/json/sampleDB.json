@@ -1,0 +1,267 @@
+{
+//  Lấy các  danh mục để hiện thị lên home page và search page.
+  "categories" : [
+    {
+      "categoryName": "men",
+      "categoryId" : "1"
+    },
+    {
+      "categoryName": "men",
+      "categoryId" : "1"
+    },
+    {
+      "categoryName": "men",
+      "categoryId" : "1"
+    }
+  ],
+
+//  Lấy sản phẩm khái quát để hiển thị lên home page và search page
+
+/*  Lấy nhiều sản phẩm để hiện thị cho searchPage
+  get()
+*/
+
+  "product":[
+    {
+      "productId" : "saew",
+      "name": "Quan dai sieu dep",
+      "price" : "200",
+      "img" : "atewtuwt"
+    }
+  ],
+
+//  Lấy chi tiết sản phẩm để hiển thị ở trang productDetail
+  "productDetail" : [
+    {
+      "productId" : "saew",
+      "sao" : 4.9,
+      "description" : "quan dep lam mua di",
+      "quantityInStock": 1000,
+      "categories": "thoi trang",
+      "listAtt" : [
+        {
+          "name" : "size",
+          "value" : ["XS", "S", "M", "L", "XL"]
+        },
+        {
+          "name" : "color",
+          "value" : ["pink", "green", "red", "yellow"]
+        }
+      ],
+      "listImg" : [
+
+      ],
+      "seller" : {
+        "sellerId" : "chinhaaaa",
+        "shopName" : "Haven",
+        "Tinh" : "Ha Noi"
+      },
+      "ListReview" : [
+        {
+          "reviewId" : "aaaa",
+          "reviewerName" : "chinh",
+          "contentReview" : "Haizz chan lam shop oi",
+          "Start" : 5
+        },
+        {
+          "reviewId" : "aaaa",
+          "reviewerName" : "chinh",
+          "contentReview" : "Haizz chan lam shop oi",
+          "Start" : 5
+        },
+        {
+          "reviewId" : "aaaa",
+          "reviewerName" : "chinh",
+          "contentReview" : "Haizz chan lam shop oi",
+          "Start" : 5
+        }
+      ]
+    }
+  ],
+
+
+/* lấy info người dùng
+ get(username)
+*/
+
+//  Lấy profile cho trang profile page
+  "account" : [
+    {
+      "userName": "admin",
+      "password" : "admin",
+      "HoVaTenDem" : "Dang Tran Cong",
+      "Ten" : "Chinh",
+      "email" : "chinh@gmail.com",
+      "DOB" : "05/05/2004",
+      "phone" : "0908373763",
+      "role" : "buyer"
+    }
+  ],
+
+//  Lấy list địa chỉ giao hàng
+  "deliveryAddress" : [
+    {
+      "id" : "saew",
+      "hoVaTen" : "Dang Tran Cong Chinh",
+      "phone" : "0908373763",
+      "city" : "dong nai",
+      "huyen" : "Bien Hoa",
+      "DetailAddress" : "3a/2 khu pho 1, phuong tan hoa"
+    }
+  ],
+
+//  lấy giỏ hàng
+  "Cart" : [
+    {
+      "productName"  : "",
+      "IMG" : "abcbbcbcb",
+      "ListAtt" : [
+        {
+          "name" : "size",
+          "value" : "S"
+        },
+        {
+          "name" : "color",
+          "value" : "green"
+        }
+      ],
+      "price": "500",
+      "quantity" : 12
+    },
+    {
+      "productName"  : "",
+      "IMG" : "abcbbcbcb",
+      "ListAtt" : [
+        {
+          "name" : "size",
+          "value" : "S"
+        },
+        {
+          "name" : "color",
+          "value" : "green"
+        }
+      ],
+      "price": "500",
+      "quantity" : 12
+    },
+    {
+      "productName"  : "",
+      "IMG" : "abcbbcbcb",
+      "ListAtt" : [
+        {
+          "name" : "size",
+          "value" : "S"
+        },
+        {
+          "name" : "color",
+          "value" : "green"
+        }
+      ],
+      "price": "500",
+      "quantity" : 12
+    }
+  ],
+
+//Lấy danh sách các đơn hàng
+  "Order" : [
+    {
+      "productId" : "",
+      "productName"  : "",
+      "IMG" : "abcbbcbcb",
+      "deliveryState" : "dang giao",
+      "sellerName" : "Haven",
+      "ListAtt" : [
+        {
+          "name" : "size",
+          "value" : "S"
+        },
+        {
+          "name" : "color",
+          "value" : "green"
+        }
+      ],
+      "price": "500",
+      "quantity" : 12
+    }
+  ],
+
+//  Lấy thông tin shop để làm trang shop_pgae_manage
+  "ShopDetail" : {
+    "shopName" : "haven",
+    "address" : "HO nai"
+  },
+
+// Lấy role cho user để hiiện thị giao diện phu hợp
+  "users" : [
+    {
+      "username" : "admin",
+      "role": "buyer",
+      "sđt": "0090909090"
+    }
+  ],
+
+  "Notification" : [
+    {
+      "NotiName" : "admin",
+      "content": "ban bi chan"
+    }
+  ],
+
+
+
+
+
+  /*  Lấy tất cả sản phẩm cho admin
+    get(username)
+  */
+  "Product" : [
+      {
+        "productId" : "123124",
+        "img" : "123123",
+        "name": "0090909090",
+        "price" : "123123",
+        "seller" : "ádadasd"
+      }
+    ],
+
+
+/*  lấy all user cho admin quản lý
+  get(username)
+*/
+"users" : [
+      {
+        "username" : "admin",
+        "role": "buyer",
+        "sđt": "0090909090",
+        "email" : "chinh@gmail.com",
+        "state" : "bị chặn"
+      }
+    ],
+
+
+
+/* Đặt hàng
+post(username, ListProduct[
+  {
+    ProductId,
+    ListAtt[
+      {attName, value}
+    ],
+    quantity
+  },
+  {
+    ProductId,
+    ListAtt[
+      {attName, value}
+    ],
+    quantity
+  }
+], deliveryAddress)
+*/
+
+
+/* Thêm vào giỏ hàng
+  post(username, productId, quantity, listAtt[{attName, value}, {attName, value}])
+*/
+
+}
