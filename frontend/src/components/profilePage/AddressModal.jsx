@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { addAddress, updateAddress } from "../../fetchAPI/fetchAddress"; // Import hàm update nếu cần
+import { createAddress, updAddress } from "../../fetchAPI/fetchAddress"; // Import hàm update nếu cần
 
 const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
     const [name, setName] = useState('');
@@ -9,7 +9,7 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
     const [addressType, setAddressType] = useState('Nhà Riêng');
     const [province, setProvince] = useState('');
 
-    // Cập nhật các trường khi nhận initialData (khi mở modal cập nhật)
+    // Cập nhật các trường khi nhận initialData (khi mở modal cập nhật))
     useEffect(() => {
         if (initialData) {
             setName(initialData.name || '');
@@ -33,11 +33,11 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
 
         if (initialData && initialData.id) {
             // Cập nhật địa chỉ nếu có ID
-            updateAddress(initialData.id, addressData); // Hàm update tùy theo API của bạn
+            updAddress(initialData.id, addressData); // Hàm update tùy theo API của bạn
             onSave({ ...addressData, id: initialData.id });
         } else {
             // Thêm mới nếu không có ID
-            addAddress(addressData);
+            createAddress(addressData);
             onSave(addressData); 
         }
         onClose();

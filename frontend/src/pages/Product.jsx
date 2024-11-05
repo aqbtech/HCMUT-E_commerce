@@ -20,7 +20,7 @@ const Product = () => {
       const response = await getProductsById(productId);
       console.log("Thông tin sản phẩm nè:", response);
       setProductData(response);
-      if (response.images?.length > 0) {
+      if (response?.images?.length > 0) {
         setImage(response.images[0]);
       }
     };
