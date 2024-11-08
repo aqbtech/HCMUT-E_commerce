@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class GuestController {
@@ -27,11 +29,12 @@ public class GuestController {
 	}
 
 	@GetMapping("/address")
-	public ResponseAPITemplate<UserDeliveryInfo> queryProductList(@RequestParam String username) {
-		return ResponseAPITemplate.<UserDeliveryInfo>builder()
+	public ResponseAPITemplate<List<UserDeliveryInfo>> queryProductList(@RequestParam String username) {
+		List<UserDeliveryInfo> res = List.of(guestService.getUserDeliveryInfo(username));
+		return ResponseAPITemplate.<List<UserDeliveryInfo>>builder()
 				.code(200)
 				.message("Success")
-				.result(guestService.getUserDeliveryInfo(username))
+				.result(res)
 				.build();
 	}
 }
