@@ -2,11 +2,15 @@ package com.se.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedEntityGraph(name = "attribute-detail", attributeNodes = {
+		@NamedAttributeNode(value = "attributeInstances")}
+)
 @Getter
 @Setter
 @Builder
@@ -22,8 +26,8 @@ public class Attribute {
 
 	// -- relationship mappings --
 	// weak entity mapping
-	@OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL)
-	private List<AttributeInstance> attributeInstances = new ArrayList<>();
+	@OneToMany(mappedBy = "attribute")
+	private List<AttributeInstance> attributeInstances;
 	// product mapping
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "product_id", referencedColumnName = "root_product_id")

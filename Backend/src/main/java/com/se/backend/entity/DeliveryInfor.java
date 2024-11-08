@@ -21,11 +21,11 @@ public class DeliveryInfor {
 
 	// -- mapping relationships --
 	// mapping address
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "address_id", referencedColumnName = "address_id")
 	private Address address;
 	// mapping buyer
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "buyer_id", referencedColumnName = "username")
 	private Buyer buyer;
 }

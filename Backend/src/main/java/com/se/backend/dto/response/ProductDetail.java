@@ -1,11 +1,10 @@
 package com.se.backend.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -13,22 +12,16 @@ import java.util.List;
 @Builder
 public class ProductDetail {
 	private String productId;
-	private double rating;
+	@JsonProperty("product_name")
+	private String name;
+//	private Double rating;
 	private String description;
-	private int quantityInStock;
-	private List<Attribute> attributes;
-	private List<String> images;
+	private Long quantityInStock;
+	private List<AttributeDetail> attributes;
+//	private List<String> images;
 	private Seller seller;
-	private List<Review> reviews;
-
-	// Getters and Setters
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	public static class Attribute {
-		private String name;
-		private List<String> values;
-	}
+	// add some variant of product, with variant = product + attribute{+ attributeInstance} => productInstance
+	// add minPrice, maxPrice, price, discount, discountPercent, discountPrice
 	@Getter
 	@Setter
 	@AllArgsConstructor
@@ -36,15 +29,6 @@ public class ProductDetail {
 		private String sellerId;
 		private String shopName;
 		private String location;
-	}
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	public static class Review {
-		private String reviewId;
-		private String reviewerName;
-		private String reviewContent;
-		private int rating;
 	}
 }
 

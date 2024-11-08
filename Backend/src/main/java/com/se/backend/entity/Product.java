@@ -6,6 +6,16 @@ import lombok.*;
 import java.util.List;
 
 @Entity
+@NamedEntityGraph(name = "product-detail", attributeNodes = {
+		@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-productInstance"),
+		@NamedAttributeNode("seller"),
+		@NamedAttributeNode(value = "attributes")},
+		subgraphs = {
+			@NamedSubgraph(
+					name = "buildProduct-productInstance",
+					attributeNodes = @NamedAttributeNode("productInstance"))
+		}
+)
 @Getter
 @Setter
 @Builder
@@ -22,23 +32,23 @@ public class Product {
 
 	// -- mapping relationships --
 	// mapping category
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_name", referencedColumnName = "name")
 	private Category category;
 
 	// mapping attribute
-	@OneToMany(mappedBy = "ofProduct")
+	@OneToMany(mappedBy = "ofProduct", fetch = FetchType.LAZY)
 	private List<Attribute> attributes;
 
 	// mapping 3-ary relationship build product
 	@OneToOne(mappedBy = "product")
 	private BuildProduct buildProduct;
 	// mapping seller
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "seller_id", referencedColumnName = "username")
 	private Seller seller;
 	// mapping admin
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "admin_product",
 			joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "root_product_id"),
 			inverseJoinColumns = @JoinColumn(name = "admin_id", referencedColumnName = "username"))

@@ -1,7 +1,6 @@
 package com.se.backend.config;
 
 import com.se.backend.service.CustomJwtDecoder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,16 +21,20 @@ public class Security {
 	// This class is used to configure security for the application
 	// If you want to use security, you can add configurations here
 	private final String[] PUBLIC_ENDPOINTS = {
-			"/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
+			"/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
+			"/query_product_detail/**", "/address/**"
 	};
+	private final CustomJwtDecoder customJwtDecoder;
 
-	@Autowired
-	private CustomJwtDecoder customJwtDecoder;
+	public Security(CustomJwtDecoder customJwtDecoder) {
+		this.customJwtDecoder = customJwtDecoder;
+	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
 		security.authorizeHttpRequests(request -> request
 				.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+				.requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
 				.anyRequest().authenticated());
 
 		security.oauth2ResourceServer(oauth2 -> oauth2
