@@ -2,43 +2,61 @@ import { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
-import { getProductsById } from "../fetchAPI/fetchProduct";
+import { getProductsById, getReviewById } from "../fetchAPI/fetchProduct";
 import { toast } from "react-toastify";
 import { addToCart } from "../fetchAPI/fetchCart";
 
 const Product = () => {
   const { productId } = useParams();
-  const { setListProductToPlace, navigate } = useContext(ShopContext);
+  const { setListProductToPlace, navigate, ListProductToPlace } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [quantity, setQuantity] = useState(1);
-
+  const [pageReview, setPageReview] = useState(1);
+  const [prevPage, setPrevPage] = useState(1);
+  const [review, setReview] = useState([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
       const response = await getProductsById(productId);
-      console.log("Thông tin sản phẩm nè:", response);
       setProductData(response);
       if (response?.images?.length > 0) {
-        setImage(response.images[0]);
+        setImage(response.images[0]);  
       }
-    };
+    }; 
     fetchProduct();
   }, [productId]);
 
+  useEffect(() => {
+    const fetchReview = async () => {
+      const response = await getReviewById(productId, pageReview, prevPage);
+      setReview(response || []);
+    };
+    fetchReview();
+  }, [pageReview, productId, prevPage]);
 
-  // Toggle attribute selection
+  const handleNextPage = () => {
+    setPrevPage(pageReview);
+    setPageReview((prev) => prev + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (pageReview > 1) {
+      setPrevPage(pageReview);
+      setPageReview((prev) => prev - 1);
+    }
+  };
+
   const handleAttributeSelection = (attributeName, value) => {
     setSelectedAttributes((prev) => ({
       ...prev,
-      [attributeName]: prev[attributeName] === value ? null : value, // Bỏ chọn nếu đã chọn
+      [attributeName]: prev[attributeName] === value ? null : value,
     }));
   };
 
   const allAttributesSelected = () => {
-    // Bỏ qua kiểm tra nếu không có thuộc tính
-    return !productData.attributes || productData.attributes.every((att) => selectedAttributes[att.name]);
+    return !productData?.attributes || productData.attributes.every((att) => selectedAttributes[att.name]);
   };
 
   const placeOrder = async (productName, productId, quantity, selectedAttributes, price) => {
@@ -60,11 +78,11 @@ const Product = () => {
       price
     };
      
-    setListProductToPlace((prevList) => [...prevList, body]); 
+    setListProductToPlace((prevList) => [...prevList, body]);
     navigate('/place-Order');
   };
 
-  const handlleAddToCart = async (productName, productId, quantity, selectedAttributes, price) => {
+  const handleAddToCart = async (productName, productId, quantity, selectedAttributes, price) => {
     if (!allAttributesSelected()) {
       toast.error("Vui lòng chọn tất cả các thuộc tính trước khi thêm vào giỏ hàng.");
       return;
@@ -91,7 +109,7 @@ const Product = () => {
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
-            {productData.images && productData.images.map((item, index) => (
+            {productData.images?.map((item, index) => (
               <img
                 onClick={() => setImage(item)}
                 src={item}
@@ -114,11 +132,11 @@ const Product = () => {
           </div>
           <p className="mt-5 text-3xl font-medium">{productData.price} .000VNĐ</p>
           
-          {productData.attributes.map((att, index) => (
+          {productData.attributes?.map((att, index) => (
             <div key={index} className="flex flex-col gap-2 my-5">
               <p>{att.name}:</p> 
               <div className="flex gap-2">
-                {att.values && att.values.map((value, idx) => (
+                {att.values?.map((value, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleAttributeSelection(att.name, value)}
@@ -146,8 +164,8 @@ const Product = () => {
           </div>
 
           <button
-            onClick={() => handlleAddToCart(productData.name, productId, quantity, selectedAttributes)}
-            className={`bg-black text-white px-8 py-3 text-sm active:bg-gray-700  && "opacity-50 cursor-not-allowed"}`}
+            onClick={() => handleAddToCart(productData.name, productId, quantity, selectedAttributes, productData.price)}
+            className={`bg-black text-white px-8 py-3 text-sm active:bg-gray-700 && "opacity-50 cursor-not-allowed"}`}
           >
             THÊM VÀO GIỎ HÀNG
           </button>
@@ -188,16 +206,34 @@ const Product = () => {
       <hr />
       <div className="mt-5">
         <h2 className="text-lg font-bold">Bình luận của khách hàng</h2>
-        {productData.reviews && productData.reviews.length > 0 ? (
-          productData.reviews.map((review) => (
-            <div key={review.reviewId} className="mt-3 border-b pb-3">
-              <p><b>{review.reviewerName}</b> - <span className="text-yellow-500">Rating: {review.rating}</span></p>
-              <p>{review.reviewContent}</p>
+        {review.length > 0 ? (
+          review.map((reviewItem) => (
+            <div key={reviewItem.reviewId} className="mt-3 border-b pb-3">
+              <p><b>{reviewItem.reviewerName}</b> - <span className="text-yellow-500">Rating: {reviewItem.rating}</span></p>
+              <p>{reviewItem.contentReview}</p>
             </div>
           ))
         ) : (
           <p className="text-gray-500">Chưa có bình luận nào.</p>
         )}
+
+        {/* Nút phân trang */}
+        <div className="flex justify-center gap-4 mt-4">
+          <button
+            onClick={handlePreviousPage}
+            disabled={pageReview === 1}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+          >
+            Trang Trước
+          </button>
+          <p>{pageReview}</p>
+          <button
+            onClick={handleNextPage}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300"
+          >
+            Trang Tiếp
+          </button>
+        </div>
       </div>
     </div>
   ) : (
