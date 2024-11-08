@@ -15,16 +15,21 @@ const PlaceOrder = () => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { listProductToPlace, setListProductToPlace, navigate } = useContext(ShopContext);
+  const { listProductToPlace, setListProductToPlace, navigate, username } = useContext(ShopContext);
 
-  // Lấy danh sách địa chỉ từ API
-  useEffect(() => {
-    const loadAddresses = async () => {
-      const data = await getAddress();
-      setAddresses(data);
-    };
-    loadAddresses(); 
-  }, []);
+// Lấy danh sách địa chỉ từ API
+useEffect(() => {
+  const loadAddresses = async () => {
+    try {
+      const res = await getAddress();
+      setAddresses(res); // Đảm bảo `res` được truyền đúng vào `setAddresses`
+    } catch (err) {
+      console.log("Lỗi khi tải địa chỉ:", err);
+    }
+  };
+
+  loadAddresses(); 
+}, []);
 
   // Xử lý lưu địa chỉ mới
   const handleSaveAddress = async (newAddress) => {
@@ -65,6 +70,7 @@ const PlaceOrder = () => {
     }
  
     const bodyResponse = {
+      "buyerId" : username,
       "listProduct" : listProductToPlace,
       "deliveryAddress" : selectedAddressId,
       "method" : method,
@@ -72,10 +78,8 @@ const PlaceOrder = () => {
     }
 
    createOrder(bodyResponse)
-   .then((res) => {
-    console.log("Thông tin khi đặt hàng: ",res);
+   .then(() => {
     setListProductToPlace({});
-    navigate("/Orders")
    })
    .catch((err) => {
     console.log("lỗi khi đặt đơn hàng:", err);
@@ -101,7 +105,8 @@ const PlaceOrder = () => {
           onChange={handleAddressChange}
         >
           <option value="" disabled>Chọn địa chỉ giao hàng</option>
-          {addresses.map((address) => (
+          
+          {addresses && addresses.map((address) => (
             <option key={address.id} value={address.id}>
               {`${address.name} - ${address.detailAddress}, ${address.city}, ${address.province}`}
             </option>
@@ -115,8 +120,7 @@ const PlaceOrder = () => {
         <div className="flex-1">
           <Title text1="SẢN PHẨM" text2="ĐẶT HÀNG" />
           <div className="border rounded p-4 mt-4">
-            {console.log(listProductToPlace)}
-            {<p>Không thấy sản phẩm để đặt</p> ||listProductToPlace.map((product, index) => (
+            {listProductToPlace.map((product, index) => (
               <div key={index} className="mb-4">
                 <h2 className="font-medium text-lg">{product.productName}</h2>
                 <p>Giá: {product.price}</p>

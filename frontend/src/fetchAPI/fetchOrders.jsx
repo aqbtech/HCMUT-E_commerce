@@ -3,7 +3,14 @@ import Cookies from 'js-cookie'
 
 //----
   export const createOrder = async (body) => {
-    const response = axiosClient2.post(`buyer/order/create/${Cookies.get('username')}`,body);
+    const response = (await axiosClient2.post(`/buyer/order`,body))
+    .then((res) => {
+      console.log("Đặt hàng thành công", res);
+    })
+    .catch((err) => {
+      console.log("Đặt hàng thất bại". err);
+      throw err;
+    })
 
   };
    
