@@ -16,7 +16,7 @@ public class BuildProduct {
 
 	// -- mapping relationships --
 	// mapping attribute instance
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("attributeInstanceId")
 	@JoinColumns({
 			@JoinColumn(name = "attribute_instance_id", referencedColumnName = "instance_id"),
@@ -24,13 +24,13 @@ public class BuildProduct {
 	})
 	private AttributeInstance attributeInstance;
 	// mapping product
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@MapsId("productId")
 	@JoinColumn(name = "product_id_r", referencedColumnName = "root_product_id"
 			, columnDefinition = "VARCHAR(64)")
 	private Product product;
 	// mapping product instance
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@MapsId("productInstanceId")
 	@JoinColumn(name = "product_instance_id", referencedColumnName = "root_product_instance_id"
 			, columnDefinition = "VARCHAR(64)")

@@ -4,17 +4,16 @@ import { toast } from 'react-toastify';
 
 //----------------------------mới ----------------------------------------------
 
-export const getAddress =  async () => {
-  await axiosClient2.get(`address/${Cookies.get('username')}`)
-  .then((res)=> {
+export const getAddress = async () => {
+  try {
+    const res = await axiosClient2.get(`address?username=${Cookies.get('username')}`);
     console.log("Lấy thành công địa chỉ giao hàng:", res);
-    return res;
-  })
-  .catch((err)=> {
+    return res.data.result;
+  } catch (err) {
     console.log("Lỗi khi lấy địa chỉ giao hàng:", err);
-    throw err
-  })
-}
+    throw err;
+  }
+};
 
 export const createAddress =  async (body) => {
   await axiosClient2.post(`address/${Cookies.get('username')}`, body)
