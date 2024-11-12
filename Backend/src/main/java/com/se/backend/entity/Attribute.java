@@ -26,7 +26,7 @@ public class Attribute {
 
 	// -- relationship mappings --
 	// weak entity mapping
-	@OneToMany(mappedBy = "attribute")
+	@OneToMany(mappedBy = "attribute", fetch = FetchType.EAGER)
 	private List<AttributeInstance> attributeInstances;
 	// product mapping
 	@ManyToOne(optional = false)

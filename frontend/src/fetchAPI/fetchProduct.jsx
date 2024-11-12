@@ -1,4 +1,4 @@
-import { axiosClient, axiosClient2 } from '../fetchAPI/axios';
+import { axiosClient, axiosPublic } from '../fetchAPI/axios';
 
 
 
@@ -9,11 +9,21 @@ export const getAllProducts = async (api) =>{
   return res.data;
 }
 
+export const getDetailProduct = async (api) =>{
+  const res = await axiosClient.get(`/productDetail/${api}`);
+  console.log(`Lấy thành công sản phẩm:`, res);
+  return res.data;
+}
 
+export const getReview = async (api) => {
+  const res = await axiosClient.get(`/productDetail/${api}`);
+  
+  return res.data;
+}
 
 //-----
 export const getProduct = async (api) => {
-  await axiosClient2.get(`/product?${api}`)
+  await axiosPublic.get(`/product?${api}`)
   .then((res)=> {
     console.log(`Lấy thành công list sản phẩm:`, res);
     return res.data
@@ -27,7 +37,7 @@ export const getProduct = async (api) => {
 
 export const getProductsById = async (productId) => {
   try {
-      const res = await axiosClient2.get(`/query_product_detail?productId=${productId}`);
+      const res = await axiosPublic.get(`/query_product_detail?productId=${productId}`);
       console.log(`Lấy thành công sản phẩm:`, res);
       return res.data.result;
   } catch (err) {
@@ -38,7 +48,7 @@ export const getProductsById = async (productId) => {
 
 
 export const getReviewById = async (productId, page, prevPage) => {
-  await axiosClient2.get(`/product/comment/${productId}?page=${page}&prevPage=${prevPage}&limit=10`)
+  await axiosPublic.get(`/product/comment/${productId}?page=${page}&prevPage=${prevPage}&limit=10`)
   .then((res) => {
     console.log(`Lấy thành công product ${productId}:`, res);
     return res.data

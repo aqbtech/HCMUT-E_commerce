@@ -3,11 +3,10 @@ import { ShopContext } from '../context/ShopContext'
 import {Link} from 'react-router-dom'
 import { register } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
-
+import ErrorMessage  from '/src/components/errorMessage';
 
 const Regist = () => {
-  const {navigate} = useContext(ShopContext);
- 
+  const {navigate, systemError, setSystemError} = useContext(ShopContext);
   const [id, setId] = useState('');
   const [pass, setPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
@@ -52,14 +51,21 @@ const Regist = () => {
     })
     .catch((error) => {
       console.log("Lỗi đăng kí:", error)
-      toast.error("Lỗi đăng kí, vui lòng thử lại!");
-      throw error
+      if(error.status === 401) toast.error("Thông tin hiện đã tồn tại!");
+      else setSystemError(error.response?.data?.message || error.response?.data?.error || "Mất kết nối máy chủ");
+      throw(error)
+    })
+    .finally(() => {
+      setIsLoading(false); //đã gọi API xong
+
     })
     .finally(() => {
       setIsLoading(false); //đã gọi API xong
     })
   }  
-
+  if (systemError) {
+    return <ErrorMessage  message={systemError} />;
+  }
   return (
     <div> 
       <form onSubmit={onSubmitHandler} className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800' action="">

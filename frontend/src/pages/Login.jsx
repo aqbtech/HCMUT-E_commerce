@@ -4,9 +4,11 @@ import {Link} from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { SignIn } from '../fetchAPI/fetchAccount';
 import Cookies from 'js-cookie'
+import ErrorMessage  from '/src/components/errorMessage';
+
 
 const Login = () => {
-  const {navigate} = useContext(ShopContext);
+  const {navigate, systemError, setSystemError} = useContext(ShopContext);
 
   const [username, setUsername] = useState('');
   const [pass, setPass] = useState('');
@@ -39,15 +41,18 @@ const Login = () => {
       navigate('/'); //chuyển hướng đến trang home
     })
     .catch((error) => { 
-      console.error("Lỗi khi gọi API đăng nhập:", error);
-      toast.error('Có lỗi xảy ra khi đăng nhập.');
+      if(error.status === 401) toast.error("Thông tin đăng nhập sai rồi!");
+      else if(error.status === 404) toast.error("Tài khoản không hợp lệ");
+      else setSystemError(error.response?.data?.message || error.response?.data?.error || "Mất kết nối máy chủ");
       throw(error)
     })
     .finally(() => {
       setIsLoading(false); //đã gọi xong
     })
   };
-   
+  if (systemError) {
+    return <ErrorMessage  message={systemError} />;
+  }
   return (
     <div>
       <form className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800' action="">
