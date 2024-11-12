@@ -1,7 +1,10 @@
 package com.se.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -21,9 +24,6 @@ public class Buyer extends Business {
 	// mapping cart
 	@OneToOne(optional = false, mappedBy = "buyer")
 	private Cart cart;
-	// mapping payment order
-	@OneToMany(mappedBy = "buyer")
-	private List<PaymentOrder> paymentOrder;
 	// mapping reviews
 	@OneToOne(mappedBy = "buyer")
 	private Review reviews;

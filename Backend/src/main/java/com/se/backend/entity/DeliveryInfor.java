@@ -28,4 +28,7 @@ public class DeliveryInfor {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "buyer_id", referencedColumnName = "username")
 	private Buyer buyer;
+	// mapping payment order
+	@OneToMany(mappedBy = "deliveryInfor")
+	private List<PaymentOrder> paymentOrder;
 }
