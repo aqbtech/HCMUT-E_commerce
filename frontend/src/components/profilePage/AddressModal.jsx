@@ -4,20 +4,23 @@ import { createAddress, updAddress } from "../../fetchAPI/fetchAddress"; // Impo
 const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
-    const [city, setCity] = useState('');
-    const [detailAddress, setDetailAddress] = useState('');
-    const [addressType, setAddressType] = useState('Nhà Riêng');
     const [province, setProvince] = useState('');
+    const [district, setDistrict] = useState('');
+    const [ward, setWard] = useState('');
+    const [detailAddress, setDetailAddress] = useState('');
+    //const [addressType, setAddressType] = useState('Nhà Riêng');
+    
 
     // Cập nhật các trường khi nhận initialData (khi mở modal cập nhật))
     useEffect(() => {
         if (initialData) {
             setName(initialData.name || '');
             setPhone(initialData.phone || '');
-            setCity(initialData.city || '');
-            setDetailAddress(initialData.detailAddress || '');
-            setAddressType(initialData.addressType || 'Nhà Riêng');
             setProvince(initialData.province || '');
+            setDetailAddress(initialData.detailAddress || '');
+            //setAddressType(initialData.addressType || 'Nhà Riêng');
+            setDistrict(initialData.province || '');
+            setWard(initialData.province || '')
         } 
     }, [initialData]);
 
@@ -25,10 +28,11 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
         const addressData = {
             name,
             phone,
-            city,
             province,
+            district,
+            ward,
             detailAddress,
-            addressType,
+           // addressType
         };
 
         if (initialData && initialData.id) {
@@ -75,10 +79,19 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
                 <input
                     type="text"
                     placeholder="Quận/Huyện"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
+                    value={district}
+                    onChange={(e) => setDistrict(e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded mb-4"
                 />
+
+                <input
+                    type="text"
+                    placeholder="Xã/phường"
+                    value={district}
+                    onChange={(e) => setWard(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded mb-4"
+                />
+
 
                 <input
                     type="text"
@@ -88,7 +101,7 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
                     className="w-full p-2 border border-gray-300 rounded mb-4"
                 />
 
-                <div className="mb-4">
+                {/* <div className="mb-4">
                     <p className="font-semibold">Loại địa chỉ:</p>
                     <button
                         className={`px-4 py-2 mr-2 rounded ${addressType === 'Nhà Riêng' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
@@ -102,7 +115,7 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
                     >
                         Văn Phòng
                     </button>
-                </div>
+                </div> */}
 
                 <div className="flex justify-between">
                     <button onClick={onClose} className="text-gray-600 hover:underline">Trở Lại</button>
