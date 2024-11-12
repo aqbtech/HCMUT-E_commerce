@@ -19,10 +19,10 @@ public class PaymentOrder {
 	private String paymentOrderCode;
 
 	// -- Relationships -- //
-	// mapping buyer
+	// mapping delivery info
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "buyer_id", referencedColumnName = "username")
-	private Buyer buyer;
+	@JoinColumn(name = "delivery_info", referencedColumnName = "id")
+	private DeliveryInfor deliveryInfor;
 	// mapping with review
 	@OneToMany(mappedBy = "paymentOrder")
 	private List<Review> review;
