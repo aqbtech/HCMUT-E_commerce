@@ -155,15 +155,37 @@ useEffect(() => {
         <div className="w-full max-w-[400px]">
           <Title text1="THÔNG TIN" text2="THANH TOÁN" />
           <div className="border rounded p-4 mt-4">
-            <CartTotal delivery_fee = {calculateTotal()}/>
+          <div className='w-full'>
+              <div className='text-2xl'>
+                  <Title text1={'CART'} text2={'TOTAL'}/>
+              </div>
+            
+              <div className='flex flex-col gap-2 mt-2 text-sm'>
+                  <div className='flex justify-between'>
+                      <p>Tổng hàng</p>
+                      <p>{calculateTotal() + '.000'} VNĐ</p>
+                  </div>
+              </div>
+              <hr />
+              <div className='flex justify-between'>
+                  <p>Phí ship</p>
+                  <p>10.000 VNĐ</p>
+              </div>
+              <hr />
+              <div className='flex justify-between'>
+                  <b>Tổng cộng</b>
+                  {/* <b>{currency} {getCartAmount() === 0 ? 0 : String(getCartAmount() + delivery_fee) + '.00'}</b> */}
+                  <b>{calculateTotal() + 10 + '.000'} VNĐ  </b>
+              </div>
+            </div>
             <div className="mt-8">
               <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN" />
               <div className="flex gap-3 flex-col mt-4">
-                <div onClick={() => setMethod('stripe')} className="flex items-center gap-3 border p-2 cursor-pointer">
+                <div onClick={() => setMethod('zalo')} className="flex items-center gap-3 border p-2 cursor-pointer">
                   <p className={`w-4 h-4 border rounded-full ${method === 'zalo' ? 'bg-green-400' : ''}`}></p>
                   <img className="h-5 mx-4" src={assets.zalo} alt="" /> zaloPay
                 </div>
-                <div onClick={() => setMethod('razorpay')} className="flex items-center gap-3 border p-2 cursor-pointer">
+                <div onClick={() => setMethod('momo')} className="flex items-center gap-3 border p-2 cursor-pointer">
                   <p className={`w-4 h-4 border rounded-full ${method === 'momo' ? 'bg-green-400' : ''}`}></p>
                   <img className="h-5 mx-4" src={assets.momo} alt="" /> momo
                 </div>
