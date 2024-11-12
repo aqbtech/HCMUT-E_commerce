@@ -45,7 +45,7 @@ const AddressTab = ({ addresses, onAddAddress, onDeleteAddress, onUpdateAddress 
                         <div>
                             <p className="font-semibold">{address.name} <span className="text-gray-500">({address.phone})</span></p>
                             <p>{address.detailAddress}</p>
-                            <p className="text-gray-500">{address.city}, {address.province}</p>
+                            <p className="text-gray-500">{address.province}, {address.district}, {address.ward}</p>
                         </div>
 
                         {/* Nút thao tác */}

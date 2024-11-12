@@ -1145,46 +1145,299 @@
       "status": 1
     }
   ],
-  "categories": [
+    "productDetail": [
+      {
+        "images" : [
+          "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
+          "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
+          "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp"
+        ],
+        "id": "saew-001",
+        "productName" : "quan ngan",
+        "rating": 4.9,
+        "description": "quan dep lam mua di",
+        "minPrice": 500,
+        "totalQuantityInStock": 1000,
+        "listAtt": [
+          {
+            "name": "size",
+            "values": ["XS", "S", "M", "L", "XL"]
+          },
+          {
+            "name": "color",
+            "values": ["pink", "green", "red", "yellow"]
+          }
+        ],
+        "listInstants": [
+          {
+            "instantId": "saew-001-xs-pink",
+            "attributes": {
+              "size": "XS",
+              "color": "pink"
+            },
+            "price": 100,
+            "quantity": 200,
+            "img": "123"
+          },
+          {
+            "instantId": "saew-001-s-pink",
+            "attributes": {
+              "size": "S",
+              "color": "pink"
+            },
+            "price": 105,
+            "quantity": 150,
+            "img": "123"
+          },
+          {
+            "instantId": "saew-001-m-green",
+            "attributes": {
+              "size": "M",
+              "color": "green"
+            },
+            "price": 110,
+            "quantity": 100,
+            "img": "123"
+          }
+        ],
+        "seller": {
+          "sellerId": "chinhaaaa",
+          "shopName": "Haven",
+          "location": "Ha Noi"
+        }
+      },
+      {
+        "productName": "quan jean",
+        "id": "123-001",
+        "rating": 4.7,
+        "description": "quan dep lam mua di",
+        "minPrice": 550,
+        "totalQuantityInStock": 1200,
+        "listAtt": [
+          {
+            "name": "size",
+            "values": ["XS", "S", "M", "L", "XL"]
+          },
+          {
+            "name": "color",
+            "values": ["blue", "black", "white", "grey"]
+          }
+        ],
+        "listInstants": [
+          {
+            "instantId": "123-001-xs-blue",
+            "attributes": {
+              "size": "XS",
+              "color": "blue"
+            },
+            "price": 110,
+            "quantity": 250,
+            "img": "123"
+          },
+          {
+            "instantId": "123-001-s-black",
+            "attributes": {
+              "size": "S",
+              "color": "black"
+            },
+            "price": 115,
+            "quantity": 180,
+            "img": "123"
+          },
+          {
+            "instantId": "123-001-m-white",
+            "attributes": {
+              "size": "M",
+              "color": "white"
+            },
+            "price": 120,
+            "quantity": 120,
+            "img": "123"
+          }
+        ],
+        "seller": {
+          "sellerId": "chinhaaaa",
+          "shopName": "Haven",
+          "location": "Ha Noi"
+        }
+      }
+    ],
+
+  "categories" : [
     {
-      "id": 1,
-      "name": "Men"
+      "categoryName": "Men",
+      "categoryId" : "1",
+      "subCategories" : [
+        {
+          "subCategoryName": "quan",
+          "subCategoryId" : "1"
+        },
+        {
+          "subCategoryName": "ao",
+          "subCategoryId" : "2"
+        },
+        {
+          "subCategoryName": "underwear",
+          "subCategoryId" : "3"
+        }
+      ]
     },
     {
-      "id": 2,
-      "name": "Women"
+      "categoryName": "Women",
+      "categoryId" : "2",
+      "subCategories" : [
+        {
+          "subCategoryName": "quan",
+          "subCategoryId" : "1"
+        },
+        {
+          "subCategoryName": "ao",
+          "subCategoryId" : "2"
+        },
+        {
+          "subCategoryName": "underwear",
+          "subCategoryId" : "3"
+        }
+      ]
     },
     {
-      "id": 3,
-      "name": "Kids"
+      "categoryName": "kids",
+      "categoryId" : "3",
+      "subCategories" : [
+        {
+          "subCategoryName": "quan",
+          "subCategoryId" : "1"
+        },
+        {
+          "subCategoryName": "ao",
+          "subCategoryId" : "2"
+        },
+        {
+          "subCategoryName": "underwear",
+          "subCategoryId" : "3"
+        },
+        {
+          "subCategoryName": "toys",
+          "subCategoryId" : "4"
+        },
+        {
+          "subCategoryName": "shoes",
+          "subCategoryId" : "5"
+        }
+        
+      ]
     },
     {
-      "id": 4,
-      "name": "phone"
+      "categoryName": "electric",
+      "categoryId" : "4",
+      "subCategories" : [
+        {
+          "subCategoryName": "TV",
+          "subCategoryId" : "1"
+        },
+        {
+          "subCategoryName": "Kitchen",
+          "subCategoryId" : "2"
+        },
+        {
+          "subCategoryName": "fan",
+          "subCategoryId" : "3"
+        }
+        ,
+        {
+          "subCategoryName": "hut bui",
+          "subCategoryId" : "4"
+        }
+        ,
+        {
+          "subCategoryName": "lau nha",
+          "subCategoryId" : "5"
+        }
+      ]
     },
     {
-      "id": 5,
-      "name": "latop"
+      "categoryName": "food&drink",
+      "categoryId" : "5",
+      "subCategories" : [
+        {
+          "subCategoryName": "meat",
+          "subCategoryId" : "1"
+        },
+        {
+          "subCategoryName": "milk tea",
+          "subCategoryId" : "2"
+        },
+        {
+          "subCategoryName": "ngu coc",
+          "subCategoryId" : "3"
+        }
+        ,
+        {
+          "subCategoryName": "whey",
+          "subCategoryId" : "4"
+        }
+        ,
+        {
+          "subCategoryName": "mass",
+          "subCategoryId" : "5"
+        }
+      ]
     },
     {
-      "id": 6,
-      "name": "shoes"
+      "categoryName": "food&drink",
+      "categoryId" : "6",
+      "subCategories" : [
+        {
+          "subCategoryName": "meat",
+          "subCategoryId" : "1"
+        },
+        {
+          "subCategoryName": "milk tea",
+          "subCategoryId" : "2"
+        },
+        {
+          "subCategoryName": "ngu coc",
+          "subCategoryId" : "3"
+        }
+        ,
+        {
+          "subCategoryName": "whey",
+          "subCategoryId" : "4"
+        }
+        ,
+        {
+          "subCategoryName": "mass",
+          "subCategoryId" : "5"
+        }
+      ]
     },
     {
-      "id": 7,
-      "name": "furniture"
-    },
-    {
-      "id": 8,
-      "name": "beauty"
-    },
-    {
-      "id": 9,
-      "name": "sport"
-    },
-    {
-      "id": 10,
-      "name": "electronic"
+      "categoryName": "food&drink",
+      "categoryId" : "7",
+      "subCategories" : [
+        {
+          "subCategoryName": "meat",
+          "subCategoryId" : "1"
+        },
+        {
+          "subCategoryName": "milk tea",
+          "subCategoryId" : "2"
+        },
+        {
+          "subCategoryName": "ngu coc",
+          "subCategoryId" : "3"
+        }
+        ,
+        {
+          "subCategoryName": "whey",
+          "subCategoryId" : "4"
+        }
+        ,
+        {
+          "subCategoryName": "mass",
+          "subCategoryId" : "5"
+        }
+      ]
     }
   ],
   "user": [
@@ -1302,44 +1555,40 @@
   ],
   "address": [
     {
+      "id": 1,
       "name": "Dang Tran Cong Chinh",
       "phone": "090837363",
-      "city": "ben thanh",
+      "district": "ben thanh",
       "province": "dong nai",
-      "detailAddress": "3a/2 khu pho 1",
-      "addressType": "Nhà Riêng",
-      "id": 1
+      "ward" : "Tan hoa",
+      "detailAddress": "3a/2 khu pho 1"
     },
     {
-      "name": "lalala",
-      "phone": "metvcl",
-      "city": "song sau",
-      "province": "ben tre",
-      "detailAddress": "123123123",
-      "addressType": "Nhà Riêng",
-      "id": 2
+      "id": 2,
+      "name": "NMQA",
+      "phone": "090837363",
+      "district": "âfwfwqfanh",
+      "province": "f fwfwaefwa",
+      "ward" : "Tan ưefwaefaw",
+      "detailAddress": "3a/2 khưefwaefu pho 1"
     },
     {
-      "name": {
-        "name": "123",
-        "phone": "123",
-        "city": "123",
-        "province": "1231",
-        "detailAddress": "123",
-        "addressType": "Nhà Riêng"
-      },
-      "id": 3
+      "id": 3,
+      "name": "DaQAAAnh",
+      "phone": "090831237363",
+      "district": "3123 thanh",
+      "province": "dong 312",
+      "ward" : "Tan 312",
+      "detailAddress": "3a/2 123 pho 1"
     },
     {
-      "name": {
-        "name": "123",
-        "phone": "123",
-        "city": "123",
-        "province": "123",
-        "detailAddress": "123",
-        "addressType": "Nhà Riêng"
-      },
-      "id": 4
+      "id": 4,
+      "name": "jimmy",
+      "phone": "090831231237363",
+      "district": "ben than123123h",
+      "province": "dong nai123123",
+      "ward" : "Tan hoa123123",
+      "detailAddress": "3a/2 12313khu pho 1"
     }
   ]
 }
