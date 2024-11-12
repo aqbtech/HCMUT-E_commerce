@@ -1,8 +1,7 @@
 import axios from "axios";
 import Cookies from 'js-cookie'
+import { toast } from "react-toastify";
    
-
-//hello
 export const axiosClient = axios.create({
 
     baseURL: `http://localhost:3000`,
@@ -21,8 +20,13 @@ export const axiosClient2 = axios.create({
     }
 });
 
-
-
+export const axiosPublic = axios.create({
+    baseURL: import.meta.env.VITE_BASE_URL,
+    timeout: 10000,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
 
 axiosClient2.interceptors.request.use(
     async (config) => {
@@ -37,37 +41,46 @@ axiosClient2.interceptors.request.use(
         return Promise.reject(err)
 })
 
-// axiosClient2.interceptors.response.use(
-//     (res) => {
-//         return res;
-//     },
-//     async (err) => {
-//         const originalRequest = err.config;
-//         if (err.response && err.response.status === 401) {
-//             const refreshToken = Cookies.get('token');
-//             const body = { "refreshToken": refreshToken };
-//             console.log(refreshToken, body, err);
-//
-//             try {
-//                 // Gọi đến endpoint /refresh của backend
-//                 const res = await axiosClient2.post('/auth/refresh', body);
-//                 // Kiểm tra `res.data.result.token` thay vì `res.result.token`
-//                 const newAccessToken = res.data.result.token;
-//
-//                 if (newAccessToken) {
-//                     // Lưu token mới vào cookie và cập nhật header
-//                     Cookies.set('token', newAccessToken);
-//                     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-//
-//                 } else {
-//                     throw new Error("Không lấy được token mới.");
-//                 }
-//             } catch (error) {
-//                 // Xử lý khi refresh token không hợp lệ hoặc hết hạn
-//                 Cookies.remove('token');
-//                 return Promise.reject(error);
-//             }
-//         }
-//         return Promise.reject(err);
-//     }
-// );
+axiosClient2.interceptors.response.use(
+    (res) => {
+        return res; // Trả về response nếu không có lỗi
+    },
+    async (err) => {
+        const originalRequest = err.config;
+        const currentToken = Cookies.get('token');
+
+        // Kiểm tra nếu lỗi là 401 và có token (dấu hiệu có thể do token hết hạn)
+        if (err.response.status === 401 && currentToken) {
+            try {
+                const refreshToken = currentToken; // Sử dụng token hiện tại như refresh token
+                const body = { "refreshToken": refreshToken };
+                Cookies.remove('token'); // Xóa token cũ
+
+                // Gọi đến endpoint /refresh để lấy token mới
+                const res = await axiosPublic.post('/auth/refresh', body);  
+                const newAccessToken = res.data.result.token;
+
+                if (newAccessToken) {
+                    // Lưu token mới vào cookie và cập nhật lại header cho request gốc
+                    Cookies.set('token', newAccessToken);
+                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+                    // Gọi lại request gốc với token mới
+                    return axiosClient2(originalRequest);
+                } else {
+                    // Nếu không lấy được token mới, yêu cầu đăng nhập lại
+                    Cookies.remove('username');
+                    toast.error("Đã có lỗi xảy ra, bạn cần đăng nhập lại!");
+                    throw new Error("Không lấy được token mới.");
+                }
+            } catch (error) {
+                // Xử lý khi refresh token không hợp lệ hoặc hết hạn
+                toast.error("Đã có lỗi xảy ra, bạn cần đăng nhập lại!");
+                return Promise.reject(error);
+            }
+        }
+
+        // Nếu không phải lỗi 401 do hết hạn token hoặc không có token, trả về lỗi gốc
+        return Promise.reject(err);
+    }
+);
