@@ -26,4 +26,5 @@ public interface AttributeMapper {
 				.map(AttributeInstance::getValue)
 				.collect(Collectors.toList());
 	}
+	List<AttributeDetail> toAttributeDetails(List<Attribute> attributes);
 }

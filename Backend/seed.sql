@@ -1,3 +1,385 @@
+create database e-commerce;
+
+use e-commerce;
+
+create table address
+(
+    address_id       bigint auto_increment
+        primary key,
+    commune          varchar(255) null,
+    district         varchar(255) null,
+    province         varchar(255) null,
+    specific_address varchar(255) null
+);
+
+create table category
+(
+    name                 varchar(255) not null
+        primary key,
+    parent_category_name varchar(255) null,
+    constraint FK2fev52lixpq850g4otq5k6x2o
+        foreign key (parent_category_name) references category (name)
+);
+
+create table category_policy
+(
+    policy_id          bigint auto_increment
+        primary key,
+    apply_date         date         null,
+    policy_description varchar(255) null,
+    policy_name        varchar(255) null,
+    release_date       date         null
+);
+
+create table category_policy_category
+(
+    policy_id   bigint       not null,
+    category_id varchar(255) not null,
+    constraint FKevt26jvv1u7joifgcpm5t2v1y
+        foreign key (category_id) references category (name),
+    constraint FKj8v5qyfpswcy9g82yd4wv4chb
+        foreign key (policy_id) references category_policy (policy_id)
+);
+
+create table delivery
+(
+    delivery_name varchar(255) not null
+        primary key
+);
+
+create table invalidated_token
+(
+    id          varchar(255) not null
+        primary key,
+    expiry_time datetime(6)  null
+);
+
+
+create table product_instance
+(
+    root_product_instance_id varchar(64) not null
+        primary key,
+    price                    bigint      null,
+    quantity_in_stock        bigint      null
+);
+
+create table shop_policy
+(
+    policy_id          bigint auto_increment
+        primary key,
+    apply_date         date         null,
+    policy_description varchar(255) null,
+    policy_name        varchar(255) null,
+    release_date       date         null
+);
+
+create table user
+(
+    username     varchar(255) not null
+        primary key,
+    created_date date         null,
+    dob          date         null,
+    email        varchar(255) null,
+    first_name   varchar(255) null,
+    last_name    varchar(255) null,
+    password     varchar(255) null,
+    phone        varchar(255) null
+);
+
+create table admin
+(
+    username varchar(255) not null
+        primary key,
+    constraint FKct0xnk0e2pv9jotrkeqy09xde
+        foreign key (username) references user (username)
+);
+
+create table activity
+(
+    activity_id          bigint auto_increment
+        primary key,
+    activity_date        date         null,
+    activity_description varchar(255) null,
+    activity_name        varchar(255) null,
+    admin_id             varchar(255) null,
+    constraint FK9dlk8w5g378e9xldxtinaeqf1
+        foreign key (admin_id) references admin (username)
+);
+
+create table business
+(
+    username varchar(255) not null
+        primary key,
+    constraint FKk8fuufvbi73yjwqdygtk7pyqp
+        foreign key (username) references user (username)
+);
+
+create table buyer
+(
+    username varchar(255) not null
+        primary key,
+    constraint FKd71jfoj2ebl8pemeo888nsr8h
+        foreign key (username) references business (username)
+);
+
+create table cart
+(
+    composite_cart_id varchar(255) not null,
+    username          varchar(255) not null,
+    total_price       bigint       null,
+    total_quantity    bigint       null,
+    cart_buyer_id     varchar(255) not null,
+    primary key (composite_cart_id, username),
+    constraint UKgo4xymrb2m6vy79343r18gx3g
+        unique (cart_buyer_id),
+    constraint FKe51tumpt3o4fmwrlw10rlevu0
+        foreign key (cart_buyer_id) references buyer (username)
+);
+
+create table cart_product_instance
+(
+    product_instance_id varchar(255) not null,
+    quantity            bigint       null,
+    buyer_cart_id       varchar(255) not null,
+    buyer_id            varchar(255) not null,
+    primary key (buyer_cart_id, buyer_id, product_instance_id),
+    constraint FK9nib0pkfp15rutkeb0fexe6pf
+        foreign key (product_instance_id) references product_instance (root_product_instance_id),
+    constraint FKoyorputj93qkj790pvs1s8ayu
+        foreign key (buyer_cart_id, buyer_id) references cart (composite_cart_id, username)
+);
+
+create table category_policy_admin
+(
+    policy_id bigint       not null,
+    admin_id  varchar(255) not null,
+    constraint FK5531ffmeuej05jhtgttskt6j2
+        foreign key (admin_id) references admin (username),
+    constraint FKq7u4t1ewrgl6noxmvhtwgpkn0
+        foreign key (policy_id) references category_policy (policy_id)
+);
+
+create table delivery_infor
+(
+    id             bigint auto_increment
+        primary key,
+    phone_number   varchar(255) null,
+    recipient_name varchar(255) null,
+    address_id     bigint       not null,
+    buyer_id       varchar(255) not null,
+    constraint UK5l0k1230er99fy3syu2nl46jf
+        unique (address_id),
+    constraint FK32maa26wgwgy36s8imc3apx3u
+        foreign key (buyer_id) references buyer (username),
+    constraint FKikqj6a1ea5cldjahmhmxr522s
+        foreign key (address_id) references address (address_id)
+);
+
+create table payment_info
+(
+    card_number      varchar(255) not null
+        primary key,
+    bank_name        varchar(255) null,
+    card_holder_name varchar(255) null,
+    business_id      varchar(255) null,
+    constraint FK843j0bdu1xjm4kpegbe2vr0ng
+        foreign key (business_id) references business (username)
+);
+
+create table payment_order
+(
+    payment_order_id varchar(255) not null
+        primary key,
+    buyer_id         varchar(255) not null,
+    constraint FKn0u6l205mqxutfbqpdpl8y8sr
+        foreign key (buyer_id) references buyer (username)
+);
+
+create table seller
+(
+    followers  int          null,
+    shop_name  varchar(255) null,
+    username   varchar(255) not null
+        primary key,
+    address_id bigint       not null,
+    constraint UKpwb44pfjo99nve4cj9s4fa5tg
+        unique (address_id),
+    constraint FKl3wd5axaup1lsnsd9fhh0p6hs
+        foreign key (username) references business (username),
+    constraint FKopt4gyyicn4akyj4bossfp10g
+        foreign key (address_id) references address (address_id)
+);
+
+create table follow
+(
+    followee_id varchar(255) not null,
+    follower_id varchar(255) not null,
+    primary key (followee_id, follower_id),
+    constraint FK4xpb46tkhrut03qw9ej42glo9
+        foreign key (followee_id) references seller (username),
+    constraint FKba47uidjow00la66q8ws86wya
+        foreign key (follower_id) references buyer (username)
+);
+
+create table orders
+(
+    root_order_id          varchar(255) not null
+        primary key,
+    delivery_code          varchar(255) null,
+    delivery_date          date         null,
+    delivery_join_date     date         null,
+    delivery_status        varchar(255) null,
+    expected_delivery_date date         null,
+    status                 varchar(255) null,
+    total_price            bigint       null,
+    delivery_id            varchar(255) null,
+    payment_odrder_id      varchar(255) null,
+    seller_id              varchar(255) null,
+    constraint FKiqoyghlcoagihjeufolwetin7
+        foreign key (seller_id) references seller (username),
+    constraint FKormoby8boopcrl8epgg4od23n
+        foreign key (payment_odrder_id) references payment_order (payment_order_id),
+    constraint FKtkrur7wg4d8ax0pwgo0vmy20c
+        foreign key (delivery_id) references delivery (delivery_name)
+);
+
+create table order_product_instance
+(
+    order_id            varchar(255) not null,
+    product_instance_id varchar(255) not null,
+    quantity            bigint       null,
+    primary key (order_id, product_instance_id),
+    constraint FKkelcojcgu35cpgqhnb19yvmtw
+        foreign key (product_instance_id) references product_instance (root_product_instance_id),
+    constraint FKqqrn0uj1x2yp2n6ca0oi9noqi
+        foreign key (order_id) references orders (root_order_id)
+);
+
+create table product
+(
+    root_product_id varchar(64)  not null
+        primary key,
+    description     varchar(255) null,
+    name            varchar(255) null,
+    category_name   varchar(255) not null,
+    seller_id       varchar(255) not null,
+    constraint FKesd6fy52tk7esoo2gcls4lfe3
+        foreign key (seller_id) references seller (username),
+    constraint FKmxhoec7wquhjv31p300vqahdo
+        foreign key (category_name) references category (name)
+);
+
+create table admin_product
+(
+    product_id varchar(64)  not null,
+    admin_id   varchar(255) not null,
+    constraint FK76be2f7y25tg0atuqgk1whg8v
+        foreign key (product_id) references product (root_product_id),
+    constraint FKnp3hmk6jyqiau37wqvta8a6h2
+        foreign key (admin_id) references admin (username)
+);
+
+create table attribute
+(
+    root_attribute_id bigint auto_increment
+        primary key,
+    name              varchar(255) null,
+    product_id        varchar(64)  not null,
+    constraint FKodmc4a3tlyg001pq3owlhwsgv
+        foreign key (product_id) references product (root_product_id)
+);
+
+create table attribute_instance
+(
+    attribute_id bigint       not null,
+    instance_id  varchar(64)  not null,
+    value        varchar(255) null,
+    primary key (attribute_id, instance_id),
+    constraint FKfvjm0s5r0muxeenfmg4it5eok
+        foreign key (attribute_id) references attribute (root_attribute_id)
+);
+
+create table build_product
+(
+    product_id_r          varchar(64) not null,
+    product_instance_id   varchar(64) not null,
+    attribute_id          bigint      not null,
+    attribute_instance_id varchar(64) not null,
+    primary key (attribute_id, attribute_instance_id, product_id_r, product_instance_id),
+    constraint FK24r1uuvl9y394lfbne57cdsx2
+        foreign key (attribute_id, attribute_instance_id) references attribute_instance (attribute_id, instance_id),
+    constraint FK42wav3vwftq9y5umkub2n1yvv
+        foreign key (product_instance_id) references product_instance (root_product_instance_id),
+    constraint FKntb3vsubq5iqd6pfssjpi643k
+        foreign key (product_id_r) references product (root_product_id)
+);
+
+create table review_content
+(
+    root_review_content_id varchar(255) not null
+        primary key,
+    content                varchar(255) null,
+    rating                 double       null,
+    reply_content          varchar(255) null,
+    seller_reply_content   varchar(255) null,
+    seller_id              varchar(255) null,
+    constraint FKl5x8l8paw5g94snjily0q2tka
+        foreign key (seller_id) references seller (username)
+);
+
+create table review
+(
+    buyer_username      varchar(64) not null,
+    payment_order_id    varchar(64) not null,
+    product_instance_id varchar(64) not null,
+    review_content_id   varchar(64) not null,
+    primary key (buyer_username, payment_order_id, product_instance_id, review_content_id),
+    constraint FK5e1qjntwidp36utfu7qcpu7me
+        foreign key (buyer_username) references buyer (username),
+    constraint FK9q5tvs8mr1d50xhspk82w0sc8
+        foreign key (review_content_id) references review_content (root_review_content_id),
+    constraint FKg0pjww1c2vmergv4mb9icthmi
+        foreign key (payment_order_id) references payment_order (payment_order_id),
+    constraint FKse21m6py64x4jutopsfcdc6vg
+        foreign key (product_instance_id) references product_instance (root_product_instance_id)
+);
+
+create table shop_policy_admin
+(
+    policy_id bigint       not null,
+    admin_id  varchar(255) not null,
+    constraint FK5wsxd1f98jv48m283p8qogjkm
+        foreign key (admin_id) references admin (username),
+    constraint FKptntjbtjy1e6bwl1ido5q2st2
+        foreign key (policy_id) references shop_policy (policy_id)
+);
+
+create table admin_buyer
+(
+    buyer_id varchar(255) not null,
+    admin_id varchar(255) not null,
+    constraint FKc1cvulj11extj06q4bsoiq3te
+        foreign key (buyer_id) references buyer (username),
+    constraint FKpvffrtl943yydjgp8rwjke3lt
+        foreign key (admin_id) references admin (username)
+);
+
+create table shop_policy_seller
+(
+    policy_id bigint       not null,
+    seller_id varchar(255) not null,
+    admin_id  varchar(255) not null,
+    constraint FKhadt6snstck37y14etvykhpjx
+        foreign key (policy_id) references shop_policy (policy_id),
+    constraint FKnbec42pvfsh5kivvt4bk3j7g6
+        foreign key (seller_id) references seller (username),
+    constraint FKurfkl34sm8i7bi1o1u9wmwb
+        foreign key (admin_id) references admin (username)
+);
+
+
+
+
 ALTER TABLE attribute_instance
     MODIFY value VARCHAR(2500);
 
@@ -182,6 +564,7 @@ INSERT INTO invalidated_token (id, expiry_time) VALUES ('0bf4e9d1-b589-e56f-1388
 INSERT INTO invalidated_token (id, expiry_time) VALUES ('bfdb8770-beb8-3f4e-7147-9251192d7b97', '2024-07-31 20:26:14');
 INSERT INTO invalidated_token (id, expiry_time) VALUES ('f2324e9c-e180-7380-f2c7-0ca50802c892', '2024-04-14 15:30:59');
 
+
 INSERT INTO product_instance (root_product_instance_id, price, quantity_in_stock) VALUES ('780eaa2a-957d-00bb-845f-03b977148763', '5576.19', '730');
 INSERT INTO product_instance (root_product_instance_id, price, quantity_in_stock) VALUES ('99e2b2e9-27cf-7a47-f008-bb1f58b6cac4', '4721.95', '388');
 INSERT INTO product_instance (root_product_instance_id, price, quantity_in_stock) VALUES ('1c109a3f-996b-7af7-6808-d3a80af58486', '4448.04', '279');
@@ -200,7 +583,6 @@ INSERT INTO product_instance (root_product_instance_id, price, quantity_in_stock
 
 
 
-
 INSERT INTO follow (followee_id, follower_id) VALUES ('dmickelwright31174', 'jvan daalen4926');
 INSERT INTO follow (followee_id, follower_id) VALUES ('dlewsley41328', 'mselwyn39960');
 INSERT INTO follow (followee_id, follower_id) VALUES ('kleverett5376', 'rellerbeck14523');
@@ -214,16 +596,16 @@ INSERT INTO follow (followee_id, follower_id) VALUES ('asimioli58443', 'adarby50
 
 
 
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('1', '2024-03-20 04:44:21', 'Invidus, qui ab eo ortum, tam inportuno tamque crudeli; sin, ut dolore suo sanciret militaris imperii disciplinam exercitumque.', 'Cancellation Policy', '2024-03-20 04:44:22');
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('2', '2024-05-12 03:42:11', 'Homine omni doctrina erudito, defensa est Epicuri sententia de voluptate, a meque ei responsum, cum C. Triarius, in primis gravis et.', 'Terms of Service', '2024-05-12 03:42:12');
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('3', '2024-04-04 13:29:00', 'Quod, cum in rerum natura cognita levamur superstitione, liberamur mortis metu, non conturbamur ignoratione rerum, e qua ipsa horribiles existunt saepe formidines. Denique etiam morati melius.', 'Discount Policy', '2024-04-04 13:29:01');
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('4', '2024-02-22 11:55:57', 'Militaris imperii disciplinam exercitumque in gravissimo bello animadversionis metu contineret, saluti prospexit civium, qua intellegebat contineri suam. Atque haec ratio late patet.', 'Return Policy', '2024-02-22 11:55:58');
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('5', '2023-10-29 21:50:42', 'Fieri poterit et iustius? Sunt autem, qui dicant foedus esse quoddam sapientium, ut ne minus amicos quam se ipsos penitus perdiderunt, sic robustus animus et excelsus omni est.', 'Payment Policy', '2023-10-29 21:50:43');
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('6', '2024-06-04 17:28:47', 'Tamen ego a philosopho, si afferat eloquentiam, non asperner, si non habeat.', 'Shipping Policy', '2024-06-04 17:28:48');
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('7', '2024-09-01 04:19:16', 'Vel elegantis ornatus defuit? Ego vero, quoniam forensibus operis, laboribus, periculis non deseruisse mihi videor praesidium, in quo.', 'Membership Terms', '2024-09-01 04:19:17');
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('8', '2024-08-28 00:27:20', 'Terentii quam utramque Menandri legam? A quibus tantum dissentio, ut, cum Sophocles vel optime scripserit Electram, tamen male conversam Atilii mihi legendam putem, de.', 'Shipping Policy', '2024-08-28 00:27:21');
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('9', '2024-03-31 20:24:19', 'Quem ego arbitror unum vidisse verum maximisque erroribus animos hominum liberavisse et omnia tradidisse, quae pertinerent ad bene vivendum aptior partitio quam illa, qua est usus Epicurus? Qui unum genus posuit earum cupiditatum, quae essent et naturales et necessariae, alterum, quae naturales essent nec tamen necessariae, tertium, quae.', 'Customer Service Policy', '2024-03-31 20:24:20');
-INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('10', '2023-11-24 17:48:41', 'Ex ea commodo consequat. Duis aute irure dolor in longinquitate levis, in gravitate brevis.', 'Discount Policy', '2023-11-24 17:48:42');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('1', '2024-03-20 04:44:21', 'This policy outlines the conditions under which customers can cancel their orders, including timeframes and eligibility for refunds', 'Cancellation Policy', '2024-03-20 04:44:22');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('2', '2024-05-12 03:42:11', 'These terms govern the use of the shop\'s services, including customer rights and obligations, the shop\'s responsibilities, and the legal framework for transactions.', 'Terms of Service', '2024-05-12 03:42:12');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('3', '2024-04-04 13:29:00', 'This policy defines the warranty coverage provided for products sold by the shop, including duration, exclusions, and the process for filing claims.', 'Warranty Policy', '2024-04-04 13:29:01');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('4', '2024-02-22 11:55:57', 'This policy explains the conditions under which products can be returned, including time limits, condition requirements, and eligibility for refunds or exchanges.', 'Return Policy', '2024-02-22 11:55:58');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('5', '2023-10-29 21:50:42', 'This policy outlines the accepted payment methods, billing procedures, and any payment-related terms customers need to know before making a purchase.', 'Payment Policy', '2023-10-29 21:50:43');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('6', '2024-06-04 17:28:47', 'This policy covers shipping options, delivery timeframes, costs, and any restrictions on shipping locations or methods for different types of products.', 'Shipping Policy', '2024-06-04 17:28:48');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('7', '2024-09-01 04:19:16', 'These terms apply to members of the shop\'s loyalty or membership program, outlining benefits, eligibility, and any specific conditions for membership participation.', 'Membership Terms', '2024-09-01 04:19:17');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('8', '2024-08-28 00:27:20', 'This policy details how the shop collects, uses, and protects customers\' personal information, ensuring privacy and security in compliance with applicable laws.', 'Privacy Policy', '2024-08-28 00:27:21');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('9', '2024-03-31 20:24:19', 'This policy outlines the shop\'s commitment to providing high-quality customer service, including support channels, response times, and resolution procedures for customer complaints or issues.', 'Customer Service Policy', '2024-03-31 20:24:20');
+INSERT INTO shop_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('10', '2023-11-24 17:48:41', 'This policy explains the terms under which discounts are offered, including eligibility criteria, discount percentages, and any exclusions or limitations.', 'Discount Policy', '2023-11-24 17:48:42');
 
 
 
@@ -288,16 +670,16 @@ INSERT INTO order_product_instance (order_id, product_instance_id, quantity) VAL
 INSERT INTO order_product_instance (order_id, product_instance_id, quantity) VALUES ('29d5e553-c2dc-c13a-a2c5-50d313f465ef', 'ffca2b00-0df7-62d0-2b6a-6961ec643469', '17');
 
 
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('1', '2024-06-23 13:33:12', 'Simul atque natum sit, voluptatem appetere eaque gaudere ut summo bono, dolorem aspernari ut summum malum et, quantum possit, a se repellere, idque facere nondum depravatum ipsa natura incorrupte atque integre iudicante. Itaque.', 'Pet Insurance', '2024-06-23 13:33:15');
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('2', '2024-04-03 09:55:51', 'Mandaremus, fore ut atomus altera alteram posset attingere itaque ** attulit rem commenticiam: declinare dixit atomum perpaulum, quo nihil turpius.', 'Disability Insurance', '2024-04-03 09:55:54');
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('3', '2024-07-31 22:11:13', 'Qua intellegebat contineri suam. Atque haec ratio late patet. In quo enim maxime consuevit iactare vestra se oratio, tua praesertim, qui studiose antiqua persequeris, claris et fortibus viris commemorandis eorumque factis non emolumento aliquo, sed ipsius honestatis decore laudandis, id totum evertitur eo delectu.', 'Liability Insurance', '2024-07-31 22:11:16');
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('4', '2024-05-31 11:45:43', 'Enim illum ab industria, sed ab inliberali labore deterret --, sic isti curiosi, quos offendit noster minime nobis iniucundus labor. Iis igitur est difficilius satis facere, qui se dicant in Graecis legendis operam malle consumere. Postremo aliquos futuros suspicor, qui me ad.', 'Liability Insurance', '2024-05-31 11:45:46');
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('5', '2024-08-24 09:09:40', 'Scribentur fortasse plura, si vita suppetet; et tamen, qui diligenter haec, quae vitam omnem continent, neglegentur? Nam, ut sint illa vendibiliora, haec uberiora certe sunt. Quamquam id quidem facio provocatus gratissimo mihi.', 'Life Insurance', '2024-08-24 09:09:43');
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('6', '2024-07-05 21:44:14', 'Esse ratione neque disputatione, quam ob rem tandem, inquit, non satisfacit? Te enim iudicem aequum puto, modo quae dicat ille bene.', 'Health Insurance', '2024-07-05 21:44:17');
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('7', '2024-07-02 21:56:33', 'Recusabo, quo minus id, quod quaeritur, sit pulcherrimum. Etenim si loca, si fana, si urbes, si gymnasia, si campum, si canes, si equos, si ludicra exercendi aut.', 'Homeowners Insurance', '2024-07-02 21:56:36');
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('8', '2024-04-02 21:00:19', 'Quem vos nimis voluptatibus esse deditum dicitis; non posse iucunde vivi, nisi sapienter, honeste iusteque vivatur, nec sapienter.', 'Renters Insurance', '2024-04-02 21:00:22');
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('9', '2024-10-01 09:00:40', 'Quod disserunt. Praeterea sublata cognitione et scientia tollitur omnis ratio et vitae degendae et rerum gerendarum. Sic e physicis et fortitudo sumitur contra mortis timorem et constantia contra metum religionis et sedatio animi omnium rerum occultarum ignoratione sublata et moderatio natura cupiditatum generibusque earum explicatis, et, ut dixi, ad lineam, numquam fore ut hic noster labor.', 'Liability Insurance', '2024-10-01 09:00:43');
-INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('10', '2024-02-07 17:33:47', 'Si loqui posset. Conclusum est enim contra Cyrenaicos satis acute, nihil ad Epicurum. Nam si concederetur, etiamsi ad corpus referri, nec ob eam causam.', 'Liability Insurance', '2024-02-07 17:33:50');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('1', '2024-06-23 13:33:12', 'This policy provides comprehensive coverage for pets, including medical expenses, accident protection, and wellness care to ensure the health and happiness of your pet.', 'Pet Insurance', '2024-06-23 13:33:15');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('2', '2024-04-03 09:55:51', 'This policy covers individuals who suffer from physical or mental disabilities, providing financial support and access to necessary healthcare services.', 'Disability Insurance', '2024-04-03 09:55:54');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('3', '2024-07-31 22:11:13', 'This policy offers protection against liabilities that may arise from accidental damage or injury caused to third parties, ensuring financial safety', 'Liability Insurance', '2024-07-31 22:11:16');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('4', '2024-05-31 11:45:43', 'This auto insurance policy provides coverage for damages caused to your vehicle due to accidents, theft, or natural disasters, ensuring financial protection and peace of mind while on the road.', 'Auto Insurance', '2024-05-31 11:45:46');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('5', '2024-08-24 09:09:40', 'This life insurance policy ensures that your loved ones are financially supported in the event of your passing, providing peace of mind and financial security.', 'Life Insurance', '2024-08-24 09:09:43');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('6', '2024-07-05 21:44:14', 'This health insurance policy covers medical expenses, providing financial assistance for treatments, hospital stays, and other healthcare needs.', 'Health Insurance', '2024-07-05 21:44:17');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('7', '2024-07-02 21:56:33', 'This policy protects homeowners from financial loss caused by damage to property, covering incidents such as fire, theft, or natural disasters.', 'Homeowners Insurance', '2024-07-02 21:56:36');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('8', '2024-04-02 21:00:19', 'This renters insurance policy offers protection for personal belongings against theft, fire, and other unforeseen circumstances, providing financial peace of mind', 'Renters Insurance', '2024-04-02 21:00:22');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('9', '2024-10-01 09:00:40', 'This travel insurance policy covers unexpected events during your travels, including trip cancellations, medical emergencies, lost luggage, and travel delays, ensuring a safe and worry-free journey.', 'Travel Insurance', '2024-10-01 09:00:43');
+INSERT INTO category_policy (policy_id, apply_date, policy_description, policy_name, release_date) VALUES ('10', '2024-02-07 17:33:47', 'This long-term care insurance policy provides financial support for individuals who need assistance with daily activities due to aging, illness, or disability, covering home care or nursing home costs.', 'Long-term Care Insurance', '2024-02-07 17:33:50');
 
 
 INSERT INTO category_policy_admin (policy_id, admin_id) VALUES ('1', 'modgaard39449');
@@ -312,16 +694,16 @@ INSERT INTO category_policy_admin (policy_id, admin_id) VALUES ('9', 'afrowen133
 INSERT INTO category_policy_admin (policy_id, admin_id) VALUES ('10', 'jbannester19614');
 
 
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('fa67c9ad-4d98-dad3-87f0-5b00f6643eef', 'Ut Epicuri ratio docet, tum denique poterit aliquid cognosci et percipi. Quos qui tollunt et nihil posse percipi dicunt, ii remotis sensibus ne id ipsum quidem expedire possunt, quod disserunt. Praeterea sublata cognitione et scientia tollitur omnis ratio et vitae degendae et rerum gerendarum. Sic e physicis et fortitudo sumitur contra mortis.', '4', 'Ut Epicuri ratio docet, tum denique poterit aliquid cognosci et percipi. Quos qui tollunt et nihil posse percipi dicunt, ii remotis sensibus ne id ipsum quidem expedire possunt, quod disserunt. Praeterea sublata cognitione et scientia tollitur omnis ratio et vitae degendae et rerum gerendarum. Sic e physicis et fortitudo sumitur contra mortis.', 'Ut Epicuri ratio docet, tum denique poterit aliquid cognosci et percipi. Quos qui tollunt et nihil posse percipi dicunt, ii remotis sensibus ne id ipsum quidem expedire possunt, quod disserunt. Praeterea sublata cognitione et scientia tollitur omnis ratio et vitae degendae et rerum gerendarum. Sic e physicis et fortitudo sumitur contra mortis.', 'dmickelwright31174');
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('1dce09f1-1ad4-3dcd-24e1-21351c191cae', 'Philosophia mihi videri solent. Tum Torquatus: Prorsus, inquit, assentior; neque enim disputari sine reprehensione nec cum iracundia aut pertinacia recte disputari potest. Sed ad rem redeamus; de hominibus dici non necesse est. Tribus igitur modis video esse multos, sed imperitos --, quamquam autem et praeterita et futura. Ut enim aeque doleamus animo.', '4', 'Philosophia mihi videri solent. Tum Torquatus: Prorsus, inquit, assentior; neque enim disputari sine reprehensione nec cum iracundia aut pertinacia recte disputari potest. Sed ad rem redeamus; de hominibus dici non necesse est. Tribus igitur modis video esse multos, sed imperitos --, quamquam autem et praeterita et futura. Ut enim aeque doleamus animo.', 'Philosophia mihi videri solent. Tum Torquatus: Prorsus, inquit, assentior; neque enim disputari sine reprehensione nec cum iracundia aut pertinacia recte disputari potest. Sed ad rem redeamus; de hominibus dici non necesse est. Tribus igitur modis video esse multos, sed imperitos --, quamquam autem et praeterita et futura. Ut enim aeque doleamus animo.', 'dlewsley41328');
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('2b9f33ef-2b0e-50ae-1918-fb7aa47e95fb', 'Te, cum ad te ne Graecis quidem cedentem in philosophia audeam scribere? Quamquam a te ipso id quidem licebit iis existimare, qui legerint. Nos autem hanc omnem quaestionem de finibus bonorum et.', '4', 'Te, cum ad te ne Graecis quidem cedentem in philosophia audeam scribere? Quamquam a te ipso id quidem licebit iis existimare, qui legerint. Nos autem hanc omnem quaestionem de finibus bonorum et.', 'Te, cum ad te ne Graecis quidem cedentem in philosophia audeam scribere? Quamquam a te ipso id quidem licebit iis existimare, qui legerint. Nos autem hanc omnem quaestionem de finibus bonorum et.', 'kleverett5376');
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('078a783c-dfe6-8621-d598-241701becdb9', 'Dolores nasci fatemur e corporis voluptatibus et doloribus -- itaque concedo, quod modo dicebas, cadere causa, si qui e nostris aliter existimant, quos quidem video minime esse.', '3', 'Dolores nasci fatemur e corporis voluptatibus et doloribus -- itaque concedo, quod modo dicebas, cadere causa, si qui e nostris aliter existimant, quos quidem video minime esse.', 'Dolores nasci fatemur e corporis voluptatibus et doloribus -- itaque concedo, quod modo dicebas, cadere causa, si qui e nostris aliter existimant, quos quidem video minime esse.', 'dcalcutt38043');
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('a226e2ca-fe65-0e85-4f3d-aee4499e8f48', 'Dolores ita paratus est, ut necessariae nec opera multa nec impensa expleantur; ne naturales quidem multa desiderant, propterea quod ipsa natura divitias, quibus contenta sit, et parabilis et terminatas habet; inanium autem cupiditatum nec modus est ullus investigandi veri.', '3', 'Dolores ita paratus est, ut necessariae nec opera multa nec impensa expleantur; ne naturales quidem multa desiderant, propterea quod ipsa natura divitias, quibus contenta sit, et parabilis et terminatas habet; inanium autem cupiditatum nec modus est ullus investigandi veri.', 'Dolores ita paratus est, ut necessariae nec opera multa nec impensa expleantur; ne naturales quidem multa desiderant, propterea quod ipsa natura divitias, quibus contenta sit, et parabilis et terminatas habet; inanium autem cupiditatum nec modus est ullus investigandi veri.', 'nweekley1318');
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('1babd96d-028e-5749-423c-7f82dc840732', 'Labore deterret --, sic isti curiosi, quos offendit noster minime nobis iniucundus labor. Iis igitur est difficilius satis facere, qui se Latina scripta dicunt contemnere. In quibus hoc primum est in Ceramico.', '4', 'Labore deterret --, sic isti curiosi, quos offendit noster minime nobis iniucundus labor. Iis igitur est difficilius satis facere, qui se Latina scripta dicunt contemnere. In quibus hoc primum est in Ceramico.', 'Labore deterret --, sic isti curiosi, quos offendit noster minime nobis iniucundus labor. Iis igitur est difficilius satis facere, qui se Latina scripta dicunt contemnere. In quibus hoc primum est in Ceramico.', 'asnozzwell6350');
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('0929ebc9-cdc7-d010-e4dc-c26da13405d9', 'Tot versuum memoria voluptatis affert? Nec mihi illud dixeris: ''Haec enim ipsa mihi.', '0', 'Tot versuum memoria voluptatis affert? Nec mihi illud dixeris: ''Haec enim ipsa mihi.', 'Tot versuum memoria voluptatis affert? Nec mihi illud dixeris: ''Haec enim ipsa mihi.', 'rmcsporrin48179');
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('f19d60dc-937f-2725-908a-13b39433f2fd', 'Cum Attico nostro frequenter audivi, cum miraretur ille quidem utrumque, Phaedrum autem etiam amatoriis levitatibus dediti, alii petulantes, alii audaces, protervi.', '3', 'Cum Attico nostro frequenter audivi, cum miraretur ille quidem utrumque, Phaedrum autem etiam amatoriis levitatibus dediti, alii petulantes, alii audaces, protervi.', 'Cum Attico nostro frequenter audivi, cum miraretur ille quidem utrumque, Phaedrum autem etiam amatoriis levitatibus dediti, alii petulantes, alii audaces, protervi.', 'gsaenz50369');
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('79074ed7-4ecc-99ba-7283-155c7c5c99dd', 'Ipsi statuerunt, non possunt, conficiuntur et angore et metu maximeque cruciantur, cum sero sentiunt frustra se aut pecuniae studuisse aut imperiis aut opibus aut gloriae. Nullas enim consequuntur voluptates, quarum potiendi spe inflammati multos labores magnosque.', '2', 'Ipsi statuerunt, non possunt, conficiuntur et angore et metu maximeque cruciantur, cum sero sentiunt frustra se aut pecuniae studuisse aut imperiis aut opibus aut gloriae. Nullas enim consequuntur voluptates, quarum potiendi spe inflammati multos labores magnosque.', 'Ipsi statuerunt, non possunt, conficiuntur et angore et metu maximeque cruciantur, cum sero sentiunt frustra se aut pecuniae studuisse aut imperiis aut opibus aut gloriae. Nullas enim consequuntur voluptates, quarum potiendi spe inflammati multos labores magnosque.', 'cfreschini36450');
-INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('e0ceb583-9df1-2e51-f96c-3f264563358f', 'Terentianus Chremes non inhumanus, qui novum vicinum non vult ''fodere aut arare aut aliquid ferre denique'' -- non enim illum ab industria, sed ab inliberali labore.', '1', 'Terentianus Chremes non inhumanus, qui novum vicinum non vult ''fodere aut arare aut aliquid ferre denique'' -- non enim illum ab industria, sed ab inliberali labore.', 'Terentianus Chremes non inhumanus, qui novum vicinum non vult ''fodere aut arare aut aliquid ferre denique'' -- non enim illum ab industria, sed ab inliberali labore.', 'asimioli58443');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('fa67c9ad-4d98-dad3-87f0-5b00f6643eef', 'The quality is excellent! Very satisfied with my purchase.', '4', 'Thank you! We’re glad you’re happy with the product.', 'Thank you! We’re glad you’re happy with the product.', 'dmickelwright31174');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('1dce09f1-1ad4-3dcd-24e1-21351c191cae', 'The product arrived on time, but the packaging was damaged', '3', 'Sorry for the packaging issue! We’ll make sure to improve it.', 'Sorry for the packaging issue! We’ll make sure to improve it.', 'dlewsley41328');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('2b9f33ef-2b0e-50ae-1918-fb7aa47e95fb', 'Not as expected. The color is much darker than in the photos', '3', 'We’re sorry about the color discrepancy! Feel free to return or exchange it', 'We’re sorry about the color discrepancy! Feel free to return or exchange it', 'kleverett5376');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('078a783c-dfe6-8621-d598-241701becdb9', 'Fits perfectly! Very comfortable to wear, highly recommend', '4.5', 'Thanks for your review! We’re happy you love it!', 'Thanks for your review! We’re happy you love it!', 'dcalcutt38043');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('a226e2ca-fe65-0e85-4f3d-aee4499e8f48', 'The material is soft and breathable, perfect for summer', '3', 'Thank you for the kind words! We appreciate your feedback.', 'Thank you for the kind words! We appreciate your feedback.', 'nweekley1318');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('1babd96d-028e-5749-423c-7f82dc840732', 'The size was a bit off, but overall good quality.', '4', 'We’re sorry for the sizing issue. Let us know if you\'d like to exchange it', 'We’re sorry for the sizing issue. Let us know if you\'d like to exchange it', 'asnozzwell6350');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('0929ebc9-cdc7-d010-e4dc-c26da13405d9', 'Good value for the price. I would buy again', '5', 'Thank you for your support! We look forward to serving you again.', 'Thank you for your support! We look forward to serving you again.', 'rmcsporrin48179');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('f19d60dc-937f-2725-908a-13b39433f2fd', 'I had to wait longer than expected for delivery.', '3', 'Apologies for the delay! We’ll work to improve our delivery speed.', 'Apologies for the delay! We’ll work to improve our delivery speed.', 'gsaenz50369');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('79074ed7-4ecc-99ba-7283-155c7c5c99dd', 'The fabric feels cheap. I’m not happy with this product', '2', 'Sorry for the disappointment! Please contact us for a return or refund.', 'Sorry for the disappointment! Please contact us for a return or refund.', 'cfreschini36450');
+INSERT INTO review_content (root_review_content_id, content, rating, reply_content, seller_reply_content, seller_id) VALUES ('e0ceb583-9df1-2e51-f96c-3f264563358f', 'Great product, exactly as described. Will buy again!', '4.5', 'Thank you! We’re thrilled you\'re satisfied. See you next time!', 'Thank you! We’re thrilled you\'re satisfied. See you next time!', 'asimioli58443');
 
 
 
@@ -415,16 +797,17 @@ INSERT INTO category_policy_category (policy_id, category_id) VALUES ('9', 'Groc
 INSERT INTO category_policy_category (policy_id, category_id) VALUES ('10', 'Toys');
 
 
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('b4fb95ec-0555-3236-b96e-c8750a83adbe', 'Constituant in reque eo meliore, quo maior sit, si nihil efficeret; nunc expetitur, quod est tamquam artifex conquirendae et comparandae voluptatis -- Quam autem ego dicam.', 'Quince', 'Sports', 'dmickelwright31174');
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('a726bd9a-f195-0d6c-30a9-6220ca580250', 'Voluptatem efficerent, quis eas aut laudabilis aut expetendas arbitraretur? Ut enim sapientiam, temperantiam.', 'Apple', 'Jewelry', 'dlewsley41328');
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc', 'Homines, sed universas familias evertunt, totam etiam labefactant saepe rem.', 'Kiwi', 'Clothing', 'kleverett5376');
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('80f36cc5-6613-6a4e-84d3-5cb4c84aedf7', 'Ornamenta neglexerit. Nam illud quidem perspicuum est, maximam animi aut voluptatem aut molestiam plus aut ad miseram vitam afferre momenti quam eorum utrumvis, si.', 'Grape', 'Electronics', 'dcalcutt38043');
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('15c9e862-b50f-0820-bdc4-216171e88ab5', 'Fecit. Disserendi artem nullam habuit. Voluptatem cum summum bonum in voluptate est. Extremum autem esse bonorum eum voluptate vivere. Nec enim habet nostra mens quicquam, ubi consistat tamquam in extremo, omnesque et metus et aegritudines ad.', 'Peach', 'Toys', 'nweekley1318');
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('678bb1e4-130e-9c40-4843-be0fc498a3f6', 'Nec epularum nec reliquarum cupiditatum, quas nulla praeda umquam.', 'Elderberry', 'Beauty', 'asnozzwell6350');
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('c54d6f0d-4f7e-d70d-a3c5-c1505b163497', 'Aut Andriam Terentii quam utramque Menandri legam? A quibus tantum dissentio, ut, cum Sophocles vel optime scripserit Electram, tamen male conversam Atilii mihi legendam putem, de quo Lucilius.', 'Watermelon', 'Furniture', 'rmcsporrin48179');
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('544d47d1-8e43-20bc-8cb3-84de33f2fd65', 'In voluptatis locum dolor forte successerit, at contra gaudere nosmet omittendis doloribus, etiamsi voluptas ea, quae corrigere vult, mihi quidem videtur, inermis ac nudus est. Tollit definitiones.', 'Ugli fruit', 'Automotive', 'gsaenz50369');
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('15aa6023-df37-a3e1-e067-5a9626c2ff24', 'Non intellegunt, errore maximo, si Epicurum audire voluerint, liberabuntur: istae enim vestrae eximiae pulchraeque virtutes nisi voluptatem efficerent, quis eas aut laudabilis aut expetendas arbitraretur? Ut enim ad sapientiam perveniri potest, non paranda nobis solum ea, sed fruenda etiam sapientia est; sive hoc difficile est, tamen nec modus est ullus investigandi veri, nisi inveneris, et quaerendi.', 'Fig', 'Mobile Accessories', 'cfreschini36450');
-INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('69d60f96-16df-edcc-bd1d-633e78233df4', 'Timiditatem ignaviamque vituperari nec fortitudinem patientiamque laudari suo nomine, sed illas reici, quia dolorem pariant, has optari, quia voluptatem. Iustitia restat.', 'Nectarine', 'Groceries', 'asimioli58443');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('b4fb95ec-0555-3236-b96e-c8750a83adbe', 'A unique fruit with a sweet fragrance and slight tartness, perfect for jams and cooking, offering both rich flavor and nutritional benefits', 'Quince', 'Sports', 'dmickelwright31174');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('a726bd9a-f195-0d6c-30a9-6220ca580250', 'A crisp and juicy fruit with a balance of sweetness and tartness, loved for its flavor, versatility, and health benefits."', 'Apple', 'Jewelry', 'dlewsley41328');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc', 'A vibrant, tangy fruit with a refreshing taste and rich in vitamins, perfect for a nutritious snack or adding a tropical twist to dishes', 'Kiwi', 'Clothing', 'kleverett5376');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('80f36cc5-6613-6a4e-84d3-5cb4c84aedf7', 'A sweet, juicy fruit enjoyed fresh or dried, packed with antioxidants and perfect for snacking or adding flavor to recipes.', 'Grape', 'Electronics', 'dcalcutt38043');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('15c9e862-b50f-0820-bdc4-216171e88ab5', 'A juicy, sweet fruit with a delicate fragrance and soft texture, loved for its flavor and packed with vitamins', 'Peach', 'Toys', 'nweekley1318');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('678bb1e4-130e-9c40-4843-be0fc498a3f6', 'A small, dark berry known for its tartness and high antioxidant content, often used in jams, syrups, and immune-boosting remedies.', 'Elderberry', 'Beauty', 'asnozzwell6350');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('c54d6f0d-4f7e-d70d-a3c5-c1505b163497', 'A refreshing, hydrating fruit with a sweet, crisp taste, perfect for cooling off on hot days and rich in vitamins A and C.', 'Watermelon', 'Furniture', 'rmcsporrin48179');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('544d47d1-8e43-20bc-8cb3-84de33f2fd65', 'A unique citrus fruit with a rough, bumpy peel and a tangy-sweet flavor, combining the best of orange, grapefruit, and tangerine tastes.', 'Ugli fruit', 'Automotive', 'gsaenz50369');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('15aa6023-df37-a3e1-e067-5a9626c2ff24', 'A soft, sweet fruit with a rich texture and small edible seeds, known for its honey-like flavor and versatility in sweet and savory dishes.', 'Fig', 'Mobile Accessories', 'cfreschini36450');
+INSERT INTO product (root_product_id, description, name, category_name, seller_id) VALUES ('69d60f96-16df-edcc-bd1d-633e78233df4', 'A smooth-skinned fruit similar to a peach, offering a juicy, sweet flavor and packed with vitamins and antioxidants.', 'Nectarine', 'Groceries', 'asimioli58443');
+
 
 
 INSERT INTO admin_product (product_id, admin_id) VALUES ('b4fb95ec-0555-3236-b96e-c8750a83adbe', 'modgaard39449');
@@ -439,6 +822,8 @@ INSERT INTO admin_product (product_id, admin_id) VALUES ('15aa6023-df37-a3e1-e06
 INSERT INTO admin_product (product_id, admin_id) VALUES ('69d60f96-16df-edcc-bd1d-633e78233df4', 'jbannester19614');
 
 
+
+
 INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('1', 'texture', 'b4fb95ec-0555-3236-b96e-c8750a83adbe');
 INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('2', 'volume', 'a726bd9a-f195-0d6c-30a9-6220ca580250');
 INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('3', 'material', '8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc');
@@ -451,23 +836,44 @@ INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('9', 'dimens
 INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('10', 'accessories', '69d60f96-16df-edcc-bd1d-633e78233df4');
 INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('11', 'origin', 'b4fb95ec-0555-3236-b96e-c8750a83adbe');
 INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('12', 'composition', 'b4fb95ec-0555-3236-b96e-c8750a83adbe');
+INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('13', 'brand', 'a726bd9a-f195-0d6c-30a9-6220ca580250');
+INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('15', 'warranty', '8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc');
+INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('16', 'season', '8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc');
+INSERT INTO attribute (root_attribute_id, name, product_id) VALUES ('17', 'ingredients', '8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc');
 
 
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('1', 'ad9d265c-3fad-8d5f-d337-2c2c55368038', 'In liberos atque in sanguinem suum tam crudelis fuisse, nihil ut de omni virtute.');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('2', 'a8cca1e3-4e50-7d71-087c-4de1e1574916', 'Paulo contra vestra convicia, sed tamen satis acuti, qui.');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('3', '97fc90a5-c1de-b559-7cd4-b2628e1831b4', 'Non offendit; nam et laetamur amicorum laetitia aeque atque nostra et pariter dolemus angoribus. ');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('4', '06fe4492-1a03-92c8-bb59-88943224d4a3', 'Ad arbitrium suum scribere? Quodsi Graeci leguntur a Graecis isdem de rebus alia ratione.');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('5', '4d5e9051-1a14-12fc-42f5-3b4223611d51', 'E nostris, qui haec subtilius velint tradere et negent satis esse, quid bonum sit aut quid iudicat');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('6', '6985c448-b40e-53ae-3294-e8f39d70b5e7', 'Malorum? Qua de re cum sit inter doctissimos summa dissensio, quis alienum putet eius esse dignitatis');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('7', 'e4692363-43a3-e5c8-be4f-499f159504eb', 'Quibus ex omnibus iudicari potest non modo voluptatem esse, verum etiam summam voluptatem. Quisquis enim sentit');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('8', 'df3cdd53-9b44-3aa3-e8d6-50444d360681', 'Audiebam facete et urbane Stoicos irridente, statua est in eo, quod sit iudicatum. Plerique autem');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('9', '02439c0f-b11d-a136-4ff8-76aa2e1e6d05', 'Sunt. Praeclare enim Epicurus his paene verbis: ''Eadem'', inquit, ''scientia confirmavit animum');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('10', 'bb0b7541-1985-9b07-65d3-7a662abbbb1c', 'Aliquando, nulla praeterea neque praesenti nec expectata voluptate, quid eo miserius dici aut fingi potest?');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('1', '7bfeebc3-31fb-5b1d-e17c-c2dd782782d3', 'Quod dolore caret, id in hominum consuetudine facilius fieri poterit et iustius? Sunt autem, qui dicant foedus');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('1', 'eb981dc4-081d-bc6f-500e-01b6b91d5b8c', 'Et maxime ab iis, quos modo nominavi, cum inciderit, ut id meo arbitratu facerem');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('11', 'e46edfd5-6611-3973-ad89-463ab2118399', 'Administrari neque maiorem voluptatem ex infinito tempore aetatis percipi posse, quam ex hoc percipiatur');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('11', 'c67a1131-d166-70a9-e11b-6142ec30f989', 'Urbes, si gymnasia, si campum, si canes, si equos, si ludicra exercendi aut venandi consuetudine adamare');
-INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('12', 'c98d41d1-970b-ce21-98ae-f4a10a210c34', 'In qua maxime ceterorum philosophorum exultat oratio, reperire exitum potest, nisi.');
+
+
+
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('1', 'ad9d265c-3fad-8d5f-d337-2c2c55368038', 'Smooth');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('2', 'a8cca1e3-4e50-7d71-087c-4de1e1574916', '250 ml');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('3', '97fc90a5-c1de-b559-7cd4-b2628e1831b4', 'Cotton');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('4', '06fe4492-1a03-92c8-bb59-88943224d4a3', 'Casual');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('5', '4d5e9051-1a14-12fc-42f5-3b4223611d51', '500 ml');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('6', '6985c448-b40e-53ae-3294-e8f39d70b5e7', 'Plastic');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('7', 'e4692363-43a3-e5c8-be4f-499f159504eb', 'Spring');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('8', 'df3cdd53-9b44-3aa3-e8d6-50444d360681', '4.5 stars');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('9', '02439c0f-b11d-a136-4ff8-76aa2e1e6d05', '10 x 15 x 20 cm');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('10', 'bb0b7541-1985-9b07-65d3-7a662abbbb1c', 'Charger');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('1', '7bfeebc3-31fb-5b1d-e17c-c2dd782782d3', 'Rough');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('1', 'eb981dc4-081d-bc6f-500e-01b6b91d5b8c', 'Soft');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('11', 'e46edfd5-6611-3973-ad89-463ab2118399', 'Italy');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('11', 'c67a1131-d166-70a9-e11b-6142ec30f989', 'Japan');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('12', 'c98d41d1-970b-ce21-98ae-f4a10a210c34', '100% Cotton');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('2', '010b5124-83ee-8b33-aafc-9a13d9d143ae', '500 ml');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('13', '5bb34de0-9f2f-b1a9-8640-ea7289b56a6a', 'Apple');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('13', '3c7f10d5-4a77-b23e-15b9-c7feee7d9589', 'Samsung');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('13', 'a7a9d692-d1d8-6fda-0051-ef499750dbce', 'Oppo');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('3', '7d6591c7-c2ad-3a19-c175-03aea590b8d9', 'Stainless Steel');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('15', '42418847-28ac-e415-3774-a95a43619cb4', '1 year');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('15', '01274d4b-4e42-5f6f-9c57-ddb5036bfc85', '2 years');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('16', 'b06a281f-5129-caf5-0ffa-5ff6aae7a6a9', 'Summer');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('16', '9aec0abc-2e05-b27f-fd28-db263ebafddb', 'Winter');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('17', 'f526d354-bb34-d7b4-053a-ca8a2a516716', 'Water');
+INSERT INTO attribute_instance (attribute_id, instance_id, value) VALUES ('17', 'e34bc25e-e2bd-0efe-c92e-7e79c91d7464', 'Oil');
+
+
+
 
 
 INSERT INTO build_product (product_id_r, product_instance_id, attribute_id, attribute_instance_id ) VALUES ('b4fb95ec-0555-3236-b96e-c8750a83adbe', '780eaa2a-957d-00bb-845f-03b977148763', '1', 'ad9d265c-3fad-8d5f-d337-2c2c55368038');
@@ -485,43 +891,3 @@ INSERT INTO build_product (product_id_r, product_instance_id, attribute_id, attr
 INSERT INTO build_product (product_id_r, product_instance_id, attribute_id, attribute_instance_id) VALUES ('544d47d1-8e43-20bc-8cb3-84de33f2fd65', '29415cf8-9bbd-4e2a-0d71-0caa31152633', '8', 'df3cdd53-9b44-3aa3-e8d6-50444d360681');
 INSERT INTO build_product (product_id_r, product_instance_id, attribute_id, attribute_instance_id) VALUES ('15aa6023-df37-a3e1-e067-5a9626c2ff24', '78c08bf7-01fa-7c2c-6cbd-0622ac246986', '9', '02439c0f-b11d-a136-4ff8-76aa2e1e6d05');
 INSERT INTO build_product (product_id_r, product_instance_id, attribute_id, attribute_instance_id) VALUES ('69d60f96-16df-edcc-bd1d-633e78233df4', 'ffca2b00-0df7-62d0-2b6a-6961ec643469', '10', 'bb0b7541-1985-9b07-65d3-7a662abbbb1c');
-
-
-
-
-SELECT *
-from product_instance pi
-         join build_product bp on pi.root_product_instance_id = bp.product_instance_id
-         join product p on bp.product_id_r = p.root_product_id
-         join seller s on p.seller_id = s.username
-         join attribute a on p.root_product_id = a.product_id
-         join review r on pi.root_product_instance_id = r.product_instance_id
-where root_product_instance_id = '15c41dfd-0938-37a1-090f-05c5ce16663a';
-
-SELECT a.root_attribute_id, a.name, ai.instance_id, ai.value
-FROM attribute a
-         JOIN attribute_instance ai ON a.root_attribute_id = ai.attribute_id
-WHERE a.product_id = 'b4fb95ec-0555-3236-b96e-c8750a83adbe';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
