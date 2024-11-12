@@ -1,13 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&family=Poppins:wght@100..900&display=swap');
+
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-*{
-    font-family: Outfit ;
+/* Đặt font mặc định là Roboto */
+* {
+    font-family: 'Roboto', sans-serif;
 }
 
+/* Font chữ riêng cho các tiêu đề hoặc nội dung cần nổi bật */
+.heading-font {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
 a.active hr{
     display: block;
 }
