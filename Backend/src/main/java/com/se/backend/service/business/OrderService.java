@@ -33,6 +33,8 @@ public class OrderService  {
     @Autowired
     private final ProductInstanceRepository productInstanceRepository;
     @Autowired
+    private final ProductRepository productRepository;
+    @Autowired
     private final PaymentOrderRepository paymentOrderRepository;
     @Autowired
     private final Order_ProductInstanceRepository orderProductInstanceRepository;
@@ -41,19 +43,15 @@ public class OrderService  {
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         //Delivery
-//        DeliveryInfor deliveryInfor;
-//        try {
-//            deliveryInfor = deliveryInfoRepository.findByUserId(createOrderRequest.getUsername());
-//        }
-//        catch (WebServerException e){
-//            throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
-//        }
+        DeliveryInfor deliveryInfor = deliveryInfoRepository.findById(
+                Long.valueOf(createOrderRequest.getDeliveryAddressOfCreateOrderRequest().getId()))
+                .orElseThrow(()-> new WebServerException(ErrorCode.UNKNOWN_ERROR    ) );
+
         //Create payment Order
         PaymentOrder paymentOrder = new PaymentOrder();
-        Buyer buyer = buyerRepository.findById(createOrderRequest.getUsername())
+        Buyer buyer = buyerRepository.findByUsername(createOrderRequest.getUsername())
                 .orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
-
-        //paymentOrder.setDelivery(delivery);
+        paymentOrder.setDeliveryInfor(deliveryInfor);
         paymentOrder.setOrder(new ArrayList<>());
         paymentOrder.setReview(new ArrayList<>());
         paymentOrderRepository.save(paymentOrder);
@@ -62,11 +60,12 @@ public class OrderService  {
         //Create List Product for each Seller;
         Map<String, List<Order_ProductInstance>> sellerOrderMap = new HashMap<>();
         for (int i = 0; i < createOrderRequest.getListProduct().size(); i++) {
-            String productId = String.valueOf(createOrderRequest.getListProduct().get(i).getProductId());
+            String productId = createOrderRequest.getListProduct().get(i).getProductId();
+            String productInstanceId = createOrderRequest.getListProduct().get(i).getInstantId();
             Long quantity = createOrderRequest.getListProduct().get(i).getQuantity();
 
             // Tìm sản phẩm
-            ProductInstance productInstance = productInstanceRepository.findById(productId)
+            ProductInstance productInstance = productInstanceRepository.findById(productInstanceId)
                     .orElseThrow(() -> new WebServerException(ErrorCode.PRODUCT_NOT_FOUND));
 
             // Kiểm tra số lượng trong kho
@@ -75,12 +74,15 @@ public class OrderService  {
             }
 
             // Lấy seller của sản phẩm
-            String sellerId = productInstance.getBuildProduct().getProduct().getSeller().getUsername();
+            Product product = productRepository.findProductById(productId);
+            String sellerId = product.getSeller().getUsername();
 
             // Tạo đối tượng Order_ProductInstance
             Order_ProductInstanceId orderProductInstanceId = new Order_ProductInstanceId();
+            orderProductInstanceId.setProductInstanceId(productInstanceId);
 
             Order_ProductInstance orderProductInstance = Order_ProductInstance.builder()
+                    .order_productInstanceId(orderProductInstanceId)
                     .quantity(quantity)
                     .productInstance(productInstance)
                     .build();
@@ -109,6 +111,8 @@ public class OrderService  {
 
             for (int i = 0;  i < entry.getValue().size(); i++) {
                 Order_ProductInstance orderProductInstance = entry.getValue().get(i);
+                orderProductInstance.getOrder_productInstanceId().setOrderId(order.getOrderId());
+                orderProductInstance.setOrder(order);
                 Long quantity = entry.getValue().get(i).getQuantity();
                 ProductInstance productInstance = orderProductInstance.getProductInstance();
 
@@ -192,17 +196,17 @@ public class OrderService  {
         }
     }
 
-    public List<CreateOrderResponse> getAll(String buyerId){
-        List<CreateOrderResponse> responses = new ArrayList<>();
-        Buyer buyer = buyerRepository.findById(buyerId)
-                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
-        for(PaymentOrder paymentOrder : buyer.getPaymentOrder()){
-            for(Order order : paymentOrder.getOrder()){
-                responses.add(orderMapper.toOrderResponse(order));
-            }
-        }
-        return responses;
-    }
+//    public List<CreateOrderResponse> getAll(String buyerId){
+//        List<CreateOrderResponse> responses = new ArrayList<>();
+//        Buyer buyer = buyerRepository.findById(buyerId)
+//                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
+//        for(PaymentOrder paymentOrder : buyer.getPaymentOrder()){
+//            for(Order order : paymentOrder.getOrder()){
+//                responses.add(orderMapper.toOrderResponse(order));
+//            }
+//        }
+//        return responses;
+//    }
 
     public CreateOrderResponse findById(String orderId) {
         Order order = orderRepository.findById(orderId)

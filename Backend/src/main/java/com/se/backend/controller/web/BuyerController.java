@@ -26,13 +26,13 @@ public class BuyerController {
 //        return ResponseEntity.ok(message);
 //    }
 
-    @GetMapping("/order/getall/{buyerId}")
-    public ResponseAPITemplate<List<CreateOrderResponse>> getAllOrder(@PathVariable("buyerId") String buyerId){
-        List<CreateOrderResponse> response = orderService.getAll(buyerId);
-            return ResponseAPITemplate.<List<CreateOrderResponse>>builder()
-                    .result(response)
-                    .build();
-    }
+//    @GetMapping("/order/getall/{buyerId}")
+//    public ResponseAPITemplate<List<CreateOrderResponse>> getAllOrder(@PathVariable("buyerId") String buyerId){
+//        List<CreateOrderResponse> response = orderService.getAll(buyerId);
+//            return ResponseAPITemplate.<List<CreateOrderResponse>>builder()
+//                    .result(response)
+//                    .build();
+//    }
     @GetMapping("/order/{id}")
     public ResponseAPITemplate<CreateOrderResponse> detailInfoOfPaymentOrder(@PathVariable("id") String order_id){
         CreateOrderResponse response = orderService.findById(order_id);
