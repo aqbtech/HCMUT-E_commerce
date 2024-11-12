@@ -3,18 +3,17 @@ import { ShopContext } from '../context/ShopContext'
 import {Link} from 'react-router-dom'
 import { register } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
-
+import ErrorMessage  from '/src/components/errorMessage';
 
 const Regist = () => {
-  const {navigate} = useContext(ShopContext);
-
-  //giá trị 
+  const {navigate, systemError, setSystemError} = useContext(ShopContext);
+ 
   const [id, setId] = useState('');
   const [pass, setPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
   const [email, setEmail] = useState(''); 
   const [hovatendem, setHovatendem] = useState('');
-  const [ten, setTen] = useState('');
+  const [ten, setTen] = useState(''); 
   const [sdt, setSdt] = useState('');
   const [date, setDate] = useState('');
 
@@ -22,44 +21,48 @@ const Regist = () => {
  
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-
-    if (pass !== confirmPass) {
-      toast.error("Mật khẩu xác nhận không khớp");
-      return;
-    }
-
-    if(id.length === 0 || id.pass === 0 || id.confirmPass === 0 || id.email === 0 || id.hovatendem === 0 || id.ten === 0 
-        ||  id.sdt === 0 ||id.date === 0 ) {
-      toast.error("Dữ liệu còn trống!");
-      return;
-    }
-
     if(isLoading === true)  return;
+    if(id.length === 0 || pass.length === 0 || confirmPass.length === 0 || email.length === 0 || hovatendem.length === 0 || ten.length === 0 
+      ||  sdt.length === 0 ||date.length === 0 ) {
+      toast.error("Bạn còn sót thông tin nè!");
+      return;
+    }
+ 
+    if (pass !== confirmPass) {
+      toast.error("Mật khẩu không khớp mất rùi :(((");
+      return;
+    }
 
-    const value = {
+   
+
+    const body = {
       "username" : id,
       "password" : pass,
+      "firstName" : hovatendem,
+      "lastName" : ten,
       "email" : email,
-      "hovatendem" : hovatendem,
-      "ten" : ten,
-      "phone" : sdt,
-      "DOB" : date
+      "DOB" : date,
+      "phone" : sdt
     }
     
-    await register(value)
+    await register(body)
     .then(() => {
       toast.success('Đăng kí thành công!')
-      setIsLoading(false);
-      navigate('/login');
+      navigate('/Login');
     })
     .catch((error) => {
       console.log("Lỗi đăng kí:", error)
-      toast.error("Lỗi đăng kí");
-      setIsLoading(false);
-      throw error
+      if(error.status === 401) toast.error("Thông tin hiện đã tồn tại!");
+      else setSystemError(error.response?.data?.message || error.response?.data?.error || "Mất kết nối máy chủ");
+      throw(error)
+    })
+    .finally(() => {
+      setIsLoading(false); //đã gọi API xong
     })
   }  
-
+  if (systemError) {
+    return <ErrorMessage  message={systemError} />;
+  }
   return (
     <div> 
       <form onSubmit={onSubmitHandler} className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800' action="">
@@ -73,7 +76,7 @@ const Regist = () => {
         <input type="email" className='w-full px-3 py-2 border border-gray-800' placeholder='E-mail' value={email} onChange={(e) => setEmail(e.target.value)}/>
         <div className='flex gap-3'>
             <input className='border border-gray-300  rounded py-1.5 px-3.5 w-full' type="text" placeholder='Họ và tên đệm' value={hovatendem} onChange={(e) => setHovatendem(e.target.value)}/>
-            <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Tên'value={ten} onChange={(e) => setTen(e.target.value)}/>
+            <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Tên' value={ten} onChange={(e) => setTen(e.target.value)}/>
         </div>
         <input type="text" className='w-full px-3 py-2 border border-gray-800' placeholder='Số điện thoại' value={sdt} onChange={(e) => setSdt(e.target.value)}/>
         <input type="date" className='w-full px-3 py-2 border border-gray-800' placeholder='Ngày-tháng-năm sinh' value={date} onChange={(e) => setDate(e.target.value)}/>
@@ -90,4 +93,5 @@ const Regist = () => {
   )
 }
  
-export default Regist
+export default Regist 
+ 
