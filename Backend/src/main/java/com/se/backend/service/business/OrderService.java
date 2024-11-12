@@ -4,7 +4,7 @@ package com.se.backend.service.business;
 import com.se.backend.dto.request.CreateOrderRequest;
 import com.se.backend.dto.request.AddProductRequest;
 import com.se.backend.dto.request.UpdateQuantityOfProductRequest;
-import com.se.backend.dto.response.OrderResponse;
+import com.se.backend.dto.response.CreateOrderResponse;
 import com.se.backend.entity.*;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
@@ -36,20 +36,34 @@ public class OrderService  {
     private final PaymentOrderRepository paymentOrderRepository;
     @Autowired
     private final Order_ProductInstanceRepository orderProductInstanceRepository;
+    @Autowired
+    private final DeliveryInfoRepository deliveryInfoRepository;
     @Transactional
-    public List<OrderResponse> create(CreateOrderRequest createOrderRequest){
-
+    public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
+        //Delivery
+//        DeliveryInfor deliveryInfor;
+//        try {
+//            deliveryInfor = deliveryInfoRepository.findByUserId(createOrderRequest.getUsername());
+//        }
+//        catch (WebServerException e){
+//            throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+//        }
+        //Create payment Order
         PaymentOrder paymentOrder = new PaymentOrder();
-        Buyer buyer = buyerRepository.findById(createOrderRequest.getBuyerId())
+        Buyer buyer = buyerRepository.findById(createOrderRequest.getUsername())
                 .orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
-        paymentOrder.setBuyer(buyer);
+
+        //paymentOrder.setDelivery(delivery);
         paymentOrder.setOrder(new ArrayList<>());
         paymentOrder.setReview(new ArrayList<>());
         paymentOrderRepository.save(paymentOrder);
+        //----------------------
+
+        //Create List Product for each Seller;
         Map<String, List<Order_ProductInstance>> sellerOrderMap = new HashMap<>();
-        for (int i = 0; i < createOrderRequest.getProducts().size(); i++) {
-            String productId = String.valueOf(createOrderRequest.getProducts().get(i));
-            Long quantity = createOrderRequest.getQuantity().get(i);
+        for (int i = 0; i < createOrderRequest.getListProduct().size(); i++) {
+            String productId = String.valueOf(createOrderRequest.getListProduct().get(i).getProductId());
+            Long quantity = createOrderRequest.getListProduct().get(i).getQuantity();
 
             // Tìm sản phẩm
             ProductInstance productInstance = productInstanceRepository.findById(productId)
@@ -65,10 +79,8 @@ public class OrderService  {
 
             // Tạo đối tượng Order_ProductInstance
             Order_ProductInstanceId orderProductInstanceId = new Order_ProductInstanceId();
-            orderProductInstanceId.setProductInstanceId(productInstance.getId()); // Đặt productInstanceId
 
             Order_ProductInstance orderProductInstance = Order_ProductInstance.builder()
-                    .order_productInstanceId(orderProductInstanceId)
                     .quantity(quantity)
                     .productInstance(productInstance)
                     .build();
@@ -76,10 +88,9 @@ public class OrderService  {
             // Thêm sản phẩm vào danh sách tương ứng với seller
             sellerOrderMap.computeIfAbsent(sellerId, k -> new ArrayList<>()).add(orderProductInstance);
         }
+        //---------------------------------------------------------------------
 
-//        List<Order> orders = new ArrayList<>();
-
-        List<OrderResponse> responses = new ArrayList<>();
+        //Create Order
         for (Map.Entry<String, List<Order_ProductInstance>> entry : sellerOrderMap.entrySet()){
             Seller seller = sellerRepository.findById(entry.getKey())
                     .orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
@@ -95,40 +106,37 @@ public class OrderService  {
 
             long totalPrice = 0L;
             List<Order_ProductInstance> orderProducts = new ArrayList<>();
-//            List<ProductResponse> productResponses = new ArrayList<>();
 
             for (int i = 0;  i < entry.getValue().size(); i++) {
                 Order_ProductInstance orderProductInstance = entry.getValue().get(i);
-                orderProductInstance.setOrder(order);
                 Long quantity = entry.getValue().get(i).getQuantity();
                 ProductInstance productInstance = orderProductInstance.getProductInstance();
 
                 orderProducts.add(orderProductInstance);
                 totalPrice += productInstance.getPrice() * quantity;
-//                ProductResponse productResponse = ProductResponse.builder()
-//                        .price(productInstance.getPrice())
-//                        .name(productInstance.getBuildProduct().getProduct().getName())
-//                        .id(productInstance.getId())
-//                        .build();
-//                productResponses.add(productResponse);
+
             }
             order.setTotalPrice(totalPrice);
             order.setOrderProductInstances(orderProducts);
-            paymentOrder.getOrder().add(order);
+//            order.setDelivery(deliveryInfor);
             try {
                 orderRepository.save(order);
-
+                for(Order_ProductInstance e: orderProducts){
+                    ProductInstance updateProduct = e.getProductInstance();
+                    Long oldQuantity = e.getProductInstance().getQuantityInStock();
+                    Long newQuantity = e.getQuantity();
+                    updateProduct.setQuantityInStock(oldQuantity - newQuantity);
+                    productInstanceRepository.save(updateProduct);
+                }
             }catch (WebServerException e){
                 throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
             }
+            paymentOrder.getOrder().add(order);
         }
         paymentOrderRepository.save(paymentOrder);
-        for (Order order : paymentOrder.getOrder()) {
-
-            responses.add(findById(order.getOrderId()));
-        }
+        CreateOrderResponse response = CreateOrderResponse.builder().msg("successful").build();
         // Tạo phản hồi OrderResponse
-        return responses;
+        return response;
     }
     @Transactional
     public String addProductToOrder(String orderId, AddProductRequest addProductRequest) {
@@ -184,8 +192,8 @@ public class OrderService  {
         }
     }
 
-    public List<OrderResponse> getAll(String buyerId){
-        List<OrderResponse> responses = new ArrayList<>();
+    public List<CreateOrderResponse> getAll(String buyerId){
+        List<CreateOrderResponse> responses = new ArrayList<>();
         Buyer buyer = buyerRepository.findById(buyerId)
                 .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
         for(PaymentOrder paymentOrder : buyer.getPaymentOrder()){
@@ -196,18 +204,14 @@ public class OrderService  {
         return responses;
     }
 
-    public OrderResponse findById(String orderId) {
+    public CreateOrderResponse findById(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new WebServerException(ErrorCode.ORDER_NOT_FOUND));
-        OrderResponse response = orderMapper.toOrderResponse(order);
-        response.setQuantity(new ArrayList<Long>());
-        for(Order_ProductInstance product:order.getOrderProductInstances()){
-            response.getQuantity().add(product.getQuantity());
-        }
+        CreateOrderResponse response = null;
         return response;
     }
     @Transactional
-    public OrderResponse updateQuantityOfProductFromOrder(String orderId, UpdateQuantityOfProductRequest request) {
+    public CreateOrderResponse updateQuantityOfProductFromOrder(String orderId, UpdateQuantityOfProductRequest request) {
         // Tìm đơn hàng dựa vào orderId
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new WebServerException(ErrorCode.ORDER_NOT_FOUND));
@@ -283,7 +287,7 @@ public class OrderService  {
 //        return "Order deleted successfully!";  // Trả về trạng thái đơn hàng sau khi xóa
 //    }
     @Transactional
-    public OrderResponse updateOrderState(String order_id, String newState) {
+    public CreateOrderResponse updateOrderState(String order_id, String newState) {
         Order order = orderRepository.findById(order_id)
                 .orElseThrow( ()-> new WebServerException(ErrorCode.UNKNOWN_ERROR));
         order.setStatus(newState);
