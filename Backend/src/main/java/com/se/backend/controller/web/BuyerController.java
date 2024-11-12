@@ -1,10 +1,12 @@
 package com.se.backend.controller.web;
 
 import com.se.backend.dto.request.*;
+import com.se.backend.dto.response.GetOrderResponse;
 import com.se.backend.dto.response.ResponseAPITemplate;
 import com.se.backend.service.business.OrderService;
-import com.se.backend.dto.response.OrderResponse;
+import com.se.backend.dto.response.CreateOrderResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,33 +26,43 @@ public class BuyerController {
 //        return ResponseEntity.ok(message);
 //    }
 
-    @GetMapping("/order/getall/{buyerId}")
-    public ResponseAPITemplate<List<OrderResponse>> getAllOrder(@PathVariable("buyerId") String buyerId){
-        List<OrderResponse> response = orderService.getAll(buyerId);
-            return ResponseAPITemplate.<List<OrderResponse>>builder()
-                    .result(response)
-                    .build();
-    }
+//    @GetMapping("/order/getall/{buyerId}")
+//    public ResponseAPITemplate<List<CreateOrderResponse>> getAllOrder(@PathVariable("buyerId") String buyerId){
+//        List<CreateOrderResponse> response = orderService.getAll(buyerId);
+//            return ResponseAPITemplate.<List<CreateOrderResponse>>builder()
+//                    .result(response)
+//                    .build();
+//    }
     @GetMapping("/order/{id}")
-    public ResponseAPITemplate<OrderResponse> detailInfoOfPaymentOrder(@PathVariable("id") String order_id){
-        OrderResponse response = orderService.findById(order_id);
-        return ResponseAPITemplate.<OrderResponse>builder()
+    public ResponseAPITemplate<CreateOrderResponse> detailInfoOfPaymentOrder(@PathVariable("id") String order_id){
+        CreateOrderResponse response = orderService.findById(order_id);
+        return ResponseAPITemplate.<CreateOrderResponse>builder()
                 .result(response)
                 .build();
     }
     @PostMapping("/order")
-    public ResponseAPITemplate<List<OrderResponse>> createOrder(
+    public ResponseAPITemplate<CreateOrderResponse> createOrder(
             @RequestBody CreateOrderRequest request){
-        List<OrderResponse> response = orderService.create(request);
-        return ResponseAPITemplate.<List<OrderResponse>>builder()
+        CreateOrderResponse response = orderService.create(request);
+        return ResponseAPITemplate.<CreateOrderResponse>builder()
                 .result(response)
                 .build();
     }
+
+//    @GetMapping("/order")
+//    public ResponseAPITemplate<GetOrderResponse> getOrder(
+//            @RequestBody GetOrderRequest request,
+//            @RequestParam Integer prevpage,
+//            @RequestParam Integer page,
+//            @RequestParam Integer limit){
+//        GetOrderResponse response = orderService.getAll()
+//    }
+
     @PutMapping("/order/updatestate/{id}")
-    public ResponseAPITemplate<OrderResponse> updateStateOfOrder(@PathVariable("id") String order_id,
-                                                                 @RequestBody UpdateStateOfOrderRequest request){
-        OrderResponse response = orderService.updateOrderState(order_id, request.getStatus());
-        return ResponseAPITemplate.<OrderResponse>builder()
+    public ResponseAPITemplate<CreateOrderResponse> updateStateOfOrder(@PathVariable("id") String order_id,
+                                                                       @RequestBody UpdateStateOfOrderRequest request){
+        CreateOrderResponse response = orderService.updateOrderState(order_id, request.getStatus());
+        return ResponseAPITemplate.<CreateOrderResponse>builder()
                 .result(response)
                 .build();
     }
@@ -65,11 +77,11 @@ public class BuyerController {
     }
 
     @PatchMapping("/order/updatequantity/{orderId}")
-    public ResponseAPITemplate<OrderResponse> updateQuantityOfProduct(
+    public ResponseAPITemplate<CreateOrderResponse> updateQuantityOfProduct(
             @PathVariable String orderId,
             @RequestBody UpdateQuantityOfProductRequest request){
-        OrderResponse response = orderService.updateQuantityOfProductFromOrder(orderId, request);
-        return ResponseAPITemplate.<OrderResponse>builder()
+        CreateOrderResponse response = orderService.updateQuantityOfProductFromOrder(orderId, request);
+        return ResponseAPITemplate.<CreateOrderResponse>builder()
                 .result(response)
                 .build();
     }
