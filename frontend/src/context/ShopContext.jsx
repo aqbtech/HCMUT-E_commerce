@@ -24,8 +24,8 @@ const ShopContextProvider = (props) => {
     const [products, setProducts] = useState([]);
 
     const [listProductToPlace, setListProductToPlace] = useState([])
-    
 
+    const [systemError, setSystemError] = useState('');
     /*----------------------------Thông tin tài khoản------------------------------------*/
     useEffect(() => {
         const userId = Cookies.get('username') 
@@ -231,7 +231,8 @@ const ShopContextProvider = (props) => {
         navigate,
         curState, setCurState,
         account, setAccount,
-        listProductToPlace, setListProductToPlace
+        listProductToPlace, setListProductToPlace,
+        systemError, setSystemError 
     }
 
     return (

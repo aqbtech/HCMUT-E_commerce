@@ -1,7 +1,16 @@
-import { axiosClient2 } from "../fetchAPI/axios";
+import { axiosClient2, axiosClient} from "../fetchAPI/axios";
 import Cookies from 'js-cookie'
 import { toast } from "react-toastify";
 
+
+export const getMyCart = async (page) => {
+    const response = await axiosClient.get(`/cart?_page=${page}&_limit=3`);
+
+    return response.data;
+}
+
+
+//--------
 export const addToCart = async (body) => {
     const res = await axiosClient2.post( `/${Cookies.get('username')}}`,body)
     .then((res) => {
@@ -13,6 +22,16 @@ export const addToCart = async (body) => {
     })
 }
 
-export const getCart =  async () => {
-    return await axiosClient2.get(`/buyer/cart/${Cookies.get('username')}`);
+export const fetchCart =  async () => {
+    const res =  await axiosClient2.get(`/buyer/cart/${Cookies.get('username')}`);
+
+    return res.data.result
+}
+
+export const updateQuantity = async () => {
+    return await axiosClient2.put(`/`);
+}
+
+export const deleteFromCart = async (body) => {
+    return await axiosClient2.delete(`/${body}`)
 }

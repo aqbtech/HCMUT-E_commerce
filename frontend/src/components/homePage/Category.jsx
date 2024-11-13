@@ -1,35 +1,28 @@
-import { useContext } from 'react';
-import { ShopContext } from '../../context/ShopContext';
+import { useState } from 'react';
 import Title from '../Title';
 import { assets } from '../../assets/assets';
-import { useNavigate } from 'react-router-dom';
- 
-const Category = ({data}) => {
-  const {setSearch, setShowSearch } = useContext(ShopContext);
-  
-  const navigate = useNavigate();
 
-  const handleCategoryClick = (categoryName) => {
-    setSearch(categoryName); // Đặt search theo tên danh mục
-    setShowSearch(true); // Hiển thị thanh tìm kiếm
-    navigate('/search'); // Chuyển hướng sang trang tìm kiếm
+const Category = ({ data, onCategorySelect, onSubCategorySelect, selectedCategory }) => {
+  const [showSubCategories, setShowSubCategories] = useState(null); // Hiển thị danh mục con
+
+  const handleCategoryClick = (categoryName, subCategories) => {
+    onCategorySelect(categoryName);
+    setShowSubCategories(subCategories);
   };
 
   return (
     <div className="my-10">
-      <div className="text-center py-8 text-3xl">
+      <div className="text-left py-8 text-3xl">
         <Title text1={'DANH '} text2={'MỤC'} />
-        <p className="w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-600">
+        <p className="w-3/4 text-xs sm:text-sm md:text-base text-gray-600">
           Thỏa thích lựa chọn mọi thứ bạn muốn, khi cần ATOM có, khi khó có ATOM
         </p>
       </div>
 
-      {/* Rendering Product */}
+      {/* Hiển thị danh mục */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-y-6">
-        {data.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => handleCategoryClick(item.name)} // Gọi hàm khi nhấn vào danh mục
+         <div
+            onClick={() => handleCategoryClick("Tất cả", "")}
             className="flex flex-col items-center cursor-pointer"
           >
             <div className="bg-gray-200 h-20 w-20 flex items-center justify-center rounded-full mb-2">
@@ -37,10 +30,40 @@ const Category = ({data}) => {
                 <img src={assets.logo} alt="" />
               </span>
             </div>
-            <p className="text-sm">{item.name}</p>
+            <p className="text-sm">Tất cả</p>
+          </div>
+        {data.map((item) => (
+          <div
+            key={item.categoryId}
+            onClick={() => handleCategoryClick(item.categoryName, item.subCategories)}
+            className="flex flex-col items-center cursor-pointer"
+          >
+            <div className="bg-gray-200 h-20 w-20 flex items-center justify-center rounded-full mb-2">
+              <span className="text-xl font-semibold">
+                <img src={assets.logo} alt="" />
+              </span>
+            </div>
+            <p className="text-sm">{item.categoryName}</p>
           </div>
         ))}
       </div>
+
+      {/* Hiển thị danh mục con nếu có */}
+      {showSubCategories && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-y-6 mt-6">
+          {showSubCategories.map((subItem) => (
+            <div
+              key={subItem.subCategoryId}
+              onClick={() => onSubCategorySelect(subItem.subCategoryName)}
+              className="flex flex-col items-center cursor-pointer"
+            >
+              <div className="bg-gray-200 h-16 w-16 flex items-center justify-center rounded-full mb-1">
+                <span className="text-sm font-semibold">{subItem.subCategoryName}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

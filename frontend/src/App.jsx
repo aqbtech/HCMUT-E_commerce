@@ -13,41 +13,42 @@ import PlaceOrder from './pages/PlaceOrder'
 import Order from './pages/Orders'
 import Navbar from '../src/components/global/Navbar'
 import Footer from '../src/components/homePage/Footer'
-import SearchBar from '../src/components/global/SearchBar'
 import Test from './pages/Test';
 import Regist from './pages/Regist';
 import Admin from './pages/Admin'
-import Shop from './pages/Shop';
+import ShopViewer from './pages/ShopViewer';
 import MyProfile from './pages/MyProfile';
+import ShopManage from './pages/ShopManage';
+import ResetPassword from './pages/ResetPassword';
 
 
 const App = () => {
   return (
     <div className='bg-[#FDF0E7]'>
       <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
-      <ToastContainer/>
-      <Navbar/>
-      <SearchBar/>
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path = '/search' element={<Search />}></Route>
-        <Route path = '/about' element={<About />}></Route>
-        <Route path='/contact' element={<Contact />}></Route>
-        <Route path='/product/:productId' element={<Product />}></Route>
-        <Route path='/cart' element={<Cart />}></Route>
-        <Route path='/login' element={<Login />}></Route>
-        <Route path='/place-order' element={<PlaceOrder />}></Route>
-        <Route path='/orders' element={<Order />}></Route>
-        <Route path='/test' element={<Test />}></Route>
-        <Route path='/admin' element={<Admin />}></Route>
-        <Route path='/regist' element={<Regist />}></Route>
-        <Route path='/shop/:shopId' element={<Shop />}></Route>
-        <Route path='/myProfile' element={<MyProfile />}></Route>
-      </Routes>
-      <Footer/>
+        <ToastContainer/>
+        <Navbar/>
+        <Routes>
+          <Route path='/' element={<Home/>}/>
+          <Route path = '/search' element={<Search />}></Route>
+          <Route path = '/about' element={<About />}></Route>
+          <Route path='/contact' element={<Contact />}></Route>
+          <Route path='/product/:productId' element={<Product />}></Route>
+          <Route path='/cart' element={<Cart />}></Route>
+          <Route path='/login' element={<Login />}></Route>
+          <Route path='/place-order' element={<PlaceOrder />}></Route>
+          <Route path='/orders' element={<Order />}></Route>
+          <Route path='/test' element={<Test />}></Route>
+          <Route path='/admin' element={<Admin />}></Route>
+          <Route path='/regist' element={<Regist />}></Route>
+          <Route path='/shopView/:shopId' element={<ShopViewer />}></Route>
+          <Route path='/myProfile' element={<MyProfile />}></Route>
+          <Route path='/shop' element={<ShopManage/>}></Route>
+          <Route path='/reset' element={<ResetPassword/>}></Route>
+        </Routes>
+        <Footer/>
+      </div>
     </div>
-  </div>
-    
   )
 }
 

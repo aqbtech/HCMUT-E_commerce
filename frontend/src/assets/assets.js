@@ -34,8 +34,12 @@ import razorpay_logo from './razorpay_logo.png'
 import stripe_logo from './stripe_logo.png'
 import cross_icon from './cross_icon.png'
 import plus from './plus.png'
+import zalo from './Logo-ZaloPay-Square.webp';
+import momo from './Logo-MoMo-Circle.webp';
 
 export const assets = {
+    zalo,
+    momo,
     plus,
     hinh1,
     hinh2,

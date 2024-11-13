@@ -2,12 +2,14 @@ import { useContext, useEffect, useState } from 'react';
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import { ShopContext } from '../context/ShopContext';
-import { getAddress } from '../fetchAPI/fetchAddress';
+import { getAddress} from '../fetchAPI/fetchAddress';
 import { toast } from 'react-toastify';
 import CartTotal from '../components/global/CartTotal';
 import { createOrder } from '../fetchAPI/fetchOrders';
 import AddressModal from '../components/profilePage/AddressModal';
 import { createAddress } from '../fetchAPI/fetchAddress';
+import ErrorMessage  from '/src/components/errorMessage';
+import Cookies from 'js-cookie'
 
 const PlaceOrder = () => { 
   const [method, setMethod] = useState('cod');
@@ -15,15 +17,21 @@ const PlaceOrder = () => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { listProductToPlace, setListProductToPlace, navigate, username } = useContext(ShopContext);
+  const { listProductToPlace, setListProductToPlace, navigate, username, curState, systemError, setSystemError } = useContext(ShopContext);
 
 // Lấy danh sách địa chỉ từ API
 useEffect(() => {
+  if(!Cookies.get('username')) {
+    console.log(curState);
+    navigate(`/Login`)
+    return
+  }
   const loadAddresses = async () => {
     try {
       const res = await getAddress();
       setAddresses(res); // Đảm bảo `res` được truyền đúng vào `setAddresses`
     } catch (err) {
+      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
       console.log("Lỗi khi tải địa chỉ:", err);
     }
   };
@@ -32,7 +40,7 @@ useEffect(() => {
 }, []);
 
   // Xử lý lưu địa chỉ mới
-  const handleSaveAddress = async (newAddress) => {
+  const handleSaveAddress = async (newAddress) => { 
     try {
       const savedAddress = await createAddress(newAddress);
       setAddresses([...addresses, savedAddress]); // Thêm địa chỉ mới vào danh sách
@@ -40,7 +48,7 @@ useEffect(() => {
       setIsModalOpen(false); // Đóng modal
       toast.success('Đã lưu địa chỉ mới thành công');
     } catch (error) {
-      toast.error('Lỗi khi lưu địa chỉ');
+      toast.error('Lỗi khi lưu địa chỉ, vui lòng thử lại');
       throw error
     }
   };
@@ -64,6 +72,8 @@ useEffect(() => {
 
   // Xử lý đặt hàng
   const handlePlaceOrder = (selectedAddressId, listProductToPlace, method) => {
+
+
     if (!selectedAddressId) {
       toast.error('Vui lòng chọn địa chỉ giao hàng');
       return;
@@ -80,12 +90,17 @@ useEffect(() => {
    createOrder(bodyResponse)
    .then(() => {
     setListProductToPlace({});
+    toast.success("Đặt hàng thành công!");
+    navigate('/');
    })
    .catch((err) => {
+    toast.error("Quá trình đặt hàng bị lỗi, vui lòng thử lại")
     console.log("lỗi khi đặt đơn hàng:", err);
    })
   };
-
+  if (systemError) {
+    return <ErrorMessage  message={systemError} />;
+  }
   return (
     <div className="flex flex-col gap-4 pt-5 min-h-[80vh] border-t">
       {/* Phần địa chỉ */}
@@ -106,9 +121,9 @@ useEffect(() => {
         >
           <option value="" disabled>Chọn địa chỉ giao hàng</option>
           
-          {addresses && addresses.map((address) => (
+          {addresses?.map((address) => (
             <option key={address.id} value={address.id}>
-              {`${address.name} - ${address.detailAddress}, ${address.city}, ${address.province}`}
+              {`${address.name} ${address.phone} - ${address.detailAddress}, ${address.ward}, ${address.province},${address.district}`}
             </option>
           ))}
           <option value="addNew" className="text-red">+ Thêm địa chỉ mới</option>
@@ -127,7 +142,7 @@ useEffect(() => {
                 <p>Số lượng: {product.quantity}</p>
                 <p>Thuộc tính:</p>
                 <ul>
-                  {product.ListAtt.map((att, idx) => (
+                  {product?.ListAtt?.map((att, idx) => (
                     <li key={idx}>{att.attName}: {att.value}</li>
                   ))}
                 </ul>
@@ -140,17 +155,39 @@ useEffect(() => {
         <div className="w-full max-w-[400px]">
           <Title text1="THÔNG TIN" text2="THANH TOÁN" />
           <div className="border rounded p-4 mt-4">
-            <CartTotal delivery_fee = {calculateTotal()}/>
+          <div className='w-full'>
+              <div className='text-2xl'>
+                  <Title text1={'CART'} text2={'TOTAL'}/>
+              </div>
+            
+              <div className='flex flex-col gap-2 mt-2 text-sm'>
+                  <div className='flex justify-between'>
+                      <p>Tổng hàng</p>
+                      <p>{calculateTotal() + '.000'} VNĐ</p>
+                  </div>
+              </div>
+              <hr />
+              <div className='flex justify-between'>
+                  <p>Phí ship</p>
+                  <p>10.000 VNĐ</p>
+              </div>
+              <hr />
+              <div className='flex justify-between'>
+                  <b>Tổng cộng</b>
+                  {/* <b>{currency} {getCartAmount() === 0 ? 0 : String(getCartAmount() + delivery_fee) + '.00'}</b> */}
+                  <b>{calculateTotal() + 10 + '.000'} VNĐ  </b>
+              </div>
+            </div>
             <div className="mt-8">
               <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN" />
               <div className="flex gap-3 flex-col mt-4">
-                <div onClick={() => setMethod('stripe')} className="flex items-center gap-3 border p-2 cursor-pointer">
-                  <p className={`w-4 h-4 border rounded-full ${method === 'stripe' ? 'bg-green-400' : ''}`}></p>
-                  <img className="h-5 mx-4" src={assets.stripe_logo} alt="" />
+                <div onClick={() => setMethod('zalo')} className="flex items-center gap-3 border p-2 cursor-pointer">
+                  <p className={`w-4 h-4 border rounded-full ${method === 'zalo' ? 'bg-green-400' : ''}`}></p>
+                  <img className="h-5 mx-4" src={assets.zalo} alt="" /> zaloPay
                 </div>
-                <div onClick={() => setMethod('razorpay')} className="flex items-center gap-3 border p-2 cursor-pointer">
-                  <p className={`w-4 h-4 border rounded-full ${method === 'razorpay' ? 'bg-green-400' : ''}`}></p>
-                  <img className="h-5 mx-4" src={assets.razorpay_logo} alt="" />
+                <div onClick={() => setMethod('momo')} className="flex items-center gap-3 border p-2 cursor-pointer">
+                  <p className={`w-4 h-4 border rounded-full ${method === 'momo' ? 'bg-green-400' : ''}`}></p>
+                  <img className="h-5 mx-4" src={assets.momo} alt="" /> momo
                 </div>
                 <div onClick={() => setMethod('cod')} className="flex items-center gap-3 border p-2 cursor-pointer">
                   <p className={`w-4 h-4 border rounded-full ${method === 'cod' ? 'bg-green-400' : ''}`}></p>
