@@ -11,16 +11,16 @@ import lombok.Setter;
 public class UserDeliveryInfo {
 	@JsonProperty("id")
 	private String deliveryId;
-	@JsonProperty("hoVaTen")
+	@JsonProperty("name")
 	private String receiverName;
 	@JsonProperty("phone")
 	private String receiverPhone;
-	@JsonProperty("DetailAddress")
+	@JsonProperty("detailAddress")
 	private String address;
-	@JsonProperty("city")
+	@JsonProperty("province")
 	private String city;
-	@JsonProperty("huyen")
+	@JsonProperty("district")
 	private String district;
-	@JsonProperty("xa")
+	@JsonProperty("ward")
 	private String ward;
 }
