@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, BuyerCartId> {
 	@EntityGraph(value = "cart-detail", type = EntityGraph.EntityGraphType.LOAD)
-	Page<Cart> findByBuyerUsername(String username, Pageable pageable);
+	Cart findByBuyerUsername(String username);
 }

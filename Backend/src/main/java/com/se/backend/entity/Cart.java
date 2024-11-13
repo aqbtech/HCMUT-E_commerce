@@ -11,10 +11,7 @@ import java.util.List;
 		@NamedAttributeNode(value = "buyer")
 }, subgraphs = {
 		@NamedSubgraph(name = "cartProductInstances-subgraph", attributeNodes = {
-				@NamedAttributeNode(value = "productInstance", subgraph = "productInstance-subgraph")
-		}),
-		@NamedSubgraph(name = "productInstance-subgraph", attributeNodes = {
-				@NamedAttributeNode(value = "buildProduct")
+				@NamedAttributeNode(value = "productInstance")
 		})
 })
 @Getter

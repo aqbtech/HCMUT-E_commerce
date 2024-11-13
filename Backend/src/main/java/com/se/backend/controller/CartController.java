@@ -24,7 +24,9 @@ public class CartController {
 						@RequestParam(value = "page", defaultValue = "0") int page,
 						@RequestParam(value = "size", defaultValue = "10") int size) {
 		Pageable pageable = PageRequest.of(page, size);
-
-		return null;
+		Page<FlashProduct> res = cartService.getFlashProductList(username, pageable);
+		return ResponseAPITemplate.<Page<FlashProduct>>builder()
+				.result(res)
+				.build();
 	}
 }
