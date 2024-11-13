@@ -42,14 +42,27 @@ public class OrderService  {
     private final DeliveryInfoRepository deliveryInfoRepository;
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
+        long addressId;
+        try{
+            addressId = Long.parseLong(createOrderRequest.getDeliveryAddressOfCreateOrderRequest().getId());
+        }
+        catch(NullPointerException e){
+            throw new WebServerException(ErrorCode.DELIVERY_INFOR_NOT_EXIST);
+        }
         //Delivery
-        DeliveryInfor deliveryInfor = deliveryInfoRepository.findById(
-                Long.valueOf(createOrderRequest.getDeliveryAddressOfCreateOrderRequest().getId()))
-                .orElseThrow(()-> new WebServerException(ErrorCode.UNKNOWN_ERROR    ) );
+        DeliveryInfor deliveryInfor = deliveryInfoRepository.findById(addressId)
+                .orElseThrow(()-> new WebServerException(ErrorCode.DELIVERY_INFOR_NOT_FOUND));
 
         //Create payment Order
+        String username;
+        try{
+            username = createOrderRequest.getUsername();
+        }
+        catch (NullPointerException e){
+            throw new WebServerException(ErrorCode.USER_NOT_EXIST);
+        }
         PaymentOrder paymentOrder = new PaymentOrder();
-        Buyer buyer = buyerRepository.findByUsername(createOrderRequest.getUsername())
+        Buyer buyer = buyerRepository.findByUsername(username)
                 .orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
         paymentOrder.setDeliveryInfor(deliveryInfor);
         paymentOrder.setOrder(new ArrayList<>());
