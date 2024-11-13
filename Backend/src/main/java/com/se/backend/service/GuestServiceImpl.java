@@ -64,9 +64,10 @@ public class GuestServiceImpl implements GuestService {
 	@Override
 	public ProductDetail getProductDetail(String productId) {
 		var product = productRepository.findProductById(productId);
+		var productInstances = productInstanceRepository.findByBuildProductProduct(product);
 		var dto = productDetailFactory(product,
-				productInstanceRepository.findAll(),
-				product.getAttributes());
+				productInstances,
+				attributeRepository.findByOfProduct(product));
 		log.info("Product ID: {}", productId);
 		return dto;
 	}
