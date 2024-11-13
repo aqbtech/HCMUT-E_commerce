@@ -8,8 +8,7 @@ import java.util.List;
 @Entity
 @NamedEntityGraph(name = "product-detail", attributeNodes = {
 		@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-productInstance"),
-		@NamedAttributeNode("seller"),
-		@NamedAttributeNode(value = "attributes")},
+		@NamedAttributeNode("seller")},
 		subgraphs = {
 			@NamedSubgraph(
 					name = "buildProduct-productInstance",

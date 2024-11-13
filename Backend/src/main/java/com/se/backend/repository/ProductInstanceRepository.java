@@ -1,12 +1,14 @@
 package com.se.backend.repository;
 
 import com.se.backend.dto.response.ProductDetail;
+import com.se.backend.entity.Product;
 import com.se.backend.entity.ProductInstance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,4 +24,6 @@ public interface ProductInstanceRepository extends JpaRepository<ProductInstance
 			"JOIN pI.review r " +
 			"WHERE p.id = :productId")
 	Optional<ProductDetail> findProductDetailProjectionById(@Param("productId") String productId);
+
+	List<ProductInstance> findByBuildProductProduct(Product product);
 }
