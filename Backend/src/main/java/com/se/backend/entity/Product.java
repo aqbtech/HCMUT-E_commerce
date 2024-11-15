@@ -40,8 +40,8 @@ public class Product {
 	private List<Attribute> attributes;
 
 	// mapping 3-ary relationship build product
-	@OneToOne(mappedBy = "product")
-	private BuildProduct buildProduct;
+	@OneToMany(mappedBy = "product")
+	private List<BuildProduct> buildProduct;
 	// mapping seller
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "seller_id", referencedColumnName = "username")
