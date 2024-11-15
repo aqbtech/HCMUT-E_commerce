@@ -6,6 +6,14 @@ import lombok.*;
 import java.util.List;
 
 @Entity
+@NamedEntityGraph(name = "product-instance-detail", attributeNodes = {
+		@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-attributeInstance")},
+		subgraphs = {
+				@NamedSubgraph(
+						name = "buildProduct-attributeInstance",
+						attributeNodes = @NamedAttributeNode("attributeInstance"))
+		}
+)
 @Getter
 @Setter
 @Builder

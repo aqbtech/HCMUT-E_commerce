@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -50,13 +52,15 @@ public class GuestServiceImpl implements GuestService {
 		productDetail.setRating(ratingCalculator());
 		// instants list
 		List<Instant> instants = instanceMapper.toInstants(pIs);
-		for( Attribute ai : as ) {
-			var attributeInstances = attributeInsRepository.findByAttribute(ai);
-			for( AttributeInstance attributeInstance : attributeInstances ) {
-				for( Instant instant : instants ) {
-					instant.setAttributes(attributeInstanceMapper.toAttributeInstanceMap(attributeInstance));
-				}
-			}
+		// for each instant add all attributes in as and value is it own value
+		Map<String, String> attributeMapTemplate = new HashMap<>();
+		for( var att : as ) {
+			attributeMapTemplate.put(att.getName(), "");
+		}
+		for( int i = 0; i < instants.size(); i++ ) {
+			var attI = pIs.get(i);
+			var attIAs = attributeInsRepository.findByProductInstance(attI);
+
 		}
 		productDetail.setInstants(instants);
 		return productDetail;
