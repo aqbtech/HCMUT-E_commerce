@@ -1,19 +1,22 @@
 import  { useContext, useState } from 'react'
+import { useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext'
 import {Link} from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { SignIn } from '../fetchAPI/fetchAccount';
 import Cookies from 'js-cookie'
 import ErrorMessage  from '/src/components/errorMessage';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const Login = () => {
   const {navigate, systemError, setSystemError} = useContext(ShopContext);
-
+  const location = useLocation();
   const [username, setUsername] = useState('');
   const [pass, setPass] = useState('');
   const [isLoading, setIsLoading] = useState(false) //set loading cho login
 
+  const from = location.state?.from || "/";
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
@@ -38,7 +41,7 @@ const Login = () => {
       token && Cookies.set('token', token) //set token cho cookies
       Cookies.set('username', username); //set username cho cookies
       role && Cookies.set("role", role) //set role cho phiên đăng nhập này
-      navigate('/'); //chuyển hướng đến trang home
+      navigate(from, { replace: true });
     })
     .catch((error) => { 
       if(error.status === 401) toast.error("Thông tin đăng nhập sai rồi!");
@@ -68,7 +71,8 @@ const Login = () => {
             <Link to='/regist'><p className='cursor-pointer hover:text-black hover:underline'>Đăng kí</p></Link>
           }
         </div>
-        <button onClick={(event) => onSubmitHandler(event, username, pass)} type='submit' className='bg-black text-white font-light px-8 py-2 mt-4 '>{isLoading ? '...Loading' : 'Đăng Nhập'}</button>
+        <button onClick={(event) => onSubmitHandler(event, username, pass)} type='submit' className='bg-black text-white font-light px-8 py-2 mt-4 '>{isLoading ? <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />
+          : 'Đăng Nhập'}</button>
       </form>
 
     </div>
