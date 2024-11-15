@@ -16,7 +16,7 @@ const Login = () => {
   const [pass, setPass] = useState('');
   const [isLoading, setIsLoading] = useState(false) //set loading cho login
 
-  const from = location.state?.from || "/";
+  const from = location.state?.from ||  location.state ||"/";
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();

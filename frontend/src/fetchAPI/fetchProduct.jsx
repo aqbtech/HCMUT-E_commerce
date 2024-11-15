@@ -1,8 +1,6 @@
 import { axiosClient, axiosPublic } from '../fetchAPI/axios';
 
 
-
-
 export const getAllProducts = async (api) =>{
   const res = await axiosClient.get(`/products${api}`);
   
@@ -10,9 +8,9 @@ export const getAllProducts = async (api) =>{
 }
 
 export const getDetailProduct = async (api) =>{
-  const res = await axiosClient.get(`/productDetail/${api}`);
+  const res = await axiosClient.get(`/result?productId=${api}`);
   console.log(`Lấy thành công sản phẩm:`, res);
-  return res.data;
+  return res.data[0];
 }
 
 export const getReview = async (api) => {
@@ -51,7 +49,7 @@ export const getReviewById = async (productId, page, prevPage) => {
   await axiosPublic.get(`/product/comment/${productId}?page=${page}&prevPage=${prevPage}&limit=10`)
   .then((res) => {
     console.log(`Lấy thành công product ${productId}:`, res);
-    return res.data
+    return res.data.result
   })
   .catch((err) => {
     console.log(`Lỗi khi lấy review của sản phẩm ${productId}: `, err );
