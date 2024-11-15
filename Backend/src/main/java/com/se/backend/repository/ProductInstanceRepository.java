@@ -26,4 +26,6 @@ public interface ProductInstanceRepository extends JpaRepository<ProductInstance
 	Optional<ProductDetail> findProductDetailProjectionById(@Param("productId") String productId);
 
 	List<ProductInstance> findByBuildProductProduct(Product product);
+
+
 }

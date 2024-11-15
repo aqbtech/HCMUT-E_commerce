@@ -1,22 +1,31 @@
 package com.se.backend.service.business;
 
 
+import com.nimbusds.jose.util.Pair;
 import com.se.backend.dto.request.CreateOrderRequest;
 import com.se.backend.dto.request.AddProductRequest;
+import com.se.backend.dto.request.GetOrderRequest;
 import com.se.backend.dto.request.UpdateQuantityOfProductRequest;
+import com.se.backend.dto.response.Attr_of_GetOrderResponse;
 import com.se.backend.dto.response.CreateOrderResponse;
+import com.se.backend.dto.response.GetOrderResponse;
+import com.se.backend.dto.response.Product_of_GetOrderResponse;
 import com.se.backend.entity.*;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
-import com.se.backend.mapper.OrderMapper;
+import com.se.backend.mapper.*;
 import com.se.backend.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Attr;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,7 +34,13 @@ public class OrderService  {
     @Autowired
     private final OrderRepository orderRepository;
     @Autowired
+    private final AttributeMapper attributeMapper;
+    @Autowired
     private final OrderMapper orderMapper;
+    @Autowired
+    private  final DeliveryInforInOrderMapper deliveryInforInOrderMapper;
+    @Autowired
+    private  final ProductInOrderMapper productInOrderMapper;
     @Autowired
     private final BuyerRepository buyerRepository;
     @Autowired
@@ -40,11 +55,15 @@ public class OrderService  {
     private final Order_ProductInstanceRepository orderProductInstanceRepository;
     @Autowired
     private final DeliveryInfoRepository deliveryInfoRepository;
+    @Autowired
+    private final AttributeInsRepository attributeInsRepository;
+    @Autowired
+    private final AttributeRepository attributeRepository;
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         long addressId;
         try{
-            addressId = Long.parseLong(createOrderRequest.getDeliveryAddressOfCreateOrderRequest().getId());
+            addressId = Long.parseLong(createOrderRequest.getDeliveryAddress().getId());
         }
         catch(NullPointerException e){
             throw new WebServerException(ErrorCode.DELIVERY_INFOR_NOT_EXIST);
@@ -169,7 +188,7 @@ public class OrderService  {
             //Find Product//HERE
         ProductInstance productInstance =productInstanceRepository.findById(addProductRequest.getProductId())
                     .orElseThrow(() -> new WebServerException(ErrorCode.UNKNOWN_ERROR));
-        if(productInstance.getBuildProduct().getProduct().getSeller() != order.getSeller()){
+        if(productInstance.getBuildProduct().getFirst().getProduct().getSeller() != order.getSeller()){
             return "Can not add product because it does not belong to " + order.getSeller().getShopName();
         }
         if (productInstance.getQuantityInStock() < addProductRequest.getQuantity()) {
@@ -209,17 +228,92 @@ public class OrderService  {
         }
     }
 
-//    public List<CreateOrderResponse> getAll(String buyerId){
-//        List<CreateOrderResponse> responses = new ArrayList<>();
-//        Buyer buyer = buyerRepository.findById(buyerId)
-//                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
-//        for(PaymentOrder paymentOrder : buyer.getPaymentOrder()){
-//            for(Order order : paymentOrder.getOrder()){
-//                responses.add(orderMapper.toOrderResponse(order));
-//            }
-//        }
-//        return responses;
-//    }
+
+    private GetOrderResponse OrderResponseHandler(Order order, List<ProductInstance> productInstanceList){
+        GetOrderResponse result = orderMapper.OrderToResponse(order);
+        DeliveryInfor deliveryInfor = order.getPaymentOrder().getDeliveryInfor();
+        result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
+
+        List<Product_of_GetOrderResponse> product_of_getOrderResponseList = new ArrayList<>();
+        List<Attr_of_GetOrderResponse> attrOfGetOrderResponseList = new ArrayList<>();
+        List<Long> quantityOfProduct = new ArrayList<>();
+        for(Order_ProductInstance op : order.getOrderProductInstances()){
+            quantityOfProduct.add(op.getQuantity());
+        }
+
+        for(ProductInstance productInstance: productInstanceList){
+            Product_of_GetOrderResponse product = productInOrderMapper.toProductDetail(productInstance);
+            Product p = productRepository.findProductById(productInstance.getBuildProduct().getFirst().getId().getProductId());
+            String productName = p.getName();
+
+//          ------------------------------------------------------------------
+            List<Attribute> attributeList = attributeRepository.findByOfProduct(p);
+            List<AttributeInstance> attributeInstanceList = attributeInsRepository.findAttributeInstancesBy(productInstance);
+//            AttributeInstance attributeInstance = attributeInsRepository.findById(
+//                    productInstance.getBuildProduct().getId().getAttributeInstanceId())
+//                    .orElseThrow(()-> new WebServerException(ErrorCode.UNKNOWN_ERROR));
+//            Attribute attribute = attributeRepository.getAttributesById(
+//                    productInstance.getBuildProduct().getId().getAttributeInstanceId().getAttributeId());
+            Map<Long, Attribute> attributeMap = attributeList.stream()
+                    .collect(Collectors.toMap(Attribute::getId, attribute -> attribute));
+
+            // Tạo danh sách các cặp Attribute và AttributeInstance
+            List<Pair<Attribute, AttributeInstance>> matchedPairs = attributeInstanceList.stream()
+                    .filter(attributeInstance -> attributeMap.containsKey(attributeInstance.getAttribute().getId()))
+                    .map(attributeInstance -> Pair.of(
+                            attributeMap.get(attributeInstance.getAttribute().getId()),
+                            attributeInstance))
+                    .toList();
+
+            // In kết quả
+            matchedPairs.forEach(pair -> {
+                Attr_of_GetOrderResponse attrResponse = Attr_of_GetOrderResponse.builder()
+                        .name(pair.getLeft().getName())
+                        .value(pair.getRight().getValue())
+                        .build();
+                attrOfGetOrderResponseList.add(attrResponse);
+//                System.out.println("Attribute: " + pair.getLeft().getName());
+//                System.out.println("AttributeInstance Value: " + pair.getRight().getValue());
+            });
+
+//          ------------------------------------------------------------------
+            product.setProductName(productName);
+            product.setListAtt(attrOfGetOrderResponseList);
+            product_of_getOrderResponseList.add(product);
+        }
+        
+        for(int i = 0; i < quantityOfProduct.size(); i++){
+            product_of_getOrderResponseList.get(i).setQuantity(quantityOfProduct.get(i));
+        }
+
+        result.setListProduct(product_of_getOrderResponseList);
+
+        return result;
+    }
+    public List<GetOrderResponse> getOrder(String username, Pageable pageable){
+        List<GetOrderResponse> responses = new ArrayList<>();
+        Buyer buyer = buyerRepository.findById(username)
+                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
+
+        Page<Order> orderPage = orderRepository.findOrdersByPaymentOrderDeliveryInforBuyer(buyer, pageable);
+        if(orderPage.isEmpty()){
+            return responses;
+        }
+        for(Order o: orderPage.getContent()){
+            List<Order_ProductInstance> order_productInstanceList = o.getOrderProductInstances();
+            List<ProductInstance> productInstances = new ArrayList<>();
+            for(Order_ProductInstance opI: order_productInstanceList){
+                ProductInstance productInstance = opI.getProductInstance();
+                productInstances.add(productInstance);
+            }
+            responses.add(this.OrderResponseHandler(o, productInstances));
+        }
+
+
+        return responses;
+    }
+
+
 
     public CreateOrderResponse findById(String orderId) {
         Order order = orderRepository.findById(orderId)
