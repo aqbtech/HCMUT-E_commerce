@@ -25,7 +25,7 @@ const Product = () => {
   const fetchProduct = async () => {
     setIsLoading(true);
     try { 
-      const response = await getDetailProduct(productId);
+      const response = await getProductsById(productId);
       if(!response) setSystemError("Not_Found")
       setProductData(response);
       setImage(response?.images?.[0] || '');
