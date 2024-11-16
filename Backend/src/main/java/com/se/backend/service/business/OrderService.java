@@ -84,6 +84,12 @@ public class OrderService  {
         PaymentOrder paymentOrder = new PaymentOrder();
         Buyer buyer = buyerRepository.findByUsername(username)
                 .orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
+
+        if(!deliveryInfor.getBuyer().equals(buyer)){
+            CreateOrderResponse response = CreateOrderResponse.builder().msg("address of buyer does not exist").build();
+            return response;
+        }
+
         paymentOrder.setDeliveryInfor(deliveryInfor);
         paymentOrder.setOrder(new ArrayList<>());
         paymentOrder.setReview(new ArrayList<>());
@@ -103,7 +109,9 @@ public class OrderService  {
 
             // Kiểm tra số lượng trong kho
             if (productInstance.getQuantityInStock() < quantity) {
-                throw new WebServerException(ErrorCode.INSUFFICIENT_STOCK);
+                CreateOrderResponse response = CreateOrderResponse.builder().msg("Some products are out of quantity in stock").build();
+                return response;
+//                throw new WebServerException(ErrorCode.INSUFFICIENT_STOCK);
             }
 
             // Lấy seller của sản phẩm
@@ -236,7 +244,7 @@ public class OrderService  {
         result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
 
         List<Product_of_GetOrderResponse> product_of_getOrderResponseList = new ArrayList<>();
-        List<Attr_of_GetOrderResponse> attrOfGetOrderResponseList = new ArrayList<>();
+
         List<Long> quantityOfProduct = new ArrayList<>();
         for(Order_ProductInstance op : order.getOrderProductInstances()){
             quantityOfProduct.add(op.getQuantity());
@@ -246,7 +254,7 @@ public class OrderService  {
             Product_of_GetOrderResponse product = productInOrderMapper.toProductDetail(productInstance);
             Product p = productRepository.findProductById(productInstance.getBuildProduct().getFirst().getId().getProductId());
             String productName = p.getName();
-
+            List<Attr_of_GetOrderResponse> attrOfGetOrderResponseList = new ArrayList<>();
 //          ------------------------------------------------------------------
             List<Attribute> attributeList = attributeRepository.findByOfProduct(p);
             List<AttributeInstance> attributeInstanceList = attributeInsRepository.findAttributeInstancesBy(productInstance);
@@ -310,7 +318,11 @@ public class OrderService  {
             responses.add(this.OrderResponseHandler(o, productInstances));
         }
 
-        return new PageImpl<>(responses);
+        return new PageImpl<>(
+                responses,
+                pageable,
+                orderPage.getTotalElements()
+        );
     }
 
 
