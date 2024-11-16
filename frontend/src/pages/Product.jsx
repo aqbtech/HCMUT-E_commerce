@@ -25,7 +25,7 @@ const Product = () => {
   const fetchProduct = async () => {
     setIsLoading(true);
     try { 
-      const response = await getProductsById(productId);
+      const response = await getDetailProduct(productId);
       if(!response) setSystemError("Not_Found")
       setProductData(response);
       setImage(response?.images?.[0] || '');
@@ -48,7 +48,7 @@ const Product = () => {
       setHasMore(false);
     }
     setIsReviewLoading(false);
-  };
+  }; 
 
   useEffect(() => { fetchProduct() }, [productId]);
   useEffect(() => { fetchReview(); }, [pageReview, productId]);

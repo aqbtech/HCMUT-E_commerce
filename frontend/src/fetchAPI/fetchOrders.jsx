@@ -19,10 +19,10 @@ export const updateOrder = async (orderId) => {
 
   };
     
-  export const getListOrders = async (username) => {
-    const response = axiosClient2.get(`/buyer/order/${username}`)
-    
-    return (await response).data.result;
+  export const getListOrders = async (username, page, limmit) => {
+    const response = await axiosClient2.get(`/buyer/order/${username}?page=${page}&limit=${limmit}`)
+    console.log("Laasy hafng thanh cong:", response);
+    return response.data.result;
   };
 
   export const updateSateOfOrder = async (id, body) => {

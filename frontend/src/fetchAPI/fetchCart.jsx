@@ -3,13 +3,13 @@ import Cookies from 'js-cookie'
 import { toast } from "react-toastify";
 
 
-export const getMyCart = async (page) => {
-    const response = await axiosClient.get(`/cart?_page=${page}&_limit=3`);
+export const getMyCart = async (page, limit) => {
+    const response = await axiosClient.get(`/Cart?_page=${page}&_limit=${limit}`);
 
-    return response.data;
+    return response.data[0];
 }
-
-
+ 
+ 
 //--------
 export const addToCart = async (body) => {
     const res = await axiosClient2.post( `/${Cookies.get('username')}}`,body)
@@ -22,8 +22,8 @@ export const addToCart = async (body) => {
     })
 }
 
-export const fetchCart =  async () => {
-    const res =  await axiosClient2.get(`/buyer/cart/${Cookies.get('username')}`);
+export const fetchCart =  async (page, limit) => {
+    const res =  await axiosClient2.get(`/flash-cart?username=${Cookies.get('username')}&page=${page}&limit=${limit}`);
 
     return res.data.result
 }
