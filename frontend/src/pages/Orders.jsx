@@ -127,14 +127,26 @@ const Orders = () => {
               <div className="flex justify-between items-center mb-4">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    order.deliveryState === "Đang giao"
-                      ? "bg-yellow-100 text-yellow-600"
-                      : order.deliveryState === "Đã giao"
-                      ? "bg-green-100 text-green-600"
-                      : "bg-red-100 text-red-600"
+                    order.deliveryState === "Pending"
+                      ? "bg-gray-100 text-gray-600" // Chờ duyệt
+                      : order.deliveryState === "shipped"
+                      ? "bg-yellow-100 text-yellow-600" // Đang giao
+                      : order.deliveryState === "Done"
+                      ? "bg-green-100 text-green-600" // Đã giao
+                      : order.deliveryState === "Cancelled"
+                      ? "bg-red-100 text-red-600" // Đã hủy
+                      : "" // Nếu không có trạng thái nào
                   }`}
                 >
-                  {order.deliveryState}
+                  {order.deliveryState === "Pending"
+                    ? "Chờ duyệt"
+                    : order.deliveryState === "shipped"
+                    ? "Đang giao"
+                    : order.deliveryState === "Done"
+                    ? "Đã giao"
+                    : order.deliveryState === "Cancelled"
+                    ? "Đã hủy"
+                    : ""}
                 </span>
                 <button
                   onClick={() => handleCancelOrder(order.orderId)}
