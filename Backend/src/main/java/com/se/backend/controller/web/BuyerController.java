@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -56,19 +57,19 @@ public class BuyerController {
     }
 
     @GetMapping("/order/{username}")
-    public ResponseAPITemplate<List<GetOrderResponse>> getOrderOfUser(
+    public ResponseAPITemplate<Page<GetOrderResponse>> getOrderOfUser(
             @PathVariable("username") String username,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit) {
         Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1));
-        List<GetOrderResponse> response = orderService.getOrder(username, pageable);
+        Page<GetOrderResponse> response = orderService.getOrder(username, pageable);
         if (response == null || response.isEmpty()) {
-        return ResponseAPITemplate.<List<GetOrderResponse>>builder()
+        return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
                 .message("does not have any order")
                 .result(response)
                 .build();
         }
-        return ResponseAPITemplate.<List<GetOrderResponse>>builder()
+        return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
                 .result(response)
                 .build();
     }

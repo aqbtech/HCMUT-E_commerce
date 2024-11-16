@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Attr;
@@ -290,14 +291,14 @@ public class OrderService  {
 
         return result;
     }
-    public List<GetOrderResponse> getOrder(String username, Pageable pageable){
+    public Page<GetOrderResponse> getOrder(String username, Pageable pageable){
         List<GetOrderResponse> responses = new ArrayList<>();
         Buyer buyer = buyerRepository.findById(username)
                 .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
 
         Page<Order> orderPage = orderRepository.findOrdersByPaymentOrderDeliveryInforBuyer(buyer, pageable);
         if(orderPage.isEmpty()){
-            return responses;
+            return new PageImpl<>(responses);
         }
         for(Order o: orderPage.getContent()){
             List<Order_ProductInstance> order_productInstanceList = o.getOrderProductInstances();
@@ -309,8 +310,7 @@ public class OrderService  {
             responses.add(this.OrderResponseHandler(o, productInstances));
         }
 
-
-        return responses;
+        return new PageImpl<>(responses);
     }
 
 
