@@ -2,14 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
-import { getDetailProduct, getProductsById, getReviewById } from "../fetchAPI/fetchProduct";
+import { getProductsById, getReviewById, getDetailProduct } from "../fetchAPI/fetchProduct";
 import { toast } from "react-toastify";
 import { addToCart } from "../fetchAPI/fetchCart";
 import ErrorMessage  from '/src/components/errorMessage';
 
 const Product = () => {
   const { productId } = useParams();
-  const { setListProductToPlace, navigate, curState, systemError, setSystemError } = useContext(ShopContext);
+  const { navigate, curState, systemError, setSystemError, formatCurrency } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
   const [selectedAttributes, setSelectedAttributes] = useState({});
@@ -20,43 +20,38 @@ const Product = () => {
   const [selectedInstant, setSelectedInstant] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isReviewLoading, setIsReviewLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
 
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      setIsLoading(true);
-
-      try {
-        const response = await getProductsById(productId);
-        setProductData(response);
-        if (response?.images?.length > 0) {
-        setImage(response.images[0]);  
-      }
+  const fetchProduct = async () => {
+    setIsLoading(true);
+    try { 
+      const response = await getProductsById(productId);
+      if(!response) setSystemError("Not_Found")
+      setProductData(response);
+      setImage(response?.images?.[0] || '');
     } catch (err) {
-      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ"); // Thêm lỗi vào state
+      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
     }
     setIsLoading(false);
-    }; 
+  };
 
-    fetchProduct();
-  }, [productId]);
-
-
-
-  useEffect(() => {
-    const fetchReview = async () => {
-      setIsReviewLoading(true);
-      try {
-        const response = await getReviewById(productId, pageReview, prevPage);
-        setReview(response || []);
-      } catch(err) {
-        //setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ"); // Thêm lỗi vào state
+  const fetchReview = async () => {
+    setIsReviewLoading(true);
+    try {
+      const response = await getReviewById(productId, pageReview);
+      if(response) {
+        setReview(response.review);
+        if(pageReview >= response.totalPages) setHasMore(false);
       }
-      setIsReviewLoading(false);
-    };
-    fetchReview();
-  }, [pageReview, productId, prevPage]);
+    } catch (err) {
+      setReview([]);
+      setHasMore(false);
+    }
+    setIsReviewLoading(false);
+  };
 
+  useEffect(() => { fetchProduct() }, [productId]);
+  useEffect(() => { fetchReview(); }, [pageReview, productId]);
 
 
   const handleNextPage = () => {
@@ -72,79 +67,80 @@ const Product = () => {
   };
 
 
+  const allAttributesSelected = (attributes = selectedAttributes) => {
+    if (!productData?.listAtt || productData.listAtt.length === 0) return true;
+    return productData.listAtt.every(
+      (att) =>
+        attributes[att.name] !== undefined &&
+        attributes[att.name] !== null &&
+        attributes[att.name] !== ""
+    );
+  };
+
+  const updateSelectedInstant = (attributes = selectedAttributes) => {
+    if(productData?.listAtt?.length === 0) {
+      setSelectedInstant(productData?.listInstants?.[0]);
+      console.log("Khong co gi!");
+      return;
+    }
+    if (!allAttributesSelected(attributes)) {
+      setSelectedInstant(null); // Chưa chọn đủ thuộc tính
+      return;
+    }
+    // Tìm instant phù hợp khi đã chọn đủ thuộc tính
+    const matchingInstant = productData?.listInstants?.find((instant) =>
+      Object.entries(instant.attributes).every(([key, value]) => attributes[key] === value)
+    );
+    setSelectedInstant(matchingInstant || "not_found"); // Không tìm thấy sẽ đặt là "not_found"
+  };
+    
   const handleAttributeSelection = (attributeName, value) => {
     setSelectedAttributes((prev) => {
-      const newAttributes = {
-        ...prev,
-        [attributeName]: prev[attributeName] === value ? null : value,
-      };
-      checkSelectedInstant(newAttributes); // Kiểm tra và cập nhật giá của biến thể đã chọn
+      const newAttributes = { ...prev, [attributeName]: prev[attributeName] === value ? null : value };
+      updateSelectedInstant(newAttributes); // Gọi hàm để cập nhật selectedInstant
       return newAttributes;
     });
   };
+  
+  useEffect(() => {
+    if(productData?.listAtt?.length !== 0) {
+      updateSelectedInstant();
+    }
+  }, [selectedAttributes, productData?.listInstants]);
 
   
-  const allAttributesSelected = () => {
-    return !productData?.attributes || productData.attributes.every((att) => selectedAttributes[att.name]);
-  };
-
-  const checkSelectedInstant = (attributes) => {
-    if (allAttributesSelected()) {
-      const matchingInstant = productData.listInstants.find((instant) =>
-        Object.entries(instant.attributes).every(
-          ([key, value]) => attributes[key] === value
-        )
-      );
-      if (matchingInstant) {
-        setSelectedInstant(matchingInstant); // Cập nhật giá khi tìm thấy biến thể phù hợp
-      } else {
-        setSelectedInstant(null); // Nếu không tìm thấy, đặt lại giá
-      }
-    } else {
-      setSelectedInstant(null); // Nếu chưa chọn đủ thuộc tính, đặt lại giá
-    }
-  };
-
-  const placeOrder = async (productName, productId, quantity, selectedAttributes, price, instantId) => {
-    if (curState != "Login") {
-      navigate(`/Login`);
-      return;
-    }
-    if (!allAttributesSelected()) {
-      toast.error("Vui lòng chọn tất cả các thuộc tính trước khi đặt hàng.");
-      return;
-    }
+  const placeOrder = async (productName, productId, quantity, selectedAttributes, selectedInstant) => {
+    if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
+    if (!allAttributesSelected()) return toast.error("Vui lòng chọn tất cả các thuộc tính trước khi đặt hàng.");
   
     const ListAtt = Object.entries(selectedAttributes).map(([attName, value]) => ({
-      attName,
+      "name" : attName,
       value,
     }));
   
-    const body = {
+    const body = { 
       "productName": productName,
       "productId": productId,
       "listAtt": ListAtt,
-      "instantId": instantId,
+      "instantId": selectedInstant.instantId,
       "quantity": quantity,
-      "price": price
+      "price": selectedInstant.price
     };
   
-    // Cập nhật state bằng cách thêm vào ListProductToPlace
-   setListProductToPlace([body]);
-   navigate('/place-Order');
+
+    // Ghi đè trực tiếp `ListProductToPlace` trong localStorage với `body`
+    localStorage.setItem('ListProductToPlace', JSON.stringify([body]));
+    // Điều hướng đến trang đặt hàng
+    navigate('/place-Order');
   };
   
 
   const handleAddToCart = async (productId, quantity, instantId) => {
-    if(curState != "Login") {
-      navigate(`/Login`)
-      return
+    if (curState !== "Login") return navigate("/Login", { state: { from: location } });
+    if (!allAttributesSelected() && productData.listAtt?.length > 0) {
+      return toast.error("Vui lòng chọn tất cả các thuộc tính trước khi đặt hàng.");
     }
-    if (!allAttributesSelected()) {
-      toast.error("Vui lòng chọn tất cả các thuộc tính trước khi thêm vào giỏ hàng.");
-      return;
-    }
-   
+
     const body = {
       "productId" :productId,
       "instantId" : instantId,
@@ -153,7 +149,7 @@ const Product = () => {
 
     await addToCart(body)
     .then(() => {
-
+      toast.success("Thêm vào giỏ hàng thành công!")
     })
     .catch(() => {
       toast.error("Thêm vào giỏ hàng thất bại!")
@@ -184,13 +180,18 @@ const Product = () => {
         </div>
 
         <div className="flex-1">
-          <h1 className="font-medium text-2xl mt-2">{productData.productName}</h1>
+          <h1 className="font-medium text-2xl mt-2">{productData.product_name}</h1>
           <div className="flex items-center gap-1 mt-2">
             <p className="pl-2">{productData.rating}</p>
             <p> <img src={assets.star_icon} alt="" /></p>
           </div>
-          <p className="mt-5 text-3xl font-medium"> {(selectedInstant == null) ? `${productData.minPrice}.000 VNĐ`  : `${selectedInstant.price}.000 VNĐ`} </p>
-          
+          <p className="mt-5 text-3xl font-medium">
+            {selectedInstant === null
+              ? `${formatCurrency(productData.minPrice)}`
+              : selectedInstant === "not_found"
+              ? "Sản phẩm đã hết :((("
+              : `${formatCurrency(selectedInstant.price)}`}
+            </p>
           {productData.listAtt?.map((att, index) => (
             <div key={index} className="flex flex-col gap-2 my-5">
               <p>{att.name}:</p> 
@@ -223,18 +224,23 @@ const Product = () => {
           </div>
 
           <button
-            onClick={() => handleAddToCart(productId, quantity, selectedInstant.instantId)}
-            className={`bg-black text-white px-8 py-3 text-sm active:bg-gray-700 && "opacity-50 cursor-not-allowed"}`}
+            onClick={() => handleAddToCart(productId, quantity, selectedInstant?.instantId)}
+            disabled={!selectedInstant || selectedInstant === "not_found"}
+            className={`bg-black text-white px-8 py-3 text-sm active:bg-gray-700 ${
+              (!selectedInstant || selectedInstant === "not_found") ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             THÊM VÀO GIỎ HÀNG
           </button>
           <button
-            onClick={() => placeOrder(productData.productName, productId, quantity, selectedAttributes, selectedInstant.price, selectedInstant.instantId)}
-            className={`bg-black text-white mx-4 px-8 py-3 text-sm active:bg-gray-700 && "opacity-50 cursor-not-allowed"}`}
+            onClick={() => placeOrder(productData.product_name, productId, quantity, selectedAttributes, selectedInstant)}
+            disabled={!selectedInstant || selectedInstant === "not_found"}
+            className={`bg-black text-white mx-4 px-8 py-3 text-sm active:bg-gray-700 ${
+              (!selectedInstant || selectedInstant === "not_found") ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             ĐẶT HÀNG
           </button>
-
           <hr className="mt-8 sm:w-4/5"/>
           <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
             <p>100% Original product.</p>
@@ -291,7 +297,8 @@ const Product = () => {
           <p>{pageReview}</p>
           <button
             onClick={handleNextPage}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300"
+            disabled={!hasMore}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
           >
             Trang Tiếp
           </button>

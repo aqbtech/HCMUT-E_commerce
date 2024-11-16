@@ -4,33 +4,57 @@ import Title from '../components/Title';
 import { getAllOrders, updateSateOfOrder, getListOrders } from '../fetchAPI/fetchOrders';
 import { toast } from 'react-toastify';
 import ErrorMessage from '/src/components/errorMessage';
+import Cookies from 'js-cookie'
 
 const Orders = () => {
-  const { systemError, setSystemError } = useContext(ShopContext);
+  const { systemError, setSystemError, totalAmount, totalQuantity, formatCurrency, navigate, curState } = useContext(ShopContext);
+  const [loading, setLoading] = useState(false);
   const [userOrders, setUserOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const username = Cookies.get('username');
 
+  // Hàm lấy danh sách đơn hàng
+  const getOrders = async () => {
+    await getListOrders(username)
+      .then((res) => {
+        if (res?.length === 0) {
+          setHasMore(false); // Nếu không có dữ liệu mới, ngừng load thêm
+        } 
+        if (currentPage === 1) {
+          setUserOrders(res); // Đặt lại dữ liệu nếu là trang đầu tiên
+        }
+        else {
+          setUserOrders((prevData) => {
+            const newData = res.filter(newItem => !prevData.some(prevItem => prevItem.orderId === newItem.orderId));
+            return [...prevData, ...newData]; // Thêm sản phẩm mới mà không bị trùng lặp
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi khi lấy danh sách đơn hàng:", err);
+        setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
+      });
+  };
+
+    
+  // Gọi lại getOrders khi currentPage thay đổi
   useEffect(() => {
-    const getOrders = () => {
-      getListOrders(currentPage)
-        .then((res) => {
-          setUserOrders(res); 
-        })
-        .catch((err) => {
-          console.error("Error fetching orders:", err);
-          setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
-        });
-    };
+    if (!Cookies.get("username")) {
+      console.log(curState);
+      navigate(`/Login`);
+      return;
+    }
     getOrders();
+    console.log("123",userOrders);
   }, [currentPage]);
-
 
   const handleCancelOrder = async (orderId) => {
     const body = { state: "Hủy đơn" };
     try {
       await updateSateOfOrder(orderId, body);
-      setUserOrders(prevOrders =>
-        prevOrders.map(order =>
+      setUserOrders((prevOrders) =>
+        prevOrders.map((order) =>
           order.orderId === orderId ? { ...order, deliveryState: "Hủy đơn" } : order
         )
       );
@@ -41,12 +65,11 @@ const Orders = () => {
     }
   };
 
-  const handleNextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) setCurrentPage((prevPage) => prevPage - 1);
+  // Hàm load thêm đơn hàng
+  const handleLoadMore = () => {
+    if (hasMore) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
   };
 
   if (systemError) {
@@ -56,11 +79,15 @@ const Orders = () => {
   return (
     <div className='border-t pt-16'>
       <div className='text-2xl'>
-        <Title text1={'ĐƠN'} text2={'HÀNG'} />
+        <Title text1={'ĐƠN'} text2={'HÀNG'} /> 
       </div>
 
       <div>
-          {userOrders?.map((order, orderIndex) => (
+        {/* Kiểm tra nếu không có đơn hàng nào */}
+        {userOrders?.length === 0 ? (
+          <p className="text-center text-gray-600 mt-8">Bạn chưa có đơn hàng nào.</p>
+        ) : (
+          userOrders?.map((order, orderIndex) => (
             <div key={orderIndex} className="p-4 mb-6 bg-white rounded-lg shadow-md text-gray-800">
               <div className="text-lg font-semibold mb-2">
                 Đơn hàng từ: <span className="text-blue-600">{order.sellerName}</span>
@@ -94,13 +121,12 @@ const Orders = () => {
                     <div>
                       <p className="sm:text-base font-medium text-gray-900">{product.productName || "Sản phẩm không xác định"}</p>
                       <div className="flex items-center gap-3 mt-2 text-base">
-                        <p className="text-lg font-semibold text-gray-900">{product.price} VND</p>
+                        <p className="text-lg font-semibold text-gray-900">{formatCurrency(product.price)}</p>
                         <p className="text-gray-600">Số lượng: {product.quantity}</p>
                       </div>
                       {/* Hiển thị thuộc tính sản phẩm */}
-                      <p className="mt-2 text-gray-500">Thuộc tính:</p>
                       <ul className="pl-4 list-disc text-gray-600">
-                        {product.ListAtt.map((att, idx) => (
+                        {product.listAtt?.map((att, idx) => (
                           <li key={idx}>{att.name}: {att.value}</li>
                         ))}
                       </ul>
@@ -108,34 +134,42 @@ const Orders = () => {
                   </div>
                 </div>
               ))}
+              <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                {/* Địa chỉ giao hàng */}
+                <div className="flex-[7] p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <h3 className="font-semibold text-lg mb-2">Địa chỉ giao hàng</h3>
+                  <p><strong>Người nhận:</strong> {order.deliveryAddress.name}</p>
+                  <p><strong>Số điện thoại:</strong> {order.deliveryAddress.phone}</p>
+                  <p>
+                    <strong>Địa chỉ:</strong> {order.deliveryAddress.Detail}, {order.deliveryAddress.ward}, 
+                    {order.deliveryAddress.district}, {order.deliveryAddress.province}
+                  </p>
+                </div> 
 
-              {/* Địa chỉ giao hàng */}
-              <div className="text-sm mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                <p><strong>Người nhận:</strong> {order.deliveryAddress.name}</p>
-                <p><strong>Số điện thoại:</strong> {order.deliveryAddress.phone}</p>
-                <p><strong>Địa chỉ:</strong> {order.deliveryAddress.Detail}, {order.deliveryAddress.ward}, {order.deliveryAddress.district}, {order.deliveryAddress.province}</p>
+                {/* Tổng tiền và tổng số lượng */}
+                <div className="flex-[4] p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <h3 className="font-semibold text-lg mb-2">Thông tin đơn hàng</h3>
+                  <p><strong>Tổng tiền:</strong> {formatCurrency(totalAmount(order))}</p>
+                  <p><strong>Tổng số lượng:</strong> {totalQuantity(order)}</p>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-
-
-      <div className='flex justify-center gap-4 mt-8'>
-        <button
-          onClick={handlePreviousPage}
-          disabled={currentPage === 1}
-          className='border px-4 py-2 font-medium hover:bg-gray-300 disabled:opacity-50'
-        >
-          Trang trước
-        </button>
-        <p>{currentPage}</p>
-        <button
-          onClick={handleNextPage}
-          className='border px-4 py-2 font-medium hover:bg-gray-300 disabled:opacity-50'
-        >
-          Trang sau
-        </button>
+          ))
+        )}
       </div>
+
+      {/* Nút Xem thêm */}
+      {userOrders?.length > 0 && (
+        <div className='flex justify-center gap-4 mt-8'>
+          <button
+            onClick={handleLoadMore}
+            disabled={!hasMore}
+            className='border px-4 py-2 font-medium hover:bg-gray-300 disabled:opacity-50'
+          >
+            Xem thêm
+          </button>
+        </div>
+      )}
     </div>
   );
 };
