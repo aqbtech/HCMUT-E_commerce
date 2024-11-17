@@ -48,7 +48,7 @@ const Product = () => {
       setHasMore(false);
     }
     setIsReviewLoading(false);
-  };
+  }; 
 
   useEffect(() => { fetchProduct() }, [productId]);
   useEffect(() => { fetchReview(); }, [pageReview, productId]);
