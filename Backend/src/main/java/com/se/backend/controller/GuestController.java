@@ -1,6 +1,7 @@
 package com.se.backend.controller;
 
 import com.se.backend.dto.response.ProductDetail;
+import com.se.backend.dto.response.ProductSummary;
 import com.se.backend.dto.response.ResponseAPITemplate;
 import com.se.backend.dto.response.ReviewDetail;
 import com.se.backend.service.GuestService;
@@ -37,6 +38,15 @@ public class GuestController {
 		Pageable pageable = Pageable.ofSize(size).withPage(page);
 		Page<ReviewDetail> res = guestService.getReviews(productId, pageable);
 		return ResponseAPITemplate.<Page<ReviewDetail>>builder()
+				.result(res)
+				.build();
+	}
+
+	@GetMapping("/home-page")
+	public ResponseAPITemplate<Page<ProductSummary>> getHomePage(
+			@RequestParam(value = "page", defaultValue = "0") int page) {
+		Page<ProductSummary> res = guestService.getHomePage(page);
+		return ResponseAPITemplate.<Page<ProductSummary>>builder()
 				.result(res)
 				.build();
 	}

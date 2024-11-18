@@ -2,6 +2,7 @@ package com.se.backend.service;
 
 import com.se.backend.dto.response.Instant;
 import com.se.backend.dto.response.ProductDetail;
+import com.se.backend.dto.response.ProductSummary;
 import com.se.backend.dto.response.ReviewDetail;
 import com.se.backend.entity.Attribute;
 import com.se.backend.entity.Product;
@@ -10,15 +11,19 @@ import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.AttributeMapper;
 import com.se.backend.mapper.InstanceMapper;
-import com.se.backend.mapper.ProductDetailMapper;
+import com.se.backend.mapper.ProductInfoMapper;
+import com.se.backend.mapper.ProductSummaryMapper;
 import com.se.backend.repository.AttributeInsRepository;
 import com.se.backend.repository.AttributeRepository;
 import com.se.backend.repository.ProductInstanceRepository;
 import com.se.backend.repository.ProductRepository;
+import com.se.backend.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -34,22 +39,20 @@ public class GuestServiceImpl implements GuestService {
 	private final ProductInstanceRepository productInstanceRepository;
 	private final AttributeInsRepository attributeInsRepository;
 	private final ReviewService reviewService;
-	private final ProductDetailMapper productDetailMapper;
+	private final ProductInfoMapper productInfoMapper;
+	private final ProductSummaryMapper productSummaryMapper;
 	private final AttributeMapper attributeMapper;
 	private final InstanceMapper instanceMapper;
-
-	private Long totalQuantityInStock(List<ProductInstance> productInstances) {
-		return productInstances.stream().mapToLong(ProductInstance::getQuantityInStock).sum();
-	}
+	private final ProductService productService;
 
 	private ProductDetail productDetailFactory(Product p, List<ProductInstance> pIs, List<Attribute> as) {
-		var productDetail = productDetailMapper.toProductDetail(p);
+		var productDetail = productInfoMapper.toProductDetail(p);
 		productDetail.setAttributes(attributeMapper.toAttributeDetails(as));
-		productDetail.setTotalQuantityInStock(totalQuantityInStock(pIs));
+		productDetail.setTotalQuantityInStock(productService.totalQuantityInStock(p.getId()));
 		// min price
-		productDetail.setMinPrice(pIs.stream().mapToDouble(ProductInstance::getPrice).min().orElse(0));
+		productDetail.setMinPrice(productService.minPriceOf(p.getId()));
 		// max price
-		productDetail.setMaxPrice(pIs.stream().mapToDouble(ProductInstance::getPrice).max().orElse(0));
+		productDetail.setMaxPrice(productService.maxPriceOf(p.getId()));
 		// rating
 		productDetail.setRating(reviewService.ratingCalculator(p.getId()));
 		// instants list
@@ -86,6 +89,15 @@ public class GuestServiceImpl implements GuestService {
 	@Override
 	public Page<ReviewDetail> getReviews(String productId, Pageable pageable) {
 		return reviewService.getReviews(productId, pageable);
+	}
+
+	@Override
+	public Page<ProductSummary> getHomePage(int page) {
+		// find all product with pageable, sort by name asc
+		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
+		Page<Product> products = productRepository.findAll(pageable);
+		List<Product> productsList = products.getContent();
+		return PaginationUtils.convertListToPage(productSummaryMapper.toProductSummaries(productsList), pageable);
 	}
 
 }

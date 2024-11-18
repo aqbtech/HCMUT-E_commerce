@@ -1,16 +1,12 @@
 package com.se.backend.mapper;
 
-import com.se.backend.dto.response.Instant;
 import com.se.backend.dto.response.ProductDetail;
 import com.se.backend.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface ProductDetailMapper {
-	ProductDetailMapper INSTANCE = Mappers.getMapper(ProductDetailMapper.class);
-
+public interface ProductInfoMapper {
 	@Mapping(target = "productId", source = "id")
 	@Mapping(target = "name", source = "name")
 	@Mapping(target = "description", source = "description")
