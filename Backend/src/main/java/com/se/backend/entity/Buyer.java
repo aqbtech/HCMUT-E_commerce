@@ -25,8 +25,8 @@ public class Buyer extends Business {
 	@OneToOne(optional = false, mappedBy = "buyer")
 	private Cart cart;
 	// mapping reviews
-	@OneToOne(mappedBy = "buyer")
-	private Review reviews;
+	@OneToMany(mappedBy = "buyer")
+	private List<Review> reviews;
 	// mapping follow
 	@OneToMany(mappedBy = "follower")
 	private List<Follow> follow;

@@ -2,14 +2,8 @@ package com.se.backend.service.business;
 
 
 import com.nimbusds.jose.util.Pair;
-import com.se.backend.dto.request.CreateOrderRequest;
-import com.se.backend.dto.request.AddProductRequest;
-import com.se.backend.dto.request.GetOrderRequest;
-import com.se.backend.dto.request.UpdateQuantityOfProductRequest;
-import com.se.backend.dto.response.Attr_of_GetOrderResponse;
-import com.se.backend.dto.response.CreateOrderResponse;
-import com.se.backend.dto.response.GetOrderResponse;
-import com.se.backend.dto.response.Product_of_GetOrderResponse;
+import com.se.backend.dto.request.*;
+import com.se.backend.dto.response.*;
 import com.se.backend.entity.*;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
@@ -23,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Attr;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -147,7 +140,7 @@ public class OrderService  {
                 throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
             }
 
-            long totalPrice = 0L;
+            Double totalPrice = 0.0;
             List<Order_ProductInstance> orderProducts = new ArrayList<>();
 
             for (int i = 0;  i < entry.getValue().size(); i++) {
@@ -189,7 +182,7 @@ public class OrderService  {
             //Find Order//HERE
         Order order = orderRepository.findById(orderId)
                     .orElseThrow(() -> new WebServerException(ErrorCode.UNKNOWN_ERROR));
-        long newPrice = 0L;
+        Double newPrice = 0.0;
         // if state of order is not "WAITING" then throw "State of order does not allow to add product"
         if(!order.getStatus().equals("WAITING")){
             throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
@@ -299,7 +292,7 @@ public class OrderService  {
         result.setMethod(method);
         return result;
     }
-    public Page<GetOrderResponse> getOrder(String username, Pageable pageable){
+    public Page<GetOrderResponse> getOrderForBuyer(String username, Pageable pageable){
         List<GetOrderResponse> responses = new ArrayList<>();
         Buyer buyer = buyerRepository.findById(username)
                 .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
@@ -325,7 +318,55 @@ public class OrderService  {
         );
     }
 
+    public Page<GetOrderResponse> getApprovedOrder(String username, Pageable pageable){
+        List<GetOrderResponse> responses = new ArrayList<>();
+        Seller seller = sellerRepository.findById(username)
+                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
+        Page<Order> orderPage = orderRepository.findApprovedOrderBySeller(seller, pageable);
+        if(orderPage.isEmpty()){
+            return new PageImpl<>(responses);
+        }
+        for(Order o: orderPage.getContent()){
+            List<Order_ProductInstance> order_productInstanceList = o.getOrderProductInstances();
+            List<ProductInstance> productInstances = new ArrayList<>();
+            for(Order_ProductInstance opI: order_productInstanceList){
+                ProductInstance productInstance = opI.getProductInstance();
+                productInstances.add(productInstance);
+            }
+            responses.add(this.OrderResponseHandler(o, productInstances));
+        }
 
+        return new PageImpl<>(
+                responses,
+                pageable,
+                orderPage.getTotalElements()
+        );
+    }
+
+    public Page<GetOrderResponse> getWaitingOrder(String username, Pageable pageable){
+        List<GetOrderResponse> responses = new ArrayList<>();
+        Seller seller = sellerRepository.findById(username)
+                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
+        Page<Order> orderPage = orderRepository.findWaitingOrderBySeller(seller, pageable);
+        if(orderPage.isEmpty()){
+            return new PageImpl<>(responses);
+        }
+        for(Order o: orderPage.getContent()){
+            List<Order_ProductInstance> order_productInstanceList = o.getOrderProductInstances();
+            List<ProductInstance> productInstances = new ArrayList<>();
+            for(Order_ProductInstance opI: order_productInstanceList){
+                ProductInstance productInstance = opI.getProductInstance();
+                productInstances.add(productInstance);
+            }
+            responses.add(this.OrderResponseHandler(o, productInstances));
+        }
+
+        return new PageImpl<>(
+                responses,
+                pageable,
+                orderPage.getTotalElements()
+        );
+    }
 
     public CreateOrderResponse findById(String orderId) {
         Order order = orderRepository.findById(orderId)
@@ -333,6 +374,63 @@ public class OrderService  {
         CreateOrderResponse response = null;
         return response;
     }
+
+    @Transactional
+    public CancelOrderResponse cancelOrder(CancelOrderRequest cancelOrderRequest){
+        Order order = orderRepository.findByOrderId(cancelOrderRequest.getOrderId())
+                .orElseThrow(()->new WebServerException(ErrorCode.ORDER_NOT_FOUND));
+        CancelOrderResponse response = CancelOrderResponse.builder().build();
+        if(!order.getStatus().equals("WAITING")){
+            response.setMsg("Can not cancel this order because it is " + order.getStatus().toLowerCase());
+            return response;
+        }
+
+        List<Order_ProductInstance> order_productInstances = order.getOrderProductInstances();
+        for(Order_ProductInstance orderProductInstance: order_productInstances){
+            ProductInstance productInstance = orderProductInstance.getProductInstance();
+            long quantityInStock = productInstance.getQuantityInStock();
+            long quanntityInOrder = orderProductInstance.getQuantity();
+            productInstance.setQuantityInStock(quantityInStock + quanntityInOrder);
+            try{
+                productInstanceRepository.save(productInstance);
+            }
+            catch (WebServerException e){
+                response.setMsg("Can not cancel this order");
+                return response;
+//                throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+            }
+        }
+
+        order.setStatus("CANCEL");
+        try {
+            orderRepository.save(order);
+        }
+        catch (WebServerException e){
+            response.setMsg("Can not cancel this order");
+            return response;
+        }
+        response.setMsg("Cancel order successfully");
+        return response;
+    }
+
+    @Transactional
+    public ApproveOrderResponse approveOrder(ApproveOrderRequest approveOrderRequest){
+        Order order = orderRepository.findByOrderId(approveOrderRequest.getOrderId())
+                .orElseThrow(()->new WebServerException(ErrorCode.ORDER_NOT_FOUND));
+        ApproveOrderResponse response = ApproveOrderResponse.builder().build();
+        order.setStatus("APPROVED");
+        try {
+            orderRepository.save(order);
+        }
+        catch (WebServerException e){
+            response.setMsg("Can not approve this order");
+            return response;
+        }
+
+        response.setMsg("Approved order");
+        return response;
+    }
+
     @Transactional
     public CreateOrderResponse updateQuantityOfProductFromOrder(String orderId, UpdateQuantityOfProductRequest request) {
         // Tìm đơn hàng dựa vào orderId
@@ -373,7 +471,7 @@ public class OrderService  {
         }
 
         // Tính lại tổng giá tiền của đơn hàng
-        long newTotalPrice = 0L;
+        Double newTotalPrice = 0.0;
         for (Order_ProductInstance orderProduct : order.getOrderProductInstances()) {
             newTotalPrice += orderProduct.getProductInstance().getPrice() * orderProduct.getQuantity();
         }
@@ -387,28 +485,7 @@ public class OrderService  {
         // Trả về thông tin đơn hàng đã cập nhật
         return findById(orderId);
     }
-//
-//    @Transactional
-//    public String deleteOrder(String id) {
-//        // Tìm đơn hàng
-//        Optional<Order> orderOpt = orderRepository.findById(id);
-//
-//        if (orderOpt.isEmpty()) {
-//            return "Order not found" + "Processing"; // Thêm trạng thái hiện tại của đơn hàng nếu có
-//        }
-//
-//        Order order = orderOpt.get();
-//
-//        // Giả sử bạn không thể xóa đơn hàng nếu nó đã được hoàn thành
-//        if ("Completed".equals(order.getState().toString())) {
-//            return "Cannot delete completed order!";
-//        }
-//
-//        // Xóa đơn hàng
-//        orderRepository.delete(order);
-//
-//        return "Order deleted successfully!";  // Trả về trạng thái đơn hàng sau khi xóa
-//    }
+
     @Transactional
     public CreateOrderResponse updateOrderState(String order_id, String newState) {
         Order order = orderRepository.findById(order_id)

@@ -5,6 +5,8 @@ import com.se.backend.entity.Review;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface ReviewMapper {
 	@Mapping(target = "reviewId", source = "reviewId.reviewContentId")
@@ -12,4 +14,6 @@ public interface ReviewMapper {
 	@Mapping(target = "reviewContent", source = "reviewContent.content")
 	@Mapping(target = "rating", source = "reviewContent.rating")
 	ReviewDetail toReviewDetail(Review review);
+
+	List<ReviewDetail> toReviewDetail(List<Review> reviews);
 }

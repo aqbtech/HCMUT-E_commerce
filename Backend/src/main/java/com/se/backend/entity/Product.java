@@ -6,15 +6,27 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@NamedEntityGraph(name = "product-detail", attributeNodes = {
-		@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-productInstance"),
-		@NamedAttributeNode("seller")},
-		subgraphs = {
-			@NamedSubgraph(
-					name = "buildProduct-productInstance",
-					attributeNodes = @NamedAttributeNode("productInstance"))
-		}
-)
+@NamedEntityGraphs({
+		@NamedEntityGraph(name = "product-detail", attributeNodes = {
+				@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-productInstance"),
+				@NamedAttributeNode("seller")},
+				subgraphs = {
+						@NamedSubgraph(
+								name = "buildProduct-productInstance",
+								attributeNodes = @NamedAttributeNode("productInstance"))
+				}
+		),
+		@NamedEntityGraph(name = "product-summary", attributeNodes = {
+				@NamedAttributeNode("id"),
+				@NamedAttributeNode("name"),
+				@NamedAttributeNode("description")
+			}
+		),
+		@NamedEntityGraph(name = "product-attribute", attributeNodes = {
+				@NamedAttributeNode("attributes")
+		})
+})
+
 @Getter
 @Setter
 @Builder

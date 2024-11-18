@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class ResponseAPITemplate<T> {
 	@Builder.Default
 	private int code = 200;
-	private String message;
+	@Builder.Default
+	private String message = "Success";
 	private T result;
 }
