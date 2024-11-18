@@ -2,20 +2,21 @@ package com.se.backend.service;
 
 import com.se.backend.dto.response.Instant;
 import com.se.backend.dto.response.ProductDetail;
-import com.se.backend.dto.response.ReviewDetail;
 import com.se.backend.dto.response.UserDeliveryInfo;
 import com.se.backend.entity.Attribute;
 import com.se.backend.entity.Product;
 import com.se.backend.entity.ProductInstance;
-import com.se.backend.entity.Review;
-import com.se.backend.mapper.*;
+import com.se.backend.exception.ErrorCode;
+import com.se.backend.exception.WebServerException;
+import com.se.backend.mapper.AttributeMapper;
+import com.se.backend.mapper.DeliveryMapper;
+import com.se.backend.mapper.InstanceMapper;
+import com.se.backend.mapper.ProductDetailMapper;
 import com.se.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,19 +31,10 @@ public class GuestServiceImpl implements GuestService {
 	private final AttributeInsRepository attributeInsRepository;
 	private final DeliveryInfoRepository deliveryInfoRepository;
 	private final DeliveryMapper deliveryMapper;
-	@Autowired
-	private ProductDetailMapper productDetailMapper;
-	@Autowired
-	private AttributeMapper attributeMapper;
-	@Autowired
-	private ReviewMapper reviewMapper;
-	@Autowired
-	private InstanceMapper instanceMapper;
-
-	private Double ratingCalculator() {
-		// will be call review service
-		return 5.0;
-	}
+	private final ReviewService reviewService;
+	private final ProductDetailMapper productDetailMapper;
+	private final AttributeMapper attributeMapper;
+	private final InstanceMapper instanceMapper;
 
 	private Long totalQuantityInStock(List<ProductInstance> productInstances) {
 		return productInstances.stream().mapToLong(ProductInstance::getQuantityInStock).sum();
@@ -57,7 +49,7 @@ public class GuestServiceImpl implements GuestService {
 		// max price
 		productDetail.setMaxPrice(pIs.stream().mapToDouble(ProductInstance::getPrice).max().orElse(0));
 		// rating
-		productDetail.setRating(ratingCalculator());
+		productDetail.setRating(reviewService.ratingCalculator(p.getId()));
 		// instants list
 		List<Instant> instants = instanceMapper.toInstants(pIs);
 		// for each instant add all attributes in as and value is it own value
@@ -81,25 +73,16 @@ public class GuestServiceImpl implements GuestService {
 
 	@Override
 	public ProductDetail getProductDetail(String productId) {
-		var product = productRepository.findProductById(productId);
+		var product = productRepository.findProductDetailedById(productId)
+				.orElseThrow(() -> new WebServerException(ErrorCode.PRODUCT_NOT_FOUND));
 		var productInstances = productInstanceRepository.findByBuildProductProduct(product);
-		var dto = productDetailFactory(product,
+		return productDetailFactory(product,
 				productInstances,
 				attributeRepository.findByOfProduct(product));
-		log.info("Product ID: {}", productId);
-		return dto;
 	}
 
 	@Override
 	public UserDeliveryInfo getUserDeliveryInfo(String username) {
 		return deliveryMapper.toUserDeliveryInfo(deliveryInfoRepository.findByUserId(username));
-	}
-
-	private List<ReviewDetail> toReviewDetail(List<Review> reviews) {
-		List<ReviewDetail> reviewDetails = new ArrayList<>();
-		for (var review : reviews) {
-			reviewDetails.add(reviewMapper.toReviewDetail(review));
-		}
-		return reviewDetails;
 	}
 }
