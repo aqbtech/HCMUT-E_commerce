@@ -20,16 +20,15 @@ export const getReview = async (api) => {
 }
 
 //-----
-export const getProduct = async (api) => {
-  await axiosPublic.get(`/product?${api}`)
-  .then((res)=> {
-    console.log(`Lấy thành công list sản phẩm:`, res);
-    return res.data
-  })
-  .catch(( err) => {
+export const getProduct = async (page) => {
+  try {
+    const res =  await axiosPublic.get(`/home-page?page=${page}`)
+     console.log(`Lấy thành công list sản phẩm:`, res);
+    return res.data.result;
+  } catch(err) {
     console.log(`Lỗi khi lấy list sản phẩm: `, err );
     throw err;
-  }) 
+  }
 }
 
 

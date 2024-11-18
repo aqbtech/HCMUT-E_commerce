@@ -23,8 +23,8 @@ export const addToCart = async (body) => {
 }
 
 export const fetchCart =  async (page, limit) => {
-    const res =  await axiosClient2.get(`/flash-cart?username=${Cookies.get('username')}&page=${page}&limit=${limit}`);
-
+    const res =  await axiosClient2.get(`/flash-cart?username=adarby50179`);
+    console.log("lay gio hnag thanh cong", res);
     return res.data.result
 }
 
