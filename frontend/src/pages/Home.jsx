@@ -16,7 +16,7 @@ const Home = () => {
   const [listCategories, setListCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [prevPage, setPrevPage] = useState(1);
   
   // Hàm load sản phẩm với các tham số lọc và phân trang

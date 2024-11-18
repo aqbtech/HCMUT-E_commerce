@@ -14,7 +14,7 @@ const Product = () => {
   const [image, setImage] = useState('');
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [quantity, setQuantity] = useState(1);
-  const [pageReview, setPageReview] = useState(1);
+  const [pageReview, setPageReview] = useState(0);
   const [prevPage, setPrevPage] = useState(1);
   const [review, setReview] = useState([]);
   const [selectedInstant, setSelectedInstant] = useState(null);
@@ -40,18 +40,17 @@ const Product = () => {
     try {
       const response = await getReviewById(productId, pageReview);
       if(response) {
-        setReview(response.review);
+        setReview(response.content);
         if(pageReview >= response.totalPages) setHasMore(false);
       }
     } catch (err) {
-      setReview([]);
-      setHasMore(false);
+      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
     }
     setIsReviewLoading(false);
   }; 
 
   useEffect(() => { fetchProduct() }, [productId]);
-  useEffect(() => { fetchReview(); }, [pageReview, productId]);
+  useEffect(() => { fetchReview() }, [pageReview, productId]);
 
 
   const handleNextPage = () => {
@@ -60,7 +59,7 @@ const Product = () => {
   };
 
   const handlePreviousPage = () => {
-    if (pageReview > 1) {
+    if (pageReview > 0) {
       setPrevPage(pageReview);
       setPageReview((prev) => prev - 1);
     }
@@ -80,7 +79,6 @@ const Product = () => {
   const updateSelectedInstant = (attributes = selectedAttributes) => {
     if(productData?.listAtt?.length === 0) {
       setSelectedInstant(productData?.listInstants?.[0]);
-      console.log("Khong co gi!");
       return;
     }
     if (!allAttributesSelected(attributes)) {
@@ -103,9 +101,7 @@ const Product = () => {
   };
   
   useEffect(() => {
-    if(productData?.listAtt?.length !== 0) {
       updateSelectedInstant();
-    }
   }, [selectedAttributes, productData?.listInstants]);
 
   
@@ -273,28 +269,42 @@ const Product = () => {
         <h2 className="text-lg font-bold">Bình luận của khách hàng</h2>
 
         {isReviewLoading ? ( // Hiển thị "Đang tải" khi review đang được tải
-          <p>Đang tải bình luận...</p>
+          <p className="text-gray-500 text-center">Đang tải bình luận...</p>
         ) : review.length > 0 ? (
           review.map((reviewItem) => (
-            <div key={reviewItem.reviewId} className="mt-3 border-b pb-3">
-              <p><b>{reviewItem.reviewerName}</b> - <span className="text-yellow-500">Rating: {reviewItem.rating}</span></p>
-              <p>{reviewItem.contentReview}</p>
+            <div
+              key={reviewItem.reviewId}
+              className="mt-3 p-4 bg-white rounded-lg shadow-md border border-gray-200"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <b className="text-gray-800">{reviewItem.reviewerName}</b>
+                  <span className="text-yellow-500 inline-flex items-center gap-1">
+                    {reviewItem.rating}
+                    <img src={assets.star_icon} alt="star" className="w-4 h-4" />
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500">{reviewItem.date}</p>
+              </div>
+
+              <p className="mt-2 text-gray-600">{reviewItem.reviewContent}</p>
             </div>
           ))
         ) : (
-          <p className="text-gray-500">Chưa có bình luận nào.</p>
+          <p className="text-gray-500 text-center">Chưa có bình luận nào.</p>
         )}
+
 
         {/* Nút phân trang */}
         <div className="flex justify-center gap-4 mt-4">
           <button
             onClick={handlePreviousPage}
-            disabled={pageReview === 1}
+            disabled={pageReview === 0}
             className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
           >
             Trang Trước
           </button>
-          <p>{pageReview}</p>
+          <p>{pageReview + 1}</p>
           <button
             onClick={handleNextPage}
             disabled={!hasMore}
