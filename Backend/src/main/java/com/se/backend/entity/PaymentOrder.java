@@ -18,6 +18,7 @@ public class PaymentOrder {
 	@Column(name = "payment_order_id")
 	private String paymentOrderCode;
 
+	private String payment_method;
 	// -- Relationships -- //
 	// mapping delivery info
 	@ManyToOne(optional = false)
