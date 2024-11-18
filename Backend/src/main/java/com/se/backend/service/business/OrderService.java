@@ -235,7 +235,7 @@ public class OrderService  {
         GetOrderResponse result = orderMapper.OrderToResponse(order);
         DeliveryInfor deliveryInfor = order.getPaymentOrder().getDeliveryInfor();
         result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
-
+        String method = order.getPaymentOrder().getPayment_method();
         List<Product_of_GetOrderResponse> product_of_getOrderResponseList = new ArrayList<>();
 
         List<Long> quantityOfProduct = new ArrayList<>();
@@ -289,7 +289,7 @@ public class OrderService  {
         }
 
         result.setListProduct(product_of_getOrderResponseList);
-
+        result.setMethod(method);
         return result;
     }
     public Page<GetOrderResponse> getOrderForBuyer(String username, Pageable pageable){

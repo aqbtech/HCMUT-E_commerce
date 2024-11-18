@@ -17,8 +17,7 @@ public class PaymentOrder {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(name = "payment_order_id")
 	private String paymentOrderCode;
-
-	private String status;
+	private String payment_method;
 	// -- Relationships -- //
 	// mapping delivery info
 	@ManyToOne(optional = false)
