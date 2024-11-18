@@ -2,6 +2,7 @@ package com.se.backend.repository;
 
 import com.se.backend.entity.Buyer;
 import com.se.backend.entity.Order;
+import com.se.backend.entity.Seller;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, String> {
@@ -19,5 +21,20 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 //    Page<Order> findByUsername(@Param("username") String username, Pageable pageable);\
     @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)
     Page<Order> findOrdersByPaymentOrderDeliveryInforBuyer(Buyer buyer, Pageable pageable);
+
+    @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)
+    @Query("select o from Order o where o.seller = :seller and o.status = 'APPROVED'")
+    Page<Order> findApprovedOrderBySeller(@Param("seller") Seller seller,Pageable pageable);
+
+    @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)
+    @Query("select o from Order o where o.seller = :seller and o.status = 'CANCEL'")
+    Page<Order> findCancelOrderBySeller(@Param("seller") Seller seller,Pageable pageable);
+
+    @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)
+    @Query("select o from Order o where o.seller = :seller and o.status = 'WAITING'")
+    Page<Order> findWaitingOrderBySeller(@Param("seller") Seller seller,Pageable pageable);
+
+    @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)
+    Optional<Order> findByOrderId(String orderId);
 
 }
