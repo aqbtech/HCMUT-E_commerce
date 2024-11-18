@@ -1,16 +1,23 @@
 package com.se.backend.controller.web;
 
 import com.se.backend.dto.request.*;
-//import com.se.backend.dto.response.GetOrderResponse;
+import com.se.backend.dto.response.GetOrderResponse;
 import com.se.backend.dto.response.ResponseAPITemplate;
 import com.se.backend.service.business.OrderService;
 import com.se.backend.dto.response.CreateOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,13 +40,13 @@ public class BuyerController {
 //                    .result(response)
 //                    .build();
 //    }
-    @GetMapping("/order/{id}")
-    public ResponseAPITemplate<CreateOrderResponse> detailInfoOfPaymentOrder(@PathVariable("id") String order_id){
-        CreateOrderResponse response = orderService.findById(order_id);
-        return ResponseAPITemplate.<CreateOrderResponse>builder()
-                .result(response)
-                .build();
-    }
+//    @GetMapping("/order/{id}")
+//    public ResponseAPITemplate<CreateOrderResponse> detailInfoOfPaymentOrder(@PathVariable("id") String order_id){
+//        CreateOrderResponse response = orderService.findById(order_id);
+//        return ResponseAPITemplate.<CreateOrderResponse>builder()
+//                .result(response)
+//                .build();
+//    }
     @PostMapping("/order")
     public ResponseAPITemplate<CreateOrderResponse> createOrder(
             @RequestBody CreateOrderRequest request){
@@ -49,14 +56,23 @@ public class BuyerController {
                 .build();
     }
 
-//    @GetMapping("/order")
-//    public ResponseAPITemplate<GetOrderResponse> getOrder(
-//            @RequestBody GetOrderRequest request,
-//            @RequestParam Integer prevpage,
-//            @RequestParam Integer page,
-//            @RequestParam Integer limit){
-//        GetOrderResponse response = orderService.getAll()
-//    }
+    @GetMapping("/order/{username}")
+    public ResponseAPITemplate<Page<GetOrderResponse>> getOrderOfUser(
+            @PathVariable("username") String username,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit) {
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1));
+        Page<GetOrderResponse> response = orderService.getOrder(username, pageable);
+        if (response == null || response.isEmpty()) {
+        return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
+                .message("does not have any order")
+                .result(response)
+                .build();
+        }
+        return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
+                .result(response)
+                .build();
+    }
 
     @PutMapping("/order/updatestate/{id}")
     public ResponseAPITemplate<CreateOrderResponse> updateStateOfOrder(@PathVariable("id") String order_id,

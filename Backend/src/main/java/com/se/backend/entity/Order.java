@@ -7,6 +7,21 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@NamedEntityGraph(name = "order-Product-Instance", attributeNodes = {
+		@NamedAttributeNode(value = "orderProductInstances", subgraph = "productInstance"),
+		@NamedAttributeNode("seller")},
+		subgraphs = {
+				@NamedSubgraph(
+						name = "productInstance",
+						attributeNodes = @NamedAttributeNode(value = "productInstance", subgraph = "buildProduct")
+
+				),
+				@NamedSubgraph(
+						name = "buildProduct",
+						attributeNodes = @NamedAttributeNode(value = "buildProduct")
+				)
+		}
+)
 @Getter
 @Setter
 @Builder

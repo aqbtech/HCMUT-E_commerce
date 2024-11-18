@@ -1,15 +1,17 @@
 package com.se.backend.controller;
 
 import com.se.backend.dto.response.ProductDetail;
+import com.se.backend.dto.response.ProductSummary;
 import com.se.backend.dto.response.ResponseAPITemplate;
-import com.se.backend.dto.response.UserDeliveryInfo;
+import com.se.backend.dto.response.ReviewDetail;
 import com.se.backend.service.GuestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,12 +30,23 @@ public class GuestController {
 				.build();
 	}
 
-	@GetMapping("/address")
-	public ResponseAPITemplate<List<UserDeliveryInfo>> queryProductList(@RequestParam String username) {
-		List<UserDeliveryInfo> res = List.of(guestService.getUserDeliveryInfo(username));
-		return ResponseAPITemplate.<List<UserDeliveryInfo>>builder()
-				.code(200)
-				.message("Success")
+	@GetMapping("/{productId}/reviews")
+	public ResponseAPITemplate<Page<ReviewDetail>> queryProductReview(
+			@PathVariable(value = "productId") String productId,
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "size", defaultValue = "10") int size) {
+		Pageable pageable = Pageable.ofSize(size).withPage(page);
+		Page<ReviewDetail> res = guestService.getReviews(productId, pageable);
+		return ResponseAPITemplate.<Page<ReviewDetail>>builder()
+				.result(res)
+				.build();
+	}
+
+	@GetMapping("/home-page")
+	public ResponseAPITemplate<Page<ProductSummary>> getHomePage(
+			@RequestParam(value = "page", defaultValue = "0") int page) {
+		Page<ProductSummary> res = guestService.getHomePage(page);
+		return ResponseAPITemplate.<Page<ProductSummary>>builder()
 				.result(res)
 				.build();
 	}

@@ -5,6 +5,8 @@ import com.se.backend.entity.DeliveryInfor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface DeliveryMapper {
 	@Mapping(target = "deliveryId", source = "id")
@@ -15,4 +17,6 @@ public interface DeliveryMapper {
 	@Mapping(target = "district", source = "address.district")
 	@Mapping(target = "ward", source = "address.commune")
 	UserDeliveryInfo toUserDeliveryInfo(DeliveryInfor deliveryInfor);
+
+	List<UserDeliveryInfo> toUserDeliveryInfo(List<DeliveryInfor> deliveryInfos);
 }

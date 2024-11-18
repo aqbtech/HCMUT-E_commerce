@@ -10,6 +10,6 @@ import java.util.List;
 public class CreateOrderRequest {
     private String username;
     private List<Product_of_OrderRequest> ListProduct;
-    private DeliveryAddress_of_CreateOrderRequest deliveryAddressOfCreateOrderRequest;
+    private DeliveryAddress_of_CreateOrderRequest deliveryAddress;
     private String method;
 }

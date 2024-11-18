@@ -1,16 +1,34 @@
 package com.se.backend.service;
 
-import com.se.backend.dto.response.*;
-import com.se.backend.entity.*;
-import com.se.backend.mapper.*;
-import com.se.backend.repository.*;
+import com.se.backend.dto.response.Instant;
+import com.se.backend.dto.response.ProductDetail;
+import com.se.backend.dto.response.ProductSummary;
+import com.se.backend.dto.response.ReviewDetail;
+import com.se.backend.entity.Attribute;
+import com.se.backend.entity.Product;
+import com.se.backend.entity.ProductInstance;
+import com.se.backend.exception.ErrorCode;
+import com.se.backend.exception.WebServerException;
+import com.se.backend.mapper.AttributeMapper;
+import com.se.backend.mapper.InstanceMapper;
+import com.se.backend.mapper.ProductInfoMapper;
+import com.se.backend.mapper.ProductSummaryMapper;
+import com.se.backend.repository.AttributeInsRepository;
+import com.se.backend.repository.AttributeRepository;
+import com.se.backend.repository.ProductInstanceRepository;
+import com.se.backend.repository.ProductRepository;
+import com.se.backend.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -20,69 +38,66 @@ public class GuestServiceImpl implements GuestService {
 	private final AttributeRepository attributeRepository;
 	private final ProductInstanceRepository productInstanceRepository;
 	private final AttributeInsRepository attributeInsRepository;
-	@Autowired
-	private ProductDetailMapper productDetailMapper;
-	@Autowired
-	private AttributeMapper attributeMapper;
-	@Autowired
-	private ReviewMapper reviewMapper;
+	private final ReviewService reviewService;
+	private final ProductInfoMapper productInfoMapper;
+	private final ProductSummaryMapper productSummaryMapper;
+	private final AttributeMapper attributeMapper;
+	private final InstanceMapper instanceMapper;
+	private final ProductService productService;
 
-	private Double ratingCalculator() {
-		// will be call review service
-		return 5.0;
-	}
-	private Long totalQuantityInStock(List<ProductInstance> productInstances) {
-		return productInstances.stream().mapToLong(ProductInstance::getQuantityInStock).sum();
-	}
-	@Autowired
-	private InstanceMapper instanceMapper;
-	@Autowired
-	private AttributeInstanceMapper attributeInstanceMapper;
 	private ProductDetail productDetailFactory(Product p, List<ProductInstance> pIs, List<Attribute> as) {
-		var productDetail = productDetailMapper.toProductDetail(p);
+		var productDetail = productInfoMapper.toProductDetail(p);
 		productDetail.setAttributes(attributeMapper.toAttributeDetails(as));
-		productDetail.setTotalQuantityInStock(totalQuantityInStock(pIs));
+		productDetail.setTotalQuantityInStock(productService.totalQuantityInStock(p.getId()));
 		// min price
-		productDetail.setMinPrice(pIs.stream().mapToDouble(ProductInstance::getPrice).min().orElse(0));
+		productDetail.setMinPrice(productService.minPriceOf(p.getId()));
 		// max price
-		productDetail.setMaxPrice(pIs.stream().mapToDouble(ProductInstance::getPrice).max().orElse(0));
+		productDetail.setMaxPrice(productService.maxPriceOf(p.getId()));
 		// rating
-		productDetail.setRating(ratingCalculator());
+		productDetail.setRating(reviewService.ratingCalculator(p.getId()));
 		// instants list
 		List<Instant> instants = instanceMapper.toInstants(pIs);
-		for( Attribute ai : as ) {
-			var attributeInstances = attributeInsRepository.findByAttribute(ai);
-			for( AttributeInstance attributeInstance : attributeInstances ) {
-				for( Instant instant : instants ) {
-					instant.setAttributes(attributeInstanceMapper.toAttributeInstanceMap(attributeInstance));
-				}
+		// for each instant add all attributes in as and value is it own value
+		Map<String, String> attributeMapTemplate = new HashMap<>();
+		for (var att : as) {
+			attributeMapTemplate.put(att.getName(), "");
+		}
+		for (int i = 0; i < instants.size(); i++) {
+			var pIi = pIs.get(i);
+			// add each attribute instance to attributeMapTemplate and set value
+			var attIAs = attributeInsRepository.findAttributeInstancesBy(pIi);
+			Map<String, String> attributeMap = new HashMap<>(attributeMapTemplate);
+			for (var attIA : attIAs) {
+				attributeMap.put(attIA.getAttribute().getName(), attIA.getValue());
 			}
+			instants.get(i).setAttributes(attributeMap);
 		}
 		productDetail.setInstants(instants);
 		return productDetail;
 	}
+
 	@Override
 	public ProductDetail getProductDetail(String productId) {
-		var product = productRepository.findProductById(productId);
+		var product = productRepository.findProductDetailedById(productId)
+				.orElseThrow(() -> new WebServerException(ErrorCode.PRODUCT_NOT_FOUND));
 		var productInstances = productInstanceRepository.findByBuildProductProduct(product);
-		var dto = productDetailFactory(product,
+		return productDetailFactory(product,
 				productInstances,
 				attributeRepository.findByOfProduct(product));
-		log.info("Product ID: {}", productId);
-		return dto;
-	}
-	private final DeliveryInfoRepository deliveryInfoRepository;
-	private final DeliveryMapper deliveryMapper;
-	@Override
-	public UserDeliveryInfo getUserDeliveryInfo(String username) {
-		return deliveryMapper.toUserDeliveryInfo(deliveryInfoRepository.findByUserId(username));
 	}
 
-	private List<ReviewDetail> toReviewDetail(List<Review> reviews) {
-		List<ReviewDetail> reviewDetails = new ArrayList<>();
-		for(var review : reviews) {
-			reviewDetails.add(reviewMapper.toReviewDetail(review));
-		}
-		return reviewDetails;
+	@Override
+	public Page<ReviewDetail> getReviews(String productId, Pageable pageable) {
+		return reviewService.getReviews(productId, pageable);
 	}
+
+	@Override
+	public Page<ProductSummary> getHomePage(int page) {
+		// find all product with pageable, sort by name asc
+		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
+		Page<Product> products = productRepository.findAll(pageable);
+		List<Product> productsList = products.getContent();
+		return PaginationUtils.convertListToPage(productSummaryMapper.toProductSummaries(productsList), pageable);
+	}
+
 }

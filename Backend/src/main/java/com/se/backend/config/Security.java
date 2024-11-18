@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -22,7 +23,7 @@ public class Security {
 	// If you want to use security, you can add configurations here
 	private final String[] PUBLIC_ENDPOINTS = {
 			"/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
-			"/query_product_detail/**", "/address/**"
+			"/query_product_detail/**", "/{productId}/reviews", "/home-page"
 	};
 	private final CustomJwtDecoder customJwtDecoder;
 
@@ -42,7 +43,8 @@ public class Security {
 						.decoder(customJwtDecoder)
 						.jwtAuthenticationConverter(jwtAuthenticationConverter())
 				).authenticationEntryPoint(new JwtAuthEntryPoint()));
-
+		security.sessionManagement(session ->
+				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		security.csrf(AbstractHttpConfigurer::disable);
 		security.cors(cors -> cors.configurationSource(request -> {
 			CorsConfiguration corsConfig = new CorsConfiguration();

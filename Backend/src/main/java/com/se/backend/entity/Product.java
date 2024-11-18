@@ -6,15 +6,24 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@NamedEntityGraph(name = "product-detail", attributeNodes = {
-		@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-productInstance"),
-		@NamedAttributeNode("seller")},
-		subgraphs = {
-			@NamedSubgraph(
-					name = "buildProduct-productInstance",
-					attributeNodes = @NamedAttributeNode("productInstance"))
-		}
-)
+@NamedEntityGraphs({
+		@NamedEntityGraph(name = "product-detail", attributeNodes = {
+				@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-productInstance"),
+				@NamedAttributeNode("seller")},
+				subgraphs = {
+						@NamedSubgraph(
+								name = "buildProduct-productInstance",
+								attributeNodes = @NamedAttributeNode("productInstance"))
+				}
+		),
+		@NamedEntityGraph(name = "product-summary", attributeNodes = {
+				@NamedAttributeNode("id"),
+				@NamedAttributeNode("name"),
+				@NamedAttributeNode("description")
+			}
+		)
+})
+
 @Getter
 @Setter
 @Builder
@@ -40,8 +49,8 @@ public class Product {
 	private List<Attribute> attributes;
 
 	// mapping 3-ary relationship build product
-	@OneToOne(mappedBy = "product")
-	private BuildProduct buildProduct;
+	@OneToMany(mappedBy = "product")
+	private List<BuildProduct> buildProduct;
 	// mapping seller
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "seller_id", referencedColumnName = "username")

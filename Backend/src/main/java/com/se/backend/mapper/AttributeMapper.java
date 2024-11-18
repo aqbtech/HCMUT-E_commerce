@@ -1,5 +1,6 @@
 package com.se.backend.mapper;
 
+import com.se.backend.dto.response.Attr_of_GetOrderResponse;
 import com.se.backend.dto.response.AttributeDetail;
 import com.se.backend.entity.Attribute;
 import com.se.backend.entity.AttributeInstance;
@@ -16,6 +17,10 @@ public interface AttributeMapper {
 	@Mapping(target = "name", source = "name")
 	@Mapping(target = "values", source = "attributeInstances", qualifiedByName = "mapAttributeInstancesToValues")
 	AttributeDetail toAttributeDetail(Attribute attribute);
+
+	@Mapping(target = "name", source = "name")
+	@Mapping(target = "value", ignore = true)
+	Attr_of_GetOrderResponse toAttribute_Of_GetOrderResponse(Attribute attribute);
 
 	@Named("mapAttributeInstancesToValues")
 	default List<String> mapAttributeInstancesToValues(List<AttributeInstance> attributeInstances) {
