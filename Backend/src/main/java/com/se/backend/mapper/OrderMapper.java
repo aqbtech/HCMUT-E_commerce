@@ -19,6 +19,6 @@ public interface OrderMapper {
     @Mapping(target = "price", source = "totalPrice")
     @Mapping(target = "listProduct", ignore = true)
     @Mapping(target = "deliveryAddress", ignore = true)
-    @Mapping(target = "method", source = "status")
+    @Mapping(target = "method", ignore = true)
     GetOrderResponse OrderToResponse(Order order);
 }

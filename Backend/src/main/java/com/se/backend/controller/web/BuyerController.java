@@ -1,22 +1,20 @@
 package com.se.backend.controller.web;
 
 import com.se.backend.dto.request.*;
+import com.se.backend.dto.response.CancelOrderResponse;
 import com.se.backend.dto.response.GetOrderResponse;
 import com.se.backend.dto.response.ResponseAPITemplate;
 import com.se.backend.service.business.OrderService;
 import com.se.backend.dto.response.CreateOrderResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -27,11 +25,13 @@ public class BuyerController {
     @Autowired
     private final OrderService orderService;
 
-//    @DeleteMapping("/order/{id}")
-//    public ResponseEntity<String> deleteOrder(@PathVariable("id") String orderId){
-//        String message = this.orderService.deleteOrder(orderId);
-//        return ResponseEntity.ok(message);
-//    }
+    @PutMapping("/delete_order")
+    public ResponseAPITemplate<CancelOrderResponse> cancelOrder(@RequestBody CancelOrderRequest request){
+        CancelOrderResponse response = orderService.cancelOrder(request);
+        return ResponseAPITemplate.<CancelOrderResponse>builder()
+                .message(response.getMsg())
+                .build();
+    }
 
 //    @GetMapping("/order/getall/{buyerId}")
 //    public ResponseAPITemplate<List<CreateOrderResponse>> getAllOrder(@PathVariable("buyerId") String buyerId){
@@ -61,8 +61,8 @@ public class BuyerController {
             @PathVariable("username") String username,
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit) {
-        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(1));
-        Page<GetOrderResponse> response = orderService.getOrder(username, pageable);
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(10));
+        Page<GetOrderResponse> response = orderService.getOrderForBuyer(username, pageable);
         if (response == null || response.isEmpty()) {
         return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
                 .message("does not have any order")

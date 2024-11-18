@@ -25,7 +25,7 @@ public class ProductInstance {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(name = "root_product_instance_id", length = 64)
 	private String id;
-	private Long price;
+	private Double price;
 	private Long quantityInStock;
 
 	// -- mapping relationships --
@@ -36,8 +36,8 @@ public class ProductInstance {
 	@OneToMany(mappedBy = "productInstance")
 	private List<BuildProduct> buildProduct;
 	// mapping reviews
-	@OneToOne(mappedBy = "productInstance")
-	private Review review;
+	@OneToMany(mappedBy = "productInstance")
+	private List<Review> review;
 	// mapping cart, many-to-many relationship
 	@OneToMany(mappedBy = "productInstance")
 	private List<Cart_ProductInstance> cartProductInstances;

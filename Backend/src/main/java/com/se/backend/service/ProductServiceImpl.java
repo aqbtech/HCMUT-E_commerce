@@ -1,6 +1,7 @@
 package com.se.backend.service;
 
 
+import com.se.backend.entity.Product;
 import com.se.backend.entity.ProductInstance;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
@@ -36,5 +37,11 @@ public class ProductServiceImpl implements ProductService {
 	public Double maxPriceOf(String productId) {
 		List<ProductInstance> productInstances = initListProductInstance(productId);
 		return productInstances.stream().mapToDouble(ProductInstance::getPrice).max().orElse(0);
+	}
+
+	@Override
+	public Product findByProductInstance(ProductInstance productInstance) {
+		return productRepository.findProductByBuildProduct(productInstance.getBuildProduct())
+				.orElseThrow(() -> new WebServerException(ErrorCode.PRODUCT_NOT_FOUND));
 	}
 }

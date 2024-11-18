@@ -21,7 +21,10 @@ import java.util.List;
 				@NamedAttributeNode("name"),
 				@NamedAttributeNode("description")
 			}
-		)
+		),
+		@NamedEntityGraph(name = "product-attribute", attributeNodes = {
+				@NamedAttributeNode("attributes")
+		})
 })
 
 @Getter
