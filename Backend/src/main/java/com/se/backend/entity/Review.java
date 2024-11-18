@@ -16,7 +16,7 @@ public class Review {
 
 	// -- Relationships -- //
 	// mapping with Buyer
-	@OneToOne
+	@ManyToOne
 	@MapsId("buyerUsername")
 	@JoinColumn(name = "buyer_username", referencedColumnName = "username"
 			, columnDefinition = "VARCHAR(64)")
@@ -28,7 +28,7 @@ public class Review {
 			, columnDefinition = "VARCHAR(64)")
 	private ReviewContent reviewContent;
 	// mapping with ProductInstance
-	@OneToOne
+	@ManyToOne
 	@MapsId("productInstanceId")
 	@JoinColumn(name = "product_instance_id", referencedColumnName = "root_product_instance_id"
 			, columnDefinition = "VARCHAR(64)")

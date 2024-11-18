@@ -36,8 +36,8 @@ public class ProductInstance {
 	@OneToMany(mappedBy = "productInstance")
 	private List<BuildProduct> buildProduct;
 	// mapping reviews
-	@OneToOne(mappedBy = "productInstance")
-	private Review review;
+	@OneToMany(mappedBy = "productInstance")
+	private List<Review> review;
 	// mapping cart, many-to-many relationship
 	@OneToMany(mappedBy = "productInstance")
 	private List<Cart_ProductInstance> cartProductInstances;
