@@ -45,14 +45,13 @@ export const getProductsById = async (productId) => {
 };
 
 
-export const getReviewById = async (productId, page, prevPage) => {
-  await axiosPublic.get(`/product/comment/${productId}?page=${page}&prevPage=${prevPage}&limit=10`)
-  .then((res) => {
+export const getReviewById = async (productId, page) => {
+  try {
+    const res = await axiosPublic.get(`/${productId}/reviews?page=${page}`);
     console.log(`Lấy thành công product ${productId}:`, res);
     return res.data.result
-  })
-  .catch((err) => {
+  } catch (err){
     console.log(`Lỗi khi lấy review của sản phẩm ${productId}: `, err );
     throw err;
-  })
+  }
 }

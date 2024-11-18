@@ -217,7 +217,7 @@ const PlaceOrder = () => {
                   {/* Hiển thị khi không có thuộc tính */}
                   {product.listAtt.length === 0 && (
                     <p className="text-gray-500 text-sm mt-2">
-                      Không có thuộc tính nào.
+                      
                     </p>
                   )}
                 </div>

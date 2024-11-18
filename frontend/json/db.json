@@ -12,11 +12,7 @@
       ],
       "category": "Women",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L"
-      ],
+      "sizes": ["S", "M", "L"],
       "date": 1716634345448,
       "bestseller": true,
       "seller": "abc",
@@ -34,11 +30,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["M", "L", "XL"],
       "date": 1716621345448,
       "bestseller": true,
       "seller": "abc",
@@ -56,11 +48,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "L", "XL"],
       "date": 1716234545448,
       "bestseller": true,
       "seller": "abc",
@@ -78,11 +66,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "XXL"
-      ],
+      "sizes": ["S", "M", "XXL"],
       "date": 1716621345448,
       "bestseller": true,
       "seller": "abc",
@@ -100,11 +84,7 @@
       ],
       "category": "Women",
       "subCategory": "Topwear",
-      "sizes": [
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["M", "L", "XL"],
       "date": 1716622345448,
       "bestseller": true,
       "seller": "abc",
@@ -122,11 +102,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "L", "XL"],
       "date": 1716623423448,
       "bestseller": true,
       "seller": "abc",
@@ -144,11 +120,7 @@
       ],
       "category": "Men",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "L", "XL"],
       "date": 1716621542448,
       "bestseller": false,
       "seller": "abc",
@@ -166,12 +138,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716622345448,
       "bestseller": false,
       "seller": "abc",
@@ -189,11 +156,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["M", "L", "XL"],
       "date": 1716621235448,
       "bestseller": false,
       "seller": "abc",
@@ -211,11 +174,7 @@
       ],
       "category": "Men",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "L", "XL"],
       "date": 1716622235448,
       "bestseller": false,
       "seller": "abc",
@@ -232,11 +191,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L"
-      ],
+      "sizes": ["S", "M", "L"],
       "date": 1716623345448,
       "bestseller": false,
       "seller": "abc",
@@ -253,12 +208,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716624445448,
       "bestseller": false,
       "seller": "abc",
@@ -275,12 +225,7 @@
       ],
       "category": "Women",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716625545448,
       "bestseller": false,
       "seller": "abc",
@@ -297,12 +242,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716626645448,
       "bestseller": false,
       "seller": "abc",
@@ -319,12 +259,7 @@
       ],
       "category": "Men",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716627745448,
       "bestseller": false,
       "seller": "abc",
@@ -341,12 +276,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716628845448,
       "bestseller": false,
       "seller": "abc",
@@ -363,12 +293,7 @@
       ],
       "category": "Men",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716629945448,
       "bestseller": false,
       "seller": "abc",
@@ -385,12 +310,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716631045448,
       "bestseller": false,
       "seller": "abc",
@@ -407,12 +327,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716632145448,
       "bestseller": false,
       "seller": "abc",
@@ -429,12 +344,7 @@
       ],
       "category": "Women",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716633245448,
       "bestseller": false,
       "seller": "abc",
@@ -451,12 +361,7 @@
       ],
       "category": "Women",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716634345448,
       "bestseller": false,
       "seller": "abc",
@@ -473,12 +378,7 @@
       ],
       "category": "Women",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716635445448,
       "bestseller": false,
       "seller": "abc",
@@ -495,12 +395,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716636545448,
       "bestseller": false,
       "seller": "abc",
@@ -517,12 +412,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716637645448,
       "bestseller": false,
       "seller": "abc",
@@ -539,12 +429,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716638745448,
       "bestseller": false,
       "seller": "abc",
@@ -561,12 +446,7 @@
       ],
       "category": "Women",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716639845448,
       "bestseller": false,
       "seller": "abc",
@@ -583,12 +463,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716640945448,
       "bestseller": false,
       "seller": "abc",
@@ -605,12 +480,7 @@
       ],
       "category": "Men",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716642045448,
       "bestseller": false,
       "seller": "abc",
@@ -627,12 +497,7 @@
       ],
       "category": "Women",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716643145448,
       "bestseller": false,
       "seller": "abc",
@@ -649,12 +514,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716644245448,
       "bestseller": false,
       "seller": "abc",
@@ -671,12 +531,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716645345448,
       "bestseller": false,
       "seller": "abc",
@@ -693,12 +548,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716646445448,
       "bestseller": false,
       "seller": "abc",
@@ -715,12 +565,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716647545448,
       "bestseller": false,
       "seller": "abc",
@@ -737,12 +582,7 @@
       ],
       "category": "Women",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716648645448,
       "bestseller": false,
       "seller": "abc",
@@ -759,12 +599,7 @@
       ],
       "category": "Women",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716649745448,
       "bestseller": false,
       "seller": "abc",
@@ -781,12 +616,7 @@
       ],
       "category": "Women",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716650845448,
       "bestseller": false,
       "seller": "abc",
@@ -803,12 +633,7 @@
       ],
       "category": "Women",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716651945448,
       "bestseller": false,
       "seller": "abc",
@@ -825,12 +650,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716653045448,
       "bestseller": false,
       "seller": "abc",
@@ -847,12 +667,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716654145448,
       "bestseller": false,
       "seller": "abc",
@@ -869,12 +684,7 @@
       ],
       "category": "Men",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716655245448,
       "bestseller": false,
       "seller": "abc",
@@ -891,12 +701,7 @@
       ],
       "category": "Men",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716656345448,
       "bestseller": false,
       "seller": "abc",
@@ -913,12 +718,7 @@
       ],
       "category": "Kids",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716657445448,
       "bestseller": false,
       "seller": "abc",
@@ -935,12 +735,7 @@
       ],
       "category": "Kids",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716658545448,
       "bestseller": false,
       "seller": "abc",
@@ -957,12 +752,7 @@
       ],
       "category": "Women",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716659645448,
       "bestseller": false,
       "seller": "abc",
@@ -979,12 +769,7 @@
       ],
       "category": "Men",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716660745448,
       "bestseller": false,
       "seller": "abc",
@@ -1001,12 +786,7 @@
       ],
       "category": "Men",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716661845448,
       "bestseller": false,
       "seller": "abc",
@@ -1023,12 +803,7 @@
       ],
       "category": "Kids",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716662945448,
       "bestseller": false,
       "seller": "abc",
@@ -1045,12 +820,7 @@
       ],
       "category": "Men",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716664045448,
       "bestseller": false,
       "seller": "abc",
@@ -1067,12 +837,7 @@
       ],
       "category": "Kids",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716665145448,
       "bestseller": false,
       "seller": "abc",
@@ -1089,12 +854,7 @@
       ],
       "category": "Kids",
       "subCategory": "Bottomwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716666245448,
       "bestseller": false,
       "seller": "abc",
@@ -1111,12 +871,7 @@
       ],
       "category": "Men",
       "subCategory": "Winterwear",
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL"
-      ],
+      "sizes": ["S", "M", "L", "XL"],
       "date": 1716668445448,
       "bestseller": false,
       "seller": "abc",
@@ -1134,308 +889,295 @@
       ],
       "category": "Women",
       "subCategory": "Topwear",
-      "sizes": [
-        "S",
-        "M",
-        "L"
-      ],
+      "sizes": ["S", "M", "L"],
       "date": 1716634345448,
       "bestseller": true,
       "seller": "abc",
       "status": 1
     }
   ],
-    "productDetail": [
-      {
-        "images" : [
-          "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-          "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-          "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp"
-        ],
-        "id": "saew-001",
-        "productName" : "quan ngan",
-        "rating": 4.9,
-        "description": "quan dep lam mua di",
-        "minPrice": 500,
-        "totalQuantityInStock": 1000,
-        "listAtt": [
-          {
-            "name": "size",
-            "values": ["XS", "S", "M", "L", "XL"]
-          },
-          {
-            "name": "color",
-            "values": ["pink", "green", "red", "yellow"]
-          }
-        ],
-        "listInstants": [
-          {
-            "instantId": "saew-001-xs-pink",
-            "attributes": {
-              "size": "XS",
-              "color": "pink"
-            },
-            "price": 100,
-            "quantity": 200,
-            "img": "123"
-          },
-          {
-            "instantId": "saew-001-s-pink",
-            "attributes": {
-              "size": "S",
-              "color": "pink"
-            },
-            "price": 105,
-            "quantity": 150,
-            "img": "123"
-          },
-          {
-            "instantId": "saew-001-m-green",
-            "attributes": {
-              "size": "M",
-              "color": "green"
-            },
-            "price": 110,
-            "quantity": 100,
-            "img": "123"
-          }
-        ],
-        "seller": {
-          "sellerId": "chinhaaaa",
-          "shopName": "Haven",
-          "location": "Ha Noi"
+  "productDetail": [
+    {
+      "images": [
+        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
+        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
+        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp"
+      ],
+      "id": "saew-001",
+      "productName": "quan ngan",
+      "rating": 4.9,
+      "description": "quan dep lam mua di",
+      "minPrice": 500,
+      "totalQuantityInStock": 1000,
+      "listAtt": [
+        {
+          "name": "size",
+          "values": ["XS", "S", "M", "L", "XL"]
+        },
+        {
+          "name": "color",
+          "values": ["pink", "green", "red", "yellow"]
         }
-      },
-      {
-        "productName": "quan jean",
-        "id": "123-001",
-        "rating": 4.7,
-        "description": "quan dep lam mua di",
-        "minPrice": 550,
-        "totalQuantityInStock": 1200,
-        "listAtt": [
-          {
-            "name": "size",
-            "values": ["XS", "S", "M", "L", "XL"]
+      ],
+      "listInstants": [
+        {
+          "instantId": "saew-001-xs-pink",
+          "attributes": {
+            "size": "XS",
+            "color": "pink"
           },
-          {
-            "name": "color",
-            "values": ["blue", "black", "white", "grey"]
-          }
-        ],
-        "listInstants": [
-          {
-            "instantId": "123-001-xs-blue",
-            "attributes": {
-              "size": "XS",
-              "color": "blue"
-            },
-            "price": 110,
-            "quantity": 250,
-            "img": "123"
+          "price": 100,
+          "quantity": 200,
+          "img": "123"
+        },
+        {
+          "instantId": "saew-001-s-pink",
+          "attributes": {
+            "size": "S",
+            "color": "pink"
           },
-          {
-            "instantId": "123-001-s-black",
-            "attributes": {
-              "size": "S",
-              "color": "black"
-            },
-            "price": 115,
-            "quantity": 180,
-            "img": "123"
+          "price": 105,
+          "quantity": 150,
+          "img": "123"
+        },
+        {
+          "instantId": "saew-001-m-green",
+          "attributes": {
+            "size": "M",
+            "color": "green"
           },
-          {
-            "instantId": "123-001-m-white",
-            "attributes": {
-              "size": "M",
-              "color": "white"
-            },
-            "price": 120,
-            "quantity": 120,
-            "img": "123"
-          }
-        ],
-        "seller": {
-          "sellerId": "chinhaaaa",
-          "shopName": "Haven",
-          "location": "Ha Noi"
+          "price": 110,
+          "quantity": 100,
+          "img": "123"
         }
+      ],
+      "seller": {
+        "sellerId": "chinhaaaa",
+        "shopName": "Haven",
+        "location": "Ha Noi"
       }
-    ],
+    },
+    {
+      "productName": "quan jean",
+      "id": "123-001",
+      "rating": 4.7,
+      "description": "quan dep lam mua di",
+      "minPrice": 550,
+      "totalQuantityInStock": 1200,
+      "listAtt": [
+        {
+          "name": "size",
+          "values": ["XS", "S", "M", "L", "XL"]
+        },
+        {
+          "name": "color",
+          "values": ["blue", "black", "white", "grey"]
+        }
+      ],
+      "listInstants": [
+        {
+          "instantId": "123-001-xs-blue",
+          "attributes": {
+            "size": "XS",
+            "color": "blue"
+          },
+          "price": 110,
+          "quantity": 250,
+          "img": "123"
+        },
+        {
+          "instantId": "123-001-s-black",
+          "attributes": {
+            "size": "S",
+            "color": "black"
+          },
+          "price": 115,
+          "quantity": 180,
+          "img": "123"
+        },
+        {
+          "instantId": "123-001-m-white",
+          "attributes": {
+            "size": "M",
+            "color": "white"
+          },
+          "price": 120,
+          "quantity": 120,
+          "img": "123"
+        }
+      ],
+      "seller": {
+        "sellerId": "chinhaaaa",
+        "shopName": "Haven",
+        "location": "Ha Noi"
+      }
+    }
+  ],
 
-  "categories" : [
+  "categories": [
     {
       "categoryName": "Men",
-      "categoryId" : "1",
-      "subCategories" : [
+      "categoryId": "1",
+      "subCategories": [
         {
           "subCategoryName": "quan",
-          "subCategoryId" : "1"
+          "subCategoryId": "1"
         },
         {
           "subCategoryName": "ao",
-          "subCategoryId" : "2"
+          "subCategoryId": "2"
         },
         {
           "subCategoryName": "underwear",
-          "subCategoryId" : "3"
+          "subCategoryId": "3"
         }
       ]
     },
     {
       "categoryName": "Women",
-      "categoryId" : "2",
-      "subCategories" : [
+      "categoryId": "2",
+      "subCategories": [
         {
           "subCategoryName": "quan",
-          "subCategoryId" : "1"
+          "subCategoryId": "1"
         },
         {
           "subCategoryName": "ao",
-          "subCategoryId" : "2"
+          "subCategoryId": "2"
         },
         {
           "subCategoryName": "underwear",
-          "subCategoryId" : "3"
+          "subCategoryId": "3"
         }
       ]
     },
     {
       "categoryName": "kids",
-      "categoryId" : "3",
-      "subCategories" : [
+      "categoryId": "3",
+      "subCategories": [
         {
           "subCategoryName": "quan",
-          "subCategoryId" : "1"
+          "subCategoryId": "1"
         },
         {
           "subCategoryName": "ao",
-          "subCategoryId" : "2"
+          "subCategoryId": "2"
         },
         {
           "subCategoryName": "underwear",
-          "subCategoryId" : "3"
+          "subCategoryId": "3"
         },
         {
           "subCategoryName": "toys",
-          "subCategoryId" : "4"
+          "subCategoryId": "4"
         },
         {
           "subCategoryName": "shoes",
-          "subCategoryId" : "5"
+          "subCategoryId": "5"
         }
-        
       ]
     },
     {
       "categoryName": "electric",
-      "categoryId" : "4",
-      "subCategories" : [
+      "categoryId": "4",
+      "subCategories": [
         {
           "subCategoryName": "TV",
-          "subCategoryId" : "1"
+          "subCategoryId": "1"
         },
         {
           "subCategoryName": "Kitchen",
-          "subCategoryId" : "2"
+          "subCategoryId": "2"
         },
         {
           "subCategoryName": "fan",
-          "subCategoryId" : "3"
-        }
-        ,
+          "subCategoryId": "3"
+        },
         {
           "subCategoryName": "hut bui",
-          "subCategoryId" : "4"
-        }
-        ,
+          "subCategoryId": "4"
+        },
         {
           "subCategoryName": "lau nha",
-          "subCategoryId" : "5"
+          "subCategoryId": "5"
         }
       ]
     },
     {
       "categoryName": "food&drink",
-      "categoryId" : "5",
-      "subCategories" : [
+      "categoryId": "5",
+      "subCategories": [
         {
           "subCategoryName": "meat",
-          "subCategoryId" : "1"
+          "subCategoryId": "1"
         },
         {
           "subCategoryName": "milk tea",
-          "subCategoryId" : "2"
+          "subCategoryId": "2"
         },
         {
           "subCategoryName": "ngu coc",
-          "subCategoryId" : "3"
-        }
-        ,
+          "subCategoryId": "3"
+        },
         {
           "subCategoryName": "whey",
-          "subCategoryId" : "4"
-        }
-        ,
+          "subCategoryId": "4"
+        },
         {
           "subCategoryName": "mass",
-          "subCategoryId" : "5"
+          "subCategoryId": "5"
         }
       ]
     },
     {
       "categoryName": "food&drink",
-      "categoryId" : "6",
-      "subCategories" : [
+      "categoryId": "6",
+      "subCategories": [
         {
           "subCategoryName": "meat",
-          "subCategoryId" : "1"
+          "subCategoryId": "1"
         },
         {
           "subCategoryName": "milk tea",
-          "subCategoryId" : "2"
+          "subCategoryId": "2"
         },
         {
           "subCategoryName": "ngu coc",
-          "subCategoryId" : "3"
-        }
-        ,
+          "subCategoryId": "3"
+        },
         {
           "subCategoryName": "whey",
-          "subCategoryId" : "4"
-        }
-        ,
+          "subCategoryId": "4"
+        },
         {
           "subCategoryName": "mass",
-          "subCategoryId" : "5"
+          "subCategoryId": "5"
         }
       ]
     },
     {
       "categoryName": "food&drink",
-      "categoryId" : "7",
-      "subCategories" : [
+      "categoryId": "7",
+      "subCategories": [
         {
           "subCategoryName": "meat",
-          "subCategoryId" : "1"
+          "subCategoryId": "1"
         },
         {
           "subCategoryName": "milk tea",
-          "subCategoryId" : "2"
+          "subCategoryId": "2"
         },
         {
           "subCategoryName": "ngu coc",
-          "subCategoryId" : "3"
-        }
-        ,
+          "subCategoryId": "3"
+        },
         {
           "subCategoryName": "whey",
-          "subCategoryId" : "4"
-        }
-        ,
+          "subCategoryId": "4"
+        },
         {
           "subCategoryName": "mass",
-          "subCategoryId" : "5"
+          "subCategoryId": "5"
         }
       ]
     }
@@ -1512,47 +1254,6 @@
       "Items": []
     }
   ],
-  "cart": [
-    {
-      "id": "buyer123",
-      "Items": [
-        {
-          "id": "aaaab",
-          "sizes": [
-            {
-              "size": "L",
-              "quantity": 2,
-              "price": 200
-            },
-            {
-              "size": "XL",
-              "quantity": 1,
-              "price": 200
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "admin123",
-      "Items": [
-        {
-          "id": "aaaac",
-          "sizes": [
-            {
-              "size": "L",
-              "quantity": 1,
-              "price": 220
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "seller123",
-      "Items": []
-    }
-  ],
   "address": [
     {
       "id": 1,
@@ -1560,7 +1261,7 @@
       "phone": "090837363",
       "district": "ben thanh",
       "province": "dong nai",
-      "ward" : "Tan hoa",
+      "ward": "Tan hoa",
       "detailAddress": "3a/2 khu pho 1"
     },
     {
@@ -1569,7 +1270,7 @@
       "phone": "090837363",
       "district": "âfwfwqfanh",
       "province": "f fwfwaefwa",
-      "ward" : "Tan ưefwaefaw",
+      "ward": "Tan ưefwaefaw",
       "detailAddress": "3a/2 khưefwaefu pho 1"
     },
     {
@@ -1578,7 +1279,7 @@
       "phone": "090831237363",
       "district": "3123 thanh",
       "province": "dong 312",
-      "ward" : "Tan 312",
+      "ward": "Tan 312",
       "detailAddress": "3a/2 123 pho 1"
     },
     {
@@ -1587,8 +1288,293 @@
       "phone": "090831231237363",
       "district": "ben than123123h",
       "province": "dong nai123123",
-      "ward" : "Tan hoa123123",
+      "ward": "Tan hoa123123",
       "detailAddress": "3a/2 12313khu pho 1"
+    }
+  ],
+
+  "Cart": [
+    {
+      "content" : [
+        {
+          "productInstantId": "a9d01d1a-cfb1-f132-032c-783c4e8a724d",
+          "productId" : "8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc",
+          "productName": "Kiwi",
+          "IMG": "abcbbcbcb",
+          "ListAtt": [ 
+            {"name": "material", "value": "Cotton"},
+            {"name": "warranty", "value": "1 year"},
+            {"name": "ingredients", "value": "Oil"},
+            {"name": "season", "value": "Summer"}
+          ],
+          "price": "700",
+          "quantity": 10,
+          "sellerId" : "kleverett5376",
+          "sellerName" : "The Coffee Corner"
+        },
+        {
+          "productInstantId": "1c109a3f-996b-7af7-6808-d3a80af58486",
+          "productId" : "8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc",
+          "productName": "Kiwi",
+          "IMG": "abcbbcbcb",
+          "ListAtt": [
+            {"name": "material", "value": "Stainless Steel"},
+            {"name": "warranty", "value": "2 years"},
+            {"name": "ingredients", "value": "Oil"},
+            {"name": "season", "value": "Winter"}
+          ],
+          "price": "100",
+          "quantity": 2,
+          "sellerId" : "kleverett5376",
+          "sellerName" : "The Coffee Corner"
+        },
+        {
+          "productInstantId": "03a9f249-3f35-4bf4-2a17-1601546e90ed",
+          "productId" : "8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc",
+          "productName": "kiwi",
+          "IMG": "abcbbcbcb",
+    
+          "ListAtt": [
+            {"name": "material", "value": "Cotton"},
+            {"name": "warranty", "value": "2 years"},
+            {"name": "ingredients", "value": "Oil"},
+            {"name": "season", "value": "Summer"}
+          ],
+          "price": "500",
+          "quantity": 1,
+          "sellerId" : "kleverett5376",
+          "sellerName" : "The Coffee Corner"
+        },
+        {
+          
+        }
+      ],
+      "totalElements" : 3
+    }
+  ],
+  "result": [
+    {
+      "product_name": "Kiwi",
+      "productId": "8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc",
+      "rating": 4.9,
+      "description": "A vibrant, tangy fruit with a refreshing taste and rich in vitamins, perfect for a nutritious snack or adding a tropical twist to dishes",
+      "minPrice": 500,
+      "totalQuantityInStock": 1000,
+      "listAtt": [
+          {
+            "name": "material",
+            "values": ["Stainless Steel", "Cotton"]
+          },
+          {
+            "name": "warranty",
+            "values": ["2 years", "1 year"]
+          },
+          {
+            "name": "ingredients",
+            "values": ["Oil", "Water"]
+          },
+          {
+            "name": "season",
+            "values": ["Winter", "Summer"]
+          }
+      ],
+      "listInstants": [
+        {
+          "instantId": "1c109a3f-996b-7af7-6808-d3a80af58486",
+          "attributes": {
+            "material": "Stainless Steel",
+            "warranty": "2 years",
+            "season": "Winter",
+            "ingredients": "Oil"
+          },
+          "price": 100,
+          "quantityInStock": 200
+        },
+        {
+          "instantId": "4b6b9c21-3185-4f01-7871-9ca603aea773",
+          "attributes": {
+            "material": "Stainless Steel",
+            "warranty": "2 years",
+            "season": "Winter",
+            "ingredients": "Water"
+          },
+          "price": 200,
+          "quantityInStock": 200
+        },
+        {
+          "instantId": "3dba821b-ffe8-66f3-c3be-880595d29102",
+          "attributes": {
+            "material": "Stainless Steel",
+            "warranty": "1 year",
+            "season": "Winter",
+            "ingredients": "Oil"
+          },
+          "price": 300,
+          "quantityInStock": 200
+        },
+        {
+          "instantId": "33fce25a-c8a5-fc85-7793-1f56fcc34a6f",
+          "attributes": {
+            "material": "Stainless Steel",
+            "warranty": "1 year",
+            "season": "Winter",
+            "ingredients": "Water"
+          },
+          "price": 400,
+          "quantityInStock": 200
+        },
+        {
+          "instantId": "03a9f249-3f35-4bf4-2a17-1601546e90ed",
+          "attributes": {
+            "material": "Cotton",
+            "warranty": "2 years",
+            "season": "Summer",
+            "ingredients": "Oil"
+          },
+          "price": 500,
+          "quantityInStock": 200
+        },
+        {
+          "instantId": "e35615a7-cfa9-84a7-e246-b4fab57d9835",
+          "attributes": {
+            "material": "Cotton",
+            "warranty": "2 years",
+            "season": "Summer",
+            "ingredients": "Water"
+          },
+          "price": 600,
+          "quantityInStock": 200
+        },
+        {
+          "instantId": "a9d01d1a-cfb1-f132-032c-783c4e8a724d",
+          "attributes": {
+            "material": "Cotton",
+            "warranty": "1 year",
+            "season": "Summer",
+            "ingredients": "Oil"
+          },
+          "price": 700,
+          "quantityInStock": 200
+        },
+        {
+          "instantId": "7ecdfd4e-796d-d021-4e4c-cb4e51998f8a",
+          "attributes": {
+            "material": "Cotton",
+            "warranty": "1 year",
+            "season": "Summer",
+            "ingredients": "Water"
+          },
+          "price": 800,
+          "quantityInStock": 200
+        }
+      ],
+      "seller": {
+        "sellerId": "kleverett5376",
+        "shopName": "The Coffee Corner",
+        "location": "Oklahoma"
+      }
+    }
+  ],
+  "allOrders": [
+    {
+      "orderId" : "123",
+      "listProduct": [
+        {
+          "productId": "132",
+          "productName": "Quan dai dep",
+          "IMG": "abcbbcbcb",
+          "ListAtt": [
+            {
+              "name": "size",
+              "value": "S"
+            },
+            {
+              "name": "color",
+              "value": "green"
+            }
+          ],
+          "price": "500",
+          "quantity": 12
+        },
+        {
+          "productId": "123333",
+          "productName": "Quan dai dep",
+          "IMG": "abcbbcbcb",
+          "ListAtt": [
+            {
+              "name": "size",
+              "value": "S"
+            },
+            {
+              "name": "color",
+              "value": "green"
+            }
+          ],
+          "price": "500",
+          "quantity": 12
+        }
+      ],
+      "deliveryState": "Pending",
+      "sellerName": "Haven",
+      "deliveryAddress": {
+        "name": "chinh",
+        "phone": "0908908",
+        "province": "Dong Nai",
+        "district": "bien hoa",
+        "ward": "Tan hoa",
+        "Detail": "3a/2 khu pho 1"
+      },
+      "method": "COD"
+    },
+    {
+      "orderId" : "234",
+      "listProduct": [
+        {
+          "productId": "132",
+          "productName": "Quan dai dep",
+          "IMG": "abcbbcbcb",
+          "ListAtt": [
+            {
+              "name": "size",
+              "value": "S"
+            },
+            {
+              "name": "color",
+              "value": "green"
+            }
+          ],
+          "price": "500",
+          "quantity": 12
+        },
+        {
+          "productId": "123333",
+          "productName": "Quan dai dep",
+          "IMG": "abcbbcbcb",
+          "ListAtt": [
+            {
+              "name": "size",
+              "value": "S"
+            },
+            {
+              "name": "color",
+              "value": "green"
+            }
+          ],
+          "price": "500",
+          "quantity": 12
+        }
+      ],
+      "deliveryState": "Pending",
+      "sellerName": "raph laurent",
+      "deliveryAddress": {
+        "name": "chinh",
+        "phone": "0908908",
+        "province": "Dong Nai",
+        "district": "bien hoa",
+        "ward": "Tan hoa",
+        "Detail": "3a/2 khu pho 1"
+      },
+      "method": "COD"
     }
   ]
 }
