@@ -21,6 +21,7 @@ public class ReviewConcrete implements ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final ProductRepository productRepository;
 	private final ReviewMapper reviewMapper;
+
 	@Override
 	public Double ratingCalculator(String productId) {
 		var reviews = reviewRepository.findReviewByProductId(productRepository.findProductSummaryById(productId));

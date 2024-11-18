@@ -2,19 +2,23 @@ package com.se.backend.service;
 
 import com.se.backend.dto.response.Instant;
 import com.se.backend.dto.response.ProductDetail;
-import com.se.backend.dto.response.UserDeliveryInfo;
+import com.se.backend.dto.response.ReviewDetail;
 import com.se.backend.entity.Attribute;
 import com.se.backend.entity.Product;
 import com.se.backend.entity.ProductInstance;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.AttributeMapper;
-import com.se.backend.mapper.DeliveryMapper;
 import com.se.backend.mapper.InstanceMapper;
 import com.se.backend.mapper.ProductDetailMapper;
-import com.se.backend.repository.*;
+import com.se.backend.repository.AttributeInsRepository;
+import com.se.backend.repository.AttributeRepository;
+import com.se.backend.repository.ProductInstanceRepository;
+import com.se.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -29,8 +33,6 @@ public class GuestServiceImpl implements GuestService {
 	private final AttributeRepository attributeRepository;
 	private final ProductInstanceRepository productInstanceRepository;
 	private final AttributeInsRepository attributeInsRepository;
-	private final DeliveryInfoRepository deliveryInfoRepository;
-	private final DeliveryMapper deliveryMapper;
 	private final ReviewService reviewService;
 	private final ProductDetailMapper productDetailMapper;
 	private final AttributeMapper attributeMapper;
@@ -82,7 +84,8 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
-	public UserDeliveryInfo getUserDeliveryInfo(String username) {
-		return deliveryMapper.toUserDeliveryInfo(deliveryInfoRepository.findByUserId(username));
+	public Page<ReviewDetail> getReviews(String productId, Pageable pageable) {
+		return reviewService.getReviews(productId, pageable);
 	}
+
 }

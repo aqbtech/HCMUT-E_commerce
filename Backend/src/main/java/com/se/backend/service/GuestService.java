@@ -1,9 +1,12 @@
 package com.se.backend.service;
 
 import com.se.backend.dto.response.ProductDetail;
-import com.se.backend.dto.response.UserDeliveryInfo;
+import com.se.backend.dto.response.ReviewDetail;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface GuestService {
 	ProductDetail getProductDetail(String productId);
-	UserDeliveryInfo getUserDeliveryInfo(String username);
+
+	Page<ReviewDetail> getReviews(String productId, Pageable pageable);
 }
