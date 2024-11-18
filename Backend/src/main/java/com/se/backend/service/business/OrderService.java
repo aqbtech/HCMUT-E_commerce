@@ -147,7 +147,7 @@ public class OrderService  {
                 throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
             }
 
-            long totalPrice = 0L;
+            Double totalPrice = 0.0;
             List<Order_ProductInstance> orderProducts = new ArrayList<>();
 
             for (int i = 0;  i < entry.getValue().size(); i++) {
@@ -189,7 +189,7 @@ public class OrderService  {
             //Find Order//HERE
         Order order = orderRepository.findById(orderId)
                     .orElseThrow(() -> new WebServerException(ErrorCode.UNKNOWN_ERROR));
-        long newPrice = 0L;
+        Double newPrice = 0.0;
         // if state of order is not "WAITING" then throw "State of order does not allow to add product"
         if(!order.getStatus().equals("WAITING")){
             throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
@@ -373,7 +373,7 @@ public class OrderService  {
         }
 
         // Tính lại tổng giá tiền của đơn hàng
-        long newTotalPrice = 0L;
+        Double newTotalPrice = 0.0;
         for (Order_ProductInstance orderProduct : order.getOrderProductInstances()) {
             newTotalPrice += orderProduct.getProductInstance().getPrice() * orderProduct.getQuantity();
         }

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@NamedEntityGraph(name = "cart-product-instance-entity-graph", attributeNodes = {
+@NamedEntityGraph(name = "cart-product-instance-detail", attributeNodes = {
 		@NamedAttributeNode(value = "productInstance", subgraph = "productInstance-subgraph")
 }, subgraphs = {@NamedSubgraph(name = "productInstance-subgraph", attributeNodes = {
 		@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-subgraph")

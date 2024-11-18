@@ -25,7 +25,7 @@ public class ProductInstance {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(name = "root_product_instance_id", length = 64)
 	private String id;
-	private Long price;
+	private Double price;
 	private Long quantityInStock;
 
 	// -- mapping relationships --

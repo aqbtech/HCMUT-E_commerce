@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@NamedEntityGraph(name = "cart-entity-graph", attributeNodes = {
+@NamedEntityGraph(name = "cart-detail", attributeNodes = {
 		@NamedAttributeNode(value = "cartProductInstances", subgraph = "cartProductInstances-subgraph"),
 		@NamedAttributeNode(value = "buyer")
 }, subgraphs = {

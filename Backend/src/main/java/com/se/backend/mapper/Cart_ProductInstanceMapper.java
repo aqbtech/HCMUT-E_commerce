@@ -1,15 +1,13 @@
 package com.se.backend.mapper;
 
-import com.se.backend.dto.response.FlashProduct;
+import com.se.backend.dto.response.CartProduct;
 import com.se.backend.entity.Cart_ProductInstance;
-import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 
 public interface Cart_ProductInstanceMapper {
-	Cart_ProductInstanceMapper INSTANCE = Mappers.getMapper(Cart_ProductInstanceMapper.class);
+	List<CartProduct> toFlashProductList(List<Cart_ProductInstance> cartPage);
 
-	Page<FlashProduct> toFlashProductPage(Page<Cart_ProductInstance> cartPage);
-
-	FlashProduct toFlashProduct(Cart_ProductInstance cartProductInstance);
+	CartProduct toCartProduct(Cart_ProductInstance cartProductInstance);
 }

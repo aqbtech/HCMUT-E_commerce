@@ -34,7 +34,7 @@ public class Order {
 	@Column(name = "root_order_id")
 	private String orderId;
 	private String status;
-	private Long totalPrice;
+	private Double totalPrice;
 
 	// -- mapping relationships --
 	// mapping product instances
