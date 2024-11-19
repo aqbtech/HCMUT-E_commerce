@@ -6,6 +6,7 @@ import { getProductsById, getReviewById, getDetailProduct } from "../fetchAPI/fe
 import { toast } from "react-toastify";
 import { addToCart } from "../fetchAPI/fetchCart";
 import ErrorMessage  from '/src/components/errorMessage';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Product = () => {
   const { productId } = useParams();
@@ -15,11 +16,11 @@ const Product = () => {
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [pageReview, setPageReview] = useState(0);
-  const [prevPage, setPrevPage] = useState(1);
   const [review, setReview] = useState([]);
   const [selectedInstant, setSelectedInstant] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isReviewLoading, setIsReviewLoading] = useState(true);
+  const [isAddLoading, setIsAddLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const fetchProduct = async () => {
@@ -54,13 +55,11 @@ const Product = () => {
 
 
   const handleNextPage = () => {
-    setPrevPage(pageReview);
     setPageReview((prev) => prev + 1);
   };
 
   const handlePreviousPage = () => {
     if (pageReview > 0) {
-      setPrevPage(pageReview);
       setPageReview((prev) => prev - 1);
     }
   };
@@ -107,7 +106,7 @@ const Product = () => {
   
   const placeOrder = async (productName, productId, quantity, selectedAttributes, selectedInstant) => {
     if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
-    if (!allAttributesSelected()) return toast.error("Vui lòng chọn tất cả các thuộc tính trước khi đặt hàng.");
+    if (!allAttributesSelected()) return toast.error("Vui lòng chọn tất cả các thuộc tính.");
   
     const ListAtt = Object.entries(selectedAttributes).map(([attName, value]) => ({
       "name" : attName,
@@ -134,11 +133,11 @@ const Product = () => {
   const handleAddToCart = async (productId, quantity, instantId) => {
     if (curState !== "Login") return navigate("/Login", { state: { from: location } });
     if (!allAttributesSelected() && productData.listAtt?.length > 0) {
-      return toast.error("Vui lòng chọn tất cả các thuộc tính trước khi đặt hàng.");
+      return toast.error("Vui lòng chọn tất cả các thuộc tính.");
     }
-
+    if(isAddLoading) return;
+    setIsAddLoading(true);
     const body = {
-      "productId" :productId,
       "instantId" : instantId,
       "quantity" : quantity,
     };
@@ -150,6 +149,7 @@ const Product = () => {
     .catch(() => {
       toast.error("Thêm vào giỏ hàng thất bại!")
     })
+    setIsAddLoading(false);
   };
 
   if (systemError) {
@@ -226,7 +226,7 @@ const Product = () => {
               (!selectedInstant || selectedInstant === "not_found") ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            THÊM VÀO GIỎ HÀNG
+            {isAddLoading ? <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" /> : "THÊM VÀO GIỎ HÀNG" }
           </button>
           <button
             onClick={() => placeOrder(productData.product_name, productId, quantity, selectedAttributes, selectedInstant)}
@@ -269,7 +269,11 @@ const Product = () => {
         <h2 className="text-lg font-bold">Bình luận của khách hàng</h2>
 
         {isReviewLoading ? ( // Hiển thị "Đang tải" khi review đang được tải
-          <p className="text-gray-500 text-center">Đang tải bình luận...</p>
+          (
+            <div className="flex justify-center items-center py-[500px]">
+              <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
+            </div>
+          )
         ) : review.length > 0 ? (
           review.map((reviewItem) => (
             <div
@@ -316,8 +320,8 @@ const Product = () => {
       </div>
     </div>
   ) : (
-    <div className="flex justify-center items-center h-screen">
-      <div className="loader" /> loading....
+    <div className="flex justify-center items-center py-[500px]">
+      <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
     </div>
   );
 };

@@ -5,7 +5,7 @@ import {
   getAllOrders,
   updateSateOfOrder,
   getListOrders,
-} from "../fetchAPI/fetchOrders";
+} from "../fetchAPI/fetchOrders"; 
 import { toast } from "react-toastify";
 import ErrorMessage from "/src/components/errorMessage";
 import Cookies from "js-cookie";
@@ -32,10 +32,9 @@ const Orders = () => {
     if (loading) return;
     setLoading(true);
     try {
-      const res = await getListOrders(username, currentPage, 10);
+      const res = await getListOrders(username, currentPage, 1);
       if (currentPage === 0) {
         setUserOrders(res.content);
-        setHasMore(res.totalElements > res.content.length);
       } else {
         setUserOrders((prevData) => {
           const newData = res.content.filter(
@@ -45,7 +44,7 @@ const Orders = () => {
           return [...prevData, ...newData];
         });
       }
-      setHasMore(userOrders.length + res.content.length < res.totalElements);
+      setHasMore(userOrders.length + res.content.length < res.page.totalElements);
     } catch (err) {
       setSystemError(
         err.response?.data?.message ||
@@ -127,11 +126,13 @@ const Orders = () => {
               <div className="flex justify-between items-center mb-4">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    order.deliveryState === "Pending"
+                    order.deliveryState === "Waiting"
                       ? "bg-gray-100 text-gray-600" // Chờ duyệt
-                      : order.deliveryState === "shipped"
-                      ? "bg-yellow-100 text-yellow-600" // Đang giao
-                      : order.deliveryState === "Done"
+                      : order.deliveryState === "Approved"
+                      ? "bg-blue-100 text-yellow-600" // Đang giao
+                      : order.deliveryState === "Shipping"
+                      ? "bg-yellow-100 text-yellow-600" 
+                      : order.deliveryState === "Completed"
                       ? "bg-green-100 text-green-600" // Đã giao
                       : order.deliveryState === "Cancelled"
                       ? "bg-red-100 text-red-600" // Đã hủy
@@ -140,9 +141,11 @@ const Orders = () => {
                 >
                   {order.deliveryState === "Pending"
                     ? "Chờ duyệt"
-                    : order.deliveryState === "shipped"
+                    : order.deliveryState === "Approved"
+                    ? "Đã duyệt"
+                    : order.deliveryState === "Shipping"
                     ? "Đang giao"
-                    : order.deliveryState === "Done"
+                    : order.deliveryState === "Completed"
                     ? "Đã giao"
                     : order.deliveryState === "Cancelled"
                     ? "Đã hủy"
