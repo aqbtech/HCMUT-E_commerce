@@ -23,7 +23,8 @@ import java.util.List;
 			}
 		),
 		@NamedEntityGraph(name = "product-attribute", attributeNodes = {
-				@NamedAttributeNode("attributes")
+				@NamedAttributeNode("attributes"),
+				@NamedAttributeNode("seller")
 		})
 })
 

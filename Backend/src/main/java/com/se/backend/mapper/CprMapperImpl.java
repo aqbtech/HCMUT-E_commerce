@@ -45,11 +45,13 @@ public class CprMapperImpl implements Cart_ProductInstanceMapper {
 		Long quantity = cartProductInstance.getQuantity();
 		Double price = cartProductInstance.getProductInstance().getPrice();
 		String imgUrl = null;
+		String sellerId = p.getSeller().getUsername();
+		String shopName = p.getSeller().getShopName();
 		List<String> listName = new ArrayList<>();
 		p.getAttributes().forEach(attribute -> listName.add(attribute.getName()));
 		List<String> listValue = new ArrayList<>();
 		attributeInsRepository.findAttributeInstancesBy(cartProductInstance.getProductInstance()).forEach(attributeIns -> listValue.add(attributeIns.getValue()));
 
-		return new CartProduct(productId, productInstanceId, productName, quantity, price, imgUrl, listName, listValue);
+		return new CartProduct(productId, productInstanceId, productName, quantity, price, imgUrl, listName, listValue, sellerId, shopName);
 	}
 }

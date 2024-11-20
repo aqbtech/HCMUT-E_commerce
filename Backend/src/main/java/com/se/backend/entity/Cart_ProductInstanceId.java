@@ -3,13 +3,15 @@ package com.se.backend.entity;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Embeddable
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Cart_ProductInstanceId {
+public class Cart_ProductInstanceId implements Serializable {
 	private String productInstanceId;
 	private BuyerCartId buyerCartId;
 

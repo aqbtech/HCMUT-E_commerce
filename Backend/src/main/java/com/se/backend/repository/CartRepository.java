@@ -8,8 +8,10 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CartRepository extends JpaRepository<Cart, BuyerCartId> {
 	@EntityGraph(value = "cart-detail", type = EntityGraph.EntityGraphType.LOAD)
-	Cart findByBuyerUsername(String username);
+	Optional<Cart> findByBuyerUsername(String username);
 }

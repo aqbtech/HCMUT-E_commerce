@@ -1,22 +1,26 @@
 package com.se.backend.service;
 
 
+import com.se.backend.entity.BuildProduct;
 import com.se.backend.entity.Product;
 import com.se.backend.entity.ProductInstance;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
+import com.se.backend.repository.BuildProductRepository;
 import com.se.backend.repository.ProductInstanceRepository;
 import com.se.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 	private final ProductRepository productRepository;
 	private final ProductInstanceRepository productInstanceRepository;
+	private final BuildProductRepository buildProductRepository;
 
 	private List<ProductInstance> initListProductInstance(String productId) {
 		return productInstanceRepository.findByBuildProductProduct(productRepository.findById(productId)
@@ -41,7 +45,8 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product findByProductInstance(ProductInstance productInstance) {
-		return productRepository.findProductByBuildProduct(productInstance.getBuildProduct())
+		List<BuildProduct> bp = buildProductRepository.findByProductInstance(productInstance)
 				.orElseThrow(() -> new WebServerException(ErrorCode.PRODUCT_NOT_FOUND));
+		return productRepository.findProductCartById(bp.getFirst().getId().getProductId());
 	}
 }

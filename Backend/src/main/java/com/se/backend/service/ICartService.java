@@ -6,11 +6,11 @@ import org.springframework.data.domain.Pageable;
 
 public interface ICartService {
 	Page<CartProduct> getFlashProductList(String username, Pageable pageable);
-	void addProductToCart(String username, String productId, int quantity);
+	void addProductInsToCart(String username, String productInsId, Long quantity);
 
-	void removeProductFromCart(String username, String productId);
+	void removeProductInsFromCart(String username, String productInsId);
 
-	void updateProductQuantity(String username, String productId, int quantity);
+	void updateProductInsQuantity(String username, String productInsId, Long quantity);
 
 	void clearCart(String username);
 }
