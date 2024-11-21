@@ -5,7 +5,7 @@ import { assets } from "../assets/assets";
 import { getProductsById, getReviewById, getDetailProduct } from "../fetchAPI/fetchProduct";
 import { toast } from "react-toastify";
 import { addToCart } from "../fetchAPI/fetchCart";
-import ErrorMessage  from '/src/components/errorMessage';
+import ErrorMessage  from '/src/components/errorMessage'; 
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Product = () => {
@@ -110,7 +110,8 @@ const Product = () => {
   const placeOrder = async (productName, productId, quantity, selectedAttributes, selectedInstant) => {
     if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
     if (!allAttributesSelected()) return toast.error("Vui lòng chọn tất cả các thuộc tính.");
-  
+    if(selectedInstant.quantityInStock < quantity) return toast.error("Sản phẩm hiện không đủ, vui lòng giảm bớt số lượng")
+    if(quantity < 1) return toast.error("Số lượng không hợp lệ!")
     const ListAtt = Object.entries(selectedAttributes).map(([attName, value]) => ({
       "name" : attName,
       value,
@@ -133,21 +134,26 @@ const Product = () => {
   };
   
 
-  const handleAddToCart = async (instantId, quantity) => {
+  const handleAddToCart = async (instantId, quantity, selectedInstant) => {
     if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
     if (!allAttributesSelected() && productData.listAtt?.length > 0) {
       return toast.error("Vui lòng chọn tất cả các thuộc tính.");
     }
-    if(isAddLoading) return;
+    if (quantity < 1) return toast.error("Số lượng không hợp lệ!");
+    if (selectedInstant.quantityInStock < quantity) {
+      setQuantity(selectedInstant.quantityInStock); // Điều chỉnh số lượng
+      return toast.error("Số lượng vượt quá hàng tồn kho, đã điều chỉnh về giá trị tối đa.");
+    }
+    if (isAddLoading) return;
     setIsAddLoading(true);
-
+  
     await addToCart(instantId, quantity)
-    .then(() => {
-      toast.success("Thêm vào giỏ hàng thành công!")
-    })
-    .catch(() => {
-      toast.error("Thêm vào giỏ hàng thất bại!")
-    })
+      .then(() => {
+        toast.success("Thêm vào giỏ hàng thành công!");
+      })
+      .catch(() => {
+        toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng.");
+      });
     setIsAddLoading(false);
   };
 
@@ -213,13 +219,20 @@ const Product = () => {
             <p>Số lượng</p>
             <input 
               min={1}
-              onChange={(e) => setQuantity(e.target.value)}
+              onChange={(e) => {
+                const value = Math.max(1, Math.min(Number(e.target.value), selectedInstant?.quantityInStock || 1));
+                if (selectedInstant && value > selectedInstant.quantityInStock) {
+                  toast.error("Số lượng vượt quá hàng tồn kho, đã điều chỉnh về giá trị tối đa.");
+                }
+                setQuantity(value);
+              }}
+              value={quantity}
               type="number" defaultValue={quantity} className="border max-w-10 sm:max-w-20 px-1 my-5 sm:px-2 py-1"
             />
           </div>
 
           <button
-            onClick={() => handleAddToCart(selectedInstant?.instantId, quantity)}
+            onClick={() => handleAddToCart(selectedInstant?.instantId, quantity, selectedInstant)}
             disabled={!selectedInstant || selectedInstant === "not_found"}
             className={`bg-black text-white px-8 py-3 text-sm active:bg-gray-700 ${
               (!selectedInstant || selectedInstant === "not_found") ? "opacity-50 cursor-not-allowed" : ""

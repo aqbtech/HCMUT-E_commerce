@@ -1,4 +1,3 @@
-import React from 'react'
 import { assets } from '../../assets/assets';
 
 const OurPolicy = () => {
@@ -17,7 +16,7 @@ const OurPolicy = () => {
       <div className='flex flex-col items-center'>
         <img src={assets.hinh4} className='w-[80px]' alt="" />
         <p className='font-semibold '>Best customer support</p>
-        <p className='text-gray-400'>we provide 24/7 custumer support</p>
+        <p className='text-gray-400'>We provide 24/7 custumer support</p>
       </div>
     </div>
   )

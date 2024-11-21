@@ -29,7 +29,7 @@ const Cart = () => {
         setCartData(res.content);
       } else {
         setCartData((prevData) => {
-          const newData = res.content.filter(
+          const newData = res.content.filter( 
             (newItem) =>
               !prevData.some((prevItem) => prevItem.productInstantId === newItem.productInstantId)
           );
@@ -70,18 +70,24 @@ const Cart = () => {
   }, [selectedItems, cartData]); // Đảm bảo phụ thuộc đúng
   
 
-  const handleQuantityChange = (productInstanceId, quantity) => {
-    if (quantity <= 0) return handleRemoveItem(productInstanceId);
+  const handleQuantityChange = async (productInstanceId, quantity) => {
+    if (quantity <= 0) return handleRemoveItem(productInstanceId); // Nếu số lượng <= 0, tự động xóa sản phẩm
+    
     try {
-      updateQuantity(productInstanceId, quantity)
+      await updateQuantity(productInstanceId, quantity); // Gọi API để cập nhật số lượng
       setCartData((prev) =>
         prev.map((item) =>
           item.productInstanceId === productInstanceId ? { ...item, quantity } : item
         )
       );
-    } catch(err) {
-      console.error('Lỗi cập nhật số lượng:', err);
-        toast.error('Không thể cập nhật số lượng!');
+    } catch (err) {
+      const errorCode = err.response?.data?.code; // Lấy mã lỗi từ phản hồi API
+      if (err.response?.status === 400 && errorCode === 2002) {
+        toast.error('Số lượng vượt quá, vui lòng thử lại');
+      } else {
+        console.error('Lỗi cập nhật số lượng:', err); 
+        toast.error('Không thể cập nhật số lượng!'); 
+      }
     }
   };
 
@@ -190,14 +196,27 @@ const Cart = () => {
               </div>
 
               <input
-                type="number"
-                min={1}
-                value={item.quantity || 1} // Đặt mặc định là 1 nếu quantity bị undefined
-                className="border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
-                onChange={(e) =>
-                  handleQuantityChange(item.productInstanceId, Number(e.target.value))
-                }
-              />
+                  type="number"
+                  min={1}
+                  max={9999} // Giới hạn số lượng tối đa nếu tồn tại maxQuantity
+                  value={item.quantity || 1} // Đặt mặc định là 1 nếu quantity bị undefined
+                  className="border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
+                  onChange={(e) => {
+                    const newQuantity = Math.max(1, Math.min(Number(e.target.value), 9999));
+                    if (newQuantity >= 1) {
+                      handleQuantityChange(item.productInstanceId, newQuantity);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    // Reset về giá trị hợp lệ nếu người dùng nhập sai và thoát khỏi input
+                    const newQuantity = Number(e.target.value);
+                    if (newQuantity < 1) {
+                      handleQuantityChange(item.productInstanceId, 1); // Đặt về tối thiểu là 1
+                    } else if (newQuantity > (item.maxQuantity || Infinity)) {
+                      handleQuantityChange(item.productInstanceId, item.maxQuantity); // Đặt về tối đa
+                    }
+                  }}
+                />
                <img
                 src={assets.bin_icon}
                 alt="Remove item"
