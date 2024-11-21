@@ -25,6 +25,7 @@ export const updateOrder = async (orderId) => {
     return response.data.result;
   };
 
-  export const updateSateOfOrder = async (id, body) => {
-    const response = axiosClient2.put(`/buyer/order/updatestate/${id}`, body);
-  }  
+
+  export const cancelOrder = async (body) => {
+    const response = axiosClient2.put(`/buyer/delete_order`, body);
+  } 

@@ -205,8 +205,7 @@ const PlaceOrder = () => {
                               key={idx}
                               className="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-lg border"
                             >
-                              <span className="mr-1">{att.name}:</span>
-                              <span>{att.value}</span>
+                              <span className="mr-1">{att.value || att}</span>
                             </div>
                           ))}
                         </div>
