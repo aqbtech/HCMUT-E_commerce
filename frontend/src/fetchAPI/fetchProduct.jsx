@@ -20,16 +20,15 @@ export const getReview = async (api) => {
 }
 
 //-----
-export const getProduct = async (api) => {
-  await axiosPublic.get(`/product?${api}`)
-  .then((res)=> {
-    console.log(`Lấy thành công list sản phẩm:`, res);
-    return res.data
-  })
-  .catch(( err) => {
+export const getProduct = async (page) => {
+  try {
+    const res =  await axiosPublic.get(`/home-page?page=${page}`)
+     console.log(`Lấy thành công list sản phẩm:`, res);
+    return res.data.result;
+  } catch(err) {
     console.log(`Lỗi khi lấy list sản phẩm: `, err );
     throw err;
-  }) 
+  }
 }
 
 
@@ -45,14 +44,13 @@ export const getProductsById = async (productId) => {
 };
 
 
-export const getReviewById = async (productId, page, prevPage) => {
-  await axiosPublic.get(`/product/comment/${productId}?page=${page}&prevPage=${prevPage}&limit=10`)
-  .then((res) => {
+export const getReviewById = async (productId, page) => {
+  try {
+    const res = await axiosPublic.get(`/${productId}/reviews?page=${page}`);
     console.log(`Lấy thành công product ${productId}:`, res);
     return res.data.result
-  })
-  .catch((err) => {
+  } catch (err){
     console.log(`Lỗi khi lấy review của sản phẩm ${productId}: `, err );
     throw err;
-  })
+  }
 }

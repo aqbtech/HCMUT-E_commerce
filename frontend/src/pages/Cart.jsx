@@ -13,7 +13,7 @@ const Cart = () => {
   const [cartData, setCartData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [total, setTotal] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -24,7 +24,8 @@ const Cart = () => {
     setLoading(true); // Bắt đầu loading
   
     try {
-      const res = await fetchCart(currentPage, 2); // Gọi API lấy giỏ hàng
+      const res = await fetchCart(currentPage, 10); // Gọi API lấy giỏ hàng
+
       if(currentPage === 0) {
         setCartData(res.content);
       } else {
@@ -175,12 +176,12 @@ const Cart = () => {
                   <div className="flex items-center gap-5 mt-2">
                     <p>{formatCurrency(item.price)}</p>
                     <ul>
-                      {item.ListAtt.map((att, idx) => (
+                      {item.listValue.map((att, idx) => (
                         <li
                           key={idx}
                           className="px-2 sm:px-3 sm:py-1 border bg-slate-50"
                         >
-                          {att.name}: {att.value}
+                           {att}
                         </li>
                       ))}
                     </ul>

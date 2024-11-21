@@ -7,7 +7,7 @@ import Cookies from 'js-cookie'
 const Navbar = () => {
 
   const [visible, setVisible] = useState(false)
-  const {setShowSearch, getCartCount, curState, setCurState, account, setAccount} = useContext(ShopContext); 
+  const {setShowSearch, curState, setCurState, setAccount} = useContext(ShopContext); 
  
   const onSubmitHandler = async () => {
     setCurState('UnLogin');
@@ -29,10 +29,10 @@ const Navbar = () => {
           <p>HOME</p>
           <hr className='w-1/2 border-none h-[1.5px] bg-gray-700 hidden ' />
         </NavLink>
-        <NavLink to='/search' className='flex flex-col items-center gap-1'>
+        {/* <NavLink to='/search' className='flex flex-col items-center gap-1'>
           <p>TÌM KIẾM</p>
           <hr className='w-1/2 border-none h-[1.5px] bg-gray-700 hidden' />
-        </NavLink> 
+        </NavLink>  */}
         {/* <NavLink to='/about' className='flex flex-col items-center gap-1'>
           <p>ABOUT</p>
           <hr className='w-1/2 border-none h-[1.5px] bg-gray-700 hidden' />
