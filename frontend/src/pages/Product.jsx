@@ -130,19 +130,15 @@ const Product = () => {
   };
   
 
-  const handleAddToCart = async (productId, quantity, instantId) => {
+  const handleAddToCart = async (instantId, quantity) => {
     if (curState !== "Login") return navigate("/Login", { state: { from: location } });
     if (!allAttributesSelected() && productData.listAtt?.length > 0) {
       return toast.error("Vui lòng chọn tất cả các thuộc tính.");
     }
     if(isAddLoading) return;
     setIsAddLoading(true);
-    const body = {
-      "instantId" : instantId,
-      "quantity" : quantity,
-    };
 
-    await addToCart(body)
+    await addToCart(instantId, quantity)
     .then(() => {
       toast.success("Thêm vào giỏ hàng thành công!")
     })
@@ -220,7 +216,7 @@ const Product = () => {
           </div>
 
           <button
-            onClick={() => handleAddToCart(productId, quantity, selectedInstant?.instantId)}
+            onClick={() => handleAddToCart(selectedInstant?.instantId, quantity)}
             disabled={!selectedInstant || selectedInstant === "not_found"}
             className={`bg-black text-white px-8 py-3 text-sm active:bg-gray-700 ${
               (!selectedInstant || selectedInstant === "not_found") ? "opacity-50 cursor-not-allowed" : ""

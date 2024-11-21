@@ -2,8 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import {
-  getAllOrders,
-  updateSateOfOrder,
+  cancelOrder,
   getListOrders,
 } from "../fetchAPI/fetchOrders"; 
 import { toast } from "react-toastify";
@@ -67,9 +66,9 @@ const Orders = () => {
   }, [currentPage]);
 
   const handleCancelOrder = async (orderId) => {
-    const body = { state: "Hủy đơn" };
+    const body = { orderId: orderId };
     try {
-      await updateSateOfOrder(orderId, body);
+      await cancelOrder(body);
       setUserOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.orderId === orderId
@@ -126,7 +125,7 @@ const Orders = () => {
               <div className="flex justify-between items-center mb-4">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    order.deliveryState === "Waiting"
+                    order.deliveryState === "WAITING"
                       ? "bg-gray-100 text-gray-600" // Chờ duyệt
                       : order.deliveryState === "Approved"
                       ? "bg-blue-100 text-yellow-600" // Đang giao
@@ -134,12 +133,12 @@ const Orders = () => {
                       ? "bg-yellow-100 text-yellow-600" 
                       : order.deliveryState === "Completed"
                       ? "bg-green-100 text-green-600" // Đã giao
-                      : order.deliveryState === "Cancelled"
+                      : order.deliveryState === "CANCEL"
                       ? "bg-red-100 text-red-600" // Đã hủy
                       : "" // Nếu không có trạng thái nào
                   }`}
                 >
-                  {order.deliveryState === "Pending"
+                  {order.deliveryState === "WAITING"
                     ? "Chờ duyệt"
                     : order.deliveryState === "Approved"
                     ? "Đã duyệt"
@@ -147,13 +146,13 @@ const Orders = () => {
                     ? "Đang giao"
                     : order.deliveryState === "Completed"
                     ? "Đã giao"
-                    : order.deliveryState === "Cancelled"
+                    : order.deliveryState === "CANCEL"
                     ? "Đã hủy"
                     : ""}
                 </span>
                 <button
                   onClick={() => handleCancelOrder(order.orderId)}
-                  disabled={order.deliveryState !== "Đang chờ"}
+                  disabled={order.deliveryState !== "WAITING"}
                   className="px-4 py-2 rounded border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Hủy đơn hàng
