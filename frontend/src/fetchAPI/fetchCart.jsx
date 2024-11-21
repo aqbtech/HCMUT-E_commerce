@@ -11,23 +11,23 @@ export const getMyCart = async (page, limit) => {
  
  
 //--------
-export const addToCart = async (productInstanceId, quantity) => {
-    const res = await axiosClient2.post( `/add-to-cart?productInstanceId=${productInstanceId}&quantity=${quantity}`)
+export const addToCart = async (body) => {
+    const res = await axiosClient2.post( `/${Cookies.get('username')}}`,body)
     console.log("them gio hang thanh cong", res);
     return res.data.result
+   
 }
 
 export const fetchCart =  async (page, limit) => {
-    const res =  await axiosClient2.get(`/flash-cart?page=${page}&size=${limit}`);
+    const res =  await axiosClient2.get(`/flash-cart?username=adarby50179`);
     console.log("lay gio hnag thanh cong", res);
     return res.data.result
 }
 
-export const updateQuantity = async (productInstanceId, quantity) => {
-    return await axiosClient2.post(`/update-cart?productInstanceId=${productInstanceId}&quantity=${quantity}`);
+export const updateQuantity = async () => {
+    return await axiosClient2.put(`/`);
 }
 
-
-export const deleteFromCart = async (productInstanceId) => {
-    return await axiosClient2.post(`/remove-from-cart?productInstanceId=${productInstanceId}`)
+export const deleteFromCart = async (body) => {
+    return await axiosClient2.delete(`/${body}`)
 }

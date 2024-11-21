@@ -28,6 +28,7 @@ const Home = () => {
     try {
       const response = await  getProduct(page);
       setListProduct(response.content)
+      console.log("123",response);
     } catch(err) {
       setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
     }
@@ -35,7 +36,7 @@ const Home = () => {
 
   // Load sản phẩm khi trang và các bộ lọc thay đổi
   useEffect(() => {
-    loadProducts(selectedCategory, selectedSubCategory, page); 
+    loadProducts(selectedCategory, selectedSubCategory, page);
   }, [selectedCategory, selectedSubCategory, page]);
 
   // Load danh mục khi trang được mở

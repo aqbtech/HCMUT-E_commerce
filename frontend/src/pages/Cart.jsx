@@ -3,7 +3,7 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import { toast } from 'react-toastify';
-import { getMyCart, updateQuantity, fetchCart, deleteFromCart } from '../fetchAPI/fetchCart';
+import { getMyCart, updateQuantity, fetchCart } from '../fetchAPI/fetchCart';
 import ErrorMessage from '/src/components/errorMessage';
 import Cookies from 'js-cookie'
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -17,8 +17,9 @@ const Cart = () => {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
-   // Lấy dữ liệu giỏ hàng 
-   const getCart = async () => {
+  
+  // Lấy dữ liệu giỏ hàng 
+  const getCart = async () => {
     if (loading) return; // Nếu đang loading thì không thực hiện nữa
     setLoading(true); // Bắt đầu loading
   
@@ -56,56 +57,54 @@ const Cart = () => {
     getCart();
   }, [currentPage]);
 
-    const loadMoreItems = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
   // Cập nhật tổng số tiền
   useEffect(() => {
     const newTotal = selectedItems.reduce((acc, id) => {
-      const item = cartData.find((item) => item.productInstanceId === id);
-      return item ? acc + item.price * (item.quantity || 1) : acc;
+      const item = cartData.find((item) => item.productInstantId === id);
+      return item ? acc + item.price * item.quantity : acc;
     }, 0);
     setTotal(newTotal);
-  }, [selectedItems, cartData]); // Đảm bảo phụ thuộc đúng
-  
+  }, [selectedItems, cartData]);
 
-  const handleQuantityChange = (productInstanceId, quantity) => {
-    if (quantity <= 0) return handleRemoveItem(productInstanceId);
-    try {
-      updateQuantity(productInstanceId, quantity)
-      setCartData((prev) =>
-        prev.map((item) =>
-          item.productInstanceId === productInstanceId ? { ...item, quantity } : item
-        )
-      );
-    } catch(err) {
-      console.error('Lỗi cập nhật số lượng:', err);
-        toast.error('Không thể cập nhật số lượng!');
-    }
-  };
+  const handleQuantityChange = (productInstantId, quantity) => {
+    if (quantity <= 0) return handleRemoveItem(productInstantId);
 
-  const handleRemoveItem = (productInstanceId) => {
-    deleteFromCart(productInstanceId )
+    updateQuantity({ productInstantId, quantity })
       .then(() => {
         setCartData((prev) =>
-          prev.filter((item) => item.productInstanceId !== productInstanceId)
+          prev.map((item) =>
+            item.productInstantId === productInstantId ? { ...item, quantity } : item
+          )
+        );
+        toast.success('Cập nhật số lượng thành công!');
+      })
+      .catch((err) => {
+        console.error('Lỗi cập nhật số lượng:', err);
+        toast.error('Không thể cập nhật số lượng!');
+      });
+  };
+
+  const handleRemoveItem = (productInstantId) => {
+    updateQuantity({ productInstantId, quantity: 0 })
+      .then(() => {
+        setCartData((prev) =>
+          prev.filter((item) => item.productInstantId !== productInstantId)
         );
         toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
       })
       .catch((err) => {
-        console.error('Lỗi xóa sản phẩm:', err); // Debug lỗi API
+        console.error('Lỗi xóa sản phẩm:', err);
         toast.error('Không thể xóa sản phẩm khỏi giỏ hàng!');
       });
   };
-  
 
-  const handleSelectItem = (productInstanceId) => {
-    setSelectedItems((prev) =>
-      prev.includes(productInstanceId)
-        ? prev.filter((id) => id !== productInstanceId)
-        : [...prev, productInstanceId]
-    );
+  const handleSelectItem = (productInstantId) => {
+    setSelectedItems((prev) => {
+      const updatedItems = prev.includes(productInstantId)
+        ? prev.filter((id) => id !== productInstantId)
+        : [...prev, productInstantId];
+      return updatedItems;
+    });
   };
 
   const handleProceed = () => {
@@ -113,12 +112,12 @@ const Cart = () => {
       toast.error('Vui lòng chọn ít nhất một mặt hàng để đặt hàng!');
     } else {
       const listProductToPlace = selectedItems.map((id) => {
-        const item = cartData.find((item) => item.productInstanceId === id);
+        const item = cartData.find((item) => item.productInstantId === id);
         return {
           productName: item.productName,
           productId: item.productId,
-          listAtt: item.listName,
-          instantId: item.productInstanceId,
+          listAtt: item.ListAtt,
+          instantId: item.productInstantId,
           quantity: item.quantity,
           price: item.price,
         };
@@ -128,14 +127,19 @@ const Cart = () => {
     }
   };
 
+  const loadMoreItems = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
   if (systemError) {
     return <ErrorMessage message={systemError} />;
   }
 
+  // Gom nhóm sản phẩm theo sellerId
   const groupedCartData = cartData.reduce((groups, item) => {
     if (!groups[item.sellerId]) {
       groups[item.sellerId] = {
-        sellerName: item.shopName,
+        sellerName: item.sellerName,
         items: [],
       };
     }
@@ -143,15 +147,11 @@ const Cart = () => {
     return groups;
   }, {});
 
-
-  if (systemError) {
-    return <ErrorMessage message={systemError} />;
-  }
   return loading ? (
     <div className="flex justify-center items-center py-[500px]">
       <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
     </div>
-  ) : (
+  ) :  (
     <div className="border-t pt-14">
       <div className="text-2xl mb-3">
         <Title text1="GIỎ" text2="HÀNG" />
@@ -161,16 +161,16 @@ const Cart = () => {
           <h2 className="text-lg font-bold mb-4">{groupedCartData[sellerId].sellerName}</h2>
           {groupedCartData[sellerId].items.map((item) => (
             <div
-              key={item.productInstanceId} // Key là productInstanceId duy nhất
+              key={item.productInstantId}
               className="py-4 border-t text-gray-700 grid grid-cols-[0.5fr_4fr_0.5fr_0.5fr] sm:grid-cols-[1fr_4fr_2fr_1fr] items-center gap-4"
             >
               <input
                 type="checkbox"
-                checked={selectedItems.includes(item.productInstanceId)}
-                onChange={() => handleSelectItem(item.productInstanceId)}
+                checked={selectedItems.includes(item.productInstantId)}
+                onChange={() => handleSelectItem(item.productInstantId)}
               />
               <div className="flex items-start gap-6">
-                <img className="w-16 sm:w-20" src={item.IMG || 'default.jpg'} alt={item.productName} />
+                <img className="w-16 sm:w-20" src={item.IMG} alt={item.productName} />
                 <div>
                   <p className="text-xl sm:text-lg font-medium">{item.productName}</p>
                   <div className="flex items-center gap-5 mt-2">
@@ -178,37 +178,36 @@ const Cart = () => {
                     <ul>
                       {item.listValue.map((att, idx) => (
                         <li
-                          key={`${item.productInstanceId}-${idx}`} // Đảm bảo key duy nhất cho từng thuộc tính
+                          key={idx}
                           className="px-2 sm:px-3 sm:py-1 border bg-slate-50"
                         >
-                          {att}
+                           {att}
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
               </div>
-
               <input
                 type="number"
                 min={1}
-                value={item.quantity || 1} // Đặt mặc định là 1 nếu quantity bị undefined
+                value={item.quantity}
                 className="border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
                 onChange={(e) =>
-                  handleQuantityChange(item.productInstanceId, Number(e.target.value))
+                  handleQuantityChange(item.productInstantId, Number(e.target.value))
                 }
               />
-               <img
+              <img
                 src={assets.bin_icon}
                 alt="Remove item"
                 className="w-4 mr-4 sm:w-5 cursor-pointer"
-                onClick={() => handleRemoveItem(item.productInstanceId)}
+                onClick={() => handleRemoveItem(item.productInstantId)}
               />
             </div>
           ))}
         </div>
       ))}
-       <div className="flex justify-center gap-4 mt-8">
+      <div className="flex justify-center gap-4 mt-8">
         <button
           onClick={loadMoreItems}
           disabled={!hasMore}
@@ -231,7 +230,7 @@ const Cart = () => {
               onClick={handleProceed}
               className="bg-black text-white text-sm my-8 px-8 py-3"
             >
-              ĐẶT HÀNG
+             ĐẶT HÀNG
             </button>
           </div>
         </div>
