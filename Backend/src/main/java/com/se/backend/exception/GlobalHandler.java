@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalHandler {
 	@ExceptionHandler(WebServerException.class)
-	public ResponseAPITemplate<String> handleWebServerException(WebServerException e) {
-		return ResponseAPITemplate.<String>builder()
-				.code(e.getErrorCode().getCode())
-				.message(e.getMessage())
-				.result(null)
-				.build();
+	public ResponseEntity<ResponseAPITemplate<String>> handleWebServerException(WebServerException e) {
+		ResponseEntity<ResponseAPITemplate<String>> res = ResponseEntity.status(e.getErrorCode().getHttpStatusCode())
+				.body(ResponseAPITemplate.<String>builder()
+						.code(e.getErrorCode().getCode())
+						.message(e.getMessage())
+						.result(null)
+						.build());
+		return res;
 	}
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseAPITemplate<String> handleAccessDeniedException(AccessDeniedException e) {
