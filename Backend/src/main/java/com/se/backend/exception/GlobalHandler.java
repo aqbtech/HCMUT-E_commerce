@@ -30,12 +30,14 @@ public class GlobalHandler {
 		return res;
 	}
 	@ExceptionHandler(AccessDeniedException.class)
-	public ResponseAPITemplate<String> handleAccessDeniedException(AccessDeniedException e) {
-		return ResponseAPITemplate.<String>builder()
-				.code(403)
-				.message(e.getMessage())
-				.result(null)
-				.build();
+	public ResponseEntity<ResponseAPITemplate<String>> handleAccessDeniedException(AccessDeniedException e) {
+		ResponseEntity<ResponseAPITemplate<String>> res = ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(ResponseAPITemplate.<String>builder()
+						.code(403)
+						.message(e.getMessage())
+						.result(null)
+						.build());
+		return res;
 	}
 	// more exception handlers
 }
