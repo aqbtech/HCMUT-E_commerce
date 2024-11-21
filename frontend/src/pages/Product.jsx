@@ -42,7 +42,7 @@ const Product = () => {
       const response = await getReviewById(productId, pageReview);
       if(response) {
         setReview(response.content);
-        if(pageReview >= response.totalPages) setHasMore(false);
+        setHasMore(review.length + response.content.length < response.totalElements);
       }
     } catch (err) {
       setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
@@ -50,6 +50,9 @@ const Product = () => {
     setIsReviewLoading(false);
   }; 
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   useEffect(() => { fetchProduct() }, [productId]);
   useEffect(() => { fetchReview() }, [pageReview, productId]);
 
@@ -130,19 +133,15 @@ const Product = () => {
   };
   
 
-  const handleAddToCart = async (productId, quantity, instantId) => {
-    if (curState !== "Login") return navigate("/Login", { state: { from: location } });
+  const handleAddToCart = async (instantId, quantity) => {
+    if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
     if (!allAttributesSelected() && productData.listAtt?.length > 0) {
       return toast.error("Vui lòng chọn tất cả các thuộc tính.");
     }
     if(isAddLoading) return;
     setIsAddLoading(true);
-    const body = {
-      "instantId" : instantId,
-      "quantity" : quantity,
-    };
 
-    await addToCart(body)
+    await addToCart(instantId, quantity)
     .then(() => {
       toast.success("Thêm vào giỏ hàng thành công!")
     })
@@ -220,7 +219,7 @@ const Product = () => {
           </div>
 
           <button
-            onClick={() => handleAddToCart(productId, quantity, selectedInstant?.instantId)}
+            onClick={() => handleAddToCart(selectedInstant?.instantId, quantity)}
             disabled={!selectedInstant || selectedInstant === "not_found"}
             className={`bg-black text-white px-8 py-3 text-sm active:bg-gray-700 ${
               (!selectedInstant || selectedInstant === "not_found") ? "opacity-50 cursor-not-allowed" : ""
@@ -320,7 +319,7 @@ const Product = () => {
       </div>
     </div>
   ) : (
-    <div className="flex justify-center items-center py-[500px]">
+    <div className="flex justify-center items-center h-screen">
       <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
     </div>
   );

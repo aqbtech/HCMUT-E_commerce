@@ -17,6 +17,7 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   
   // Hàm load sản phẩm với các tham số lọc và phân trang
@@ -28,7 +29,7 @@ const Home = () => {
     try {
       const response = await  getProduct(page);
       setListProduct(response.content)
-      console.log("123",response);
+      setHasMore(listProduct.length + response.content.length < response.totalElements);
     } catch(err) {
       setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
     }
@@ -36,7 +37,7 @@ const Home = () => {
 
   // Load sản phẩm khi trang và các bộ lọc thay đổi
   useEffect(() => {
-    loadProducts(selectedCategory, selectedSubCategory, page);
+    loadProducts(selectedCategory, selectedSubCategory, page); 
   }, [selectedCategory, selectedSubCategory, page]);
 
   // Load danh mục khi trang được mở
@@ -78,12 +79,12 @@ const Home = () => {
     <div>
       <SearchBar />
       <Content />
-      <Category 
+      {/* <Category 
         data={listCategories} 
         onCategorySelect={handleCategorySelect} 
         onSubCategorySelect={handleSubCategorySelect} 
         selectedCategory={selectedCategory}
-      />
+      /> */}
       <LatestProduct data={listProduct} />
       <div className="flex justify-center gap-4 mt-4">
         <button
@@ -96,7 +97,8 @@ const Home = () => {
         <p>{page + 1}</p>
         <button
           onClick={handleNextPage}
-          className="px-4 py-2 bg-gray-200 hover:bg-gray-300"
+          disabled={!hasMore}
+          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
         >
           Trang Tiếp
         </button>
