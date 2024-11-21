@@ -13,7 +13,7 @@ const LatestProduct = ({data}) => {
         <div className="text-left py-8 text-xl">
           <Title text1={'SẢN'} text2={'PHẨM'} />
           <p className=' text-xs sm:text-sm md:text-base text-gray-600'>
-           ATOM.vn là một sự lựa chọn tuyệt vời dành cho bạn </p>
+           ATOM là một sự lựa chọn tuyệt vời dành cho bạn </p>
         </div>
         {/*Rendering Product */}
         <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 '>

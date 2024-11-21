@@ -77,7 +77,6 @@ const Home = () => {
 
   return (
     <div>
-      <SearchBar />
       <Content />
       {/* <Category 
         data={listCategories} 
