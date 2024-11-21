@@ -18,6 +18,8 @@ public class CartProduct {
 	private String imageUrl;
 	private List<String> listName;
 	private List<String> listValue;
+	private String sellerId;
+	private String ShopName;
 	private CartProduct() {
 	}
 }

@@ -1,8 +1,6 @@
 package com.se.backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.IdClass;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
@@ -17,6 +15,10 @@ public class BuyerCartId implements Serializable {
 	@Column(name = "composite_cart_id")
 	private String cartId;
 
+	public BuyerCartId(String username) {
+		this.username = username;
+		this.cartId = username;
+	}
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

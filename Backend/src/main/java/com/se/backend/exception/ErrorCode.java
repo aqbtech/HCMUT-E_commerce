@@ -12,14 +12,15 @@ public enum ErrorCode {
 	UNAUTHORIZED(1002, "You do not have permission", HttpStatus.FORBIDDEN),
 	USER_NOT_FOUND(1003, "User not found", HttpStatus.NOT_FOUND),
 	USER_NOT_EXIST(1007, "User not found", HttpStatus.BAD_REQUEST),
-
+	CART_NOT_FOUND(2000, "Cart not found", HttpStatus.NOT_FOUND),
+	CART_PRODUCT_NOT_FOUND(2001, "Product not found in cart", HttpStatus.NOT_FOUND),
 	PRODUCT_NOT_FOUND(1004, "Product not found", HttpStatus.NOT_FOUND),
 	PRODUCT_NOT_BELONG_TO_SELLER(1005, "Product not belong to seller", HttpStatus.NOT_FOUND),
 	CATEGORY_NOT_FOUND(1006, "Category not found", HttpStatus.NOT_FOUND),
 	ORDER_NOT_FOUND(3001, "Order not found", HttpStatus.NOT_FOUND),
 	DELIVERY_INFOR_NOT_FOUND(4001, "Delivery Information not found", HttpStatus.NOT_FOUND),
 	DELIVERY_INFOR_NOT_EXIST(4002, "Delivery Information not exist", HttpStatus.BAD_REQUEST),
-  INSUFFICIENT_STOCK(2002, "Not enough in stock", HttpStatus.BAD_REQUEST);
+  	INSUFFICIENT_STOCK(2002, "Not enough in stock", HttpStatus.BAD_REQUEST);
 	private final int code;
 	private final String message;
 	private final HttpStatusCode httpStatusCode;

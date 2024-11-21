@@ -22,7 +22,7 @@ public class Buyer extends Business {
 	@OneToMany(mappedBy = "buyer")
 	private List<DeliveryInfor> deliveryInfor;
 	// mapping cart
-	@OneToOne(optional = false, mappedBy = "buyer")
+	@OneToOne(optional = false, mappedBy = "buyer", cascade = CascadeType.ALL)
 	private Cart cart;
 	// mapping reviews
 	@OneToMany(mappedBy = "buyer")

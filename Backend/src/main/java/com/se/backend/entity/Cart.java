@@ -23,7 +23,7 @@ import java.util.List;
 public class Cart {
 	@EmbeddedId
 	private BuyerCartId cartId;
-	private Long totalPrice;
+	private Double totalPrice;
 	private Long totalQuantity;
 
 	// -- mapping relationships --

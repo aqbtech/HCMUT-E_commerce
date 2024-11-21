@@ -3,6 +3,7 @@ package com.se.backend.repository;
 import com.se.backend.entity.Cart;
 import com.se.backend.entity.Cart_ProductInstance;
 import com.se.backend.entity.Cart_ProductInstanceId;
+import com.se.backend.entity.ProductInstance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface Cart_ProductInstanceRepository extends JpaRepository<Cart_ProductInstance, Cart_ProductInstanceId> {
@@ -17,4 +19,6 @@ public interface Cart_ProductInstanceRepository extends JpaRepository<Cart_Produ
 	Page<Cart_ProductInstance> findByCart(Cart cart, Pageable pageable);
 	@EntityGraph(value = "cart-product-instance-detail", type = EntityGraph.EntityGraphType.LOAD)
 	List<Cart_ProductInstance> findByCart(Cart cart);
+
+	Optional<Cart_ProductInstance> findByCartAndProductInstance(Cart cart, ProductInstance productInstance);
 }
