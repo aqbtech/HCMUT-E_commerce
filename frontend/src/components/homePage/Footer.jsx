@@ -15,12 +15,12 @@ const Footer = () => {
           </div>
             
             
-            <p className='w-full md:w-2/3 text-gray-600'>
-            Nếu bạn đang tìm kiếm một trang web để mua và bán hàng trực tuyến thì ATOM.vn là một sự lựa chọn tuyệt vời dành cho bạn. 
-            ATOM là trang thương mại điện tử cho phép người mua và người bán tương tác và trao đổi dễ dàng thông tin về sản phẩm và chương trình khuyến mãi của shop. 
-            Do đó, việc mua bán trên ATOM trở nên nhanh chóng và đơn giản hơn. 
-            Bạn có thể trò chuyện trực tiếp với nhà bán hàng để hỏi trực tiếp về mặt hàng cần mua.
-            </p>
+          <p className='w-full md:w-2/3 text-gray-600 text-justify'>
+              Nếu bạn đang tìm kiếm một trang web để mua và bán hàng trực tuyến thì ATOM.vn là một sự lựa chọn tuyệt vời dành cho bạn. 
+              ATOM là trang thương mại điện tử cho phép người mua và người bán tương tác và trao đổi dễ dàng thông tin về sản phẩm và chương trình khuyến mãi của shop. 
+              Do đó, việc mua bán trên ATOM trở nên nhanh chóng và đơn giản hơn. 
+              Bạn có thể trò chuyện trực tiếp với nhà bán hàng để hỏi trực tiếp về mặt hàng cần mua.
+          </p>
         </div>
         <div>
             <p className='text-xl font-medium mb-5'>COMPANY</p>
@@ -42,7 +42,7 @@ const Footer = () => {
       <div>
         <hr className='mb-4'/>
         <p className='py-5 text-sm text-center'>
-          © 2024 CongChinh. Tất cả các quyền được bảo lưu.
+          © 2024 ATOM. Tất cả các quyền được bảo lưu.
         </p>
       </div>
     </div>
