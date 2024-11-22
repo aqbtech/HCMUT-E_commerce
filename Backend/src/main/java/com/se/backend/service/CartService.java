@@ -40,6 +40,10 @@ public class CartService implements ICartService {
 
 	@Override
 	public void addProductInsToCart(String username, String productInsId, Long quantity) {
+		// may be handled on validation layer
+		if (quantity <= 0) {
+			throw new IllegalArgumentException("Quantity must be greater than 0");
+		}
 		Cart cart = cartRepository.findByBuyerUsername(username)
 				.orElseThrow(() -> new WebServerException(ErrorCode.CART_NOT_FOUND));
 		ProductInstance productIns = pir.findById(productInsId)
