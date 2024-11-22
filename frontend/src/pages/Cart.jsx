@@ -213,7 +213,7 @@ const Cart = () => {
                     if (newQuantity < 1) {
                       handleQuantityChange(item.productInstanceId, 1); // Đặt về tối thiểu là 1
                     } else if (newQuantity > (item.maxQuantity || Infinity)) {
-                      handleQuantityChange(item.productInstanceId, item.maxQuantity); // Đặt về tối đa
+                      handleQuantityChange(item.productInstanceId, 10); // Đặt về tối đa
                     }
                   }}
                 />

@@ -31,7 +31,7 @@ const Orders = () => {
     if (loading) return;
     setLoading(true);
     try {
-      const res = await getListOrders(username, currentPage, 1);
+      const res = await getListOrders(username, currentPage, 10);
       if (currentPage === 0) {
         setUserOrders(res.content);
       } else {
@@ -125,7 +125,7 @@ const Orders = () => {
               <div className="flex justify-between items-center mb-4">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    order.deliveryState === "WAITING"
+                    order.deliveryState === "Waiting "
                       ? "bg-gray-100 text-gray-600" // Chờ duyệt
                       : order.deliveryState === "Approved"
                       ? "bg-blue-100 text-yellow-600" // Đang giao
@@ -133,12 +133,12 @@ const Orders = () => {
                       ? "bg-yellow-100 text-yellow-600" 
                       : order.deliveryState === "Completed"
                       ? "bg-green-100 text-green-600" // Đã giao
-                      : order.deliveryState === "CANCEL"
+                      : order.deliveryState === "Cancelled"
                       ? "bg-red-100 text-red-600" // Đã hủy
                       : "" // Nếu không có trạng thái nào
                   }`}
                 >
-                  {order.deliveryState === "WAITING"
+                  {order.deliveryState === "Waiting "
                     ? "Chờ duyệt"
                     : order.deliveryState === "Approved"
                     ? "Đã duyệt"
@@ -146,7 +146,7 @@ const Orders = () => {
                     ? "Đang giao"
                     : order.deliveryState === "Completed"
                     ? "Đã giao"
-                    : order.deliveryState === "CANCEL"
+                    : order.deliveryState === "Cancelled"
                     ? "Đã hủy"
                     : ""}
                 </span>
