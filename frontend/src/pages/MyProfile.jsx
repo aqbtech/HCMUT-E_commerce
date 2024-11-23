@@ -4,7 +4,7 @@ import { ShopContext } from '../context/ShopContext';
 import ProfileTab from '../components/profilePage/ProfileTab'
 import PasswordTab from '../components/profilePage/PasswordTab';
 import AddressTab from '../components/profilePage/AddressTab';
-import { delAdress, updAddress, getAddress } from '../fetchAPI/fetchAddress';
+import { deleteAdress, updateAddress, getAddress, createAddress } from '../fetchAPI/fetchAddress';
 import { updateAccount, getInfo } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
 //---
@@ -24,16 +24,10 @@ const MyProfile = () => {
     const handleSave = async (updatedAccount) => {
         try {
             const response = await updateAccount(account, updatedAccount);
-            if (response.status === 200) {
-                alert("Cập nhật thông tin thành công!");
-                const freshAccount = await getInfo(account.id);
-                setAccount(freshAccount);
-            } else {
-                alert("Cập nhật thất bại.");
-            }
-        } catch (error) {
-            console.error("Lỗi khi cập nhật tài khoản:", error);
-            alert("Đã xảy ra lỗi trong quá trình cập nhật.");
+            toast.success("Cập nhật thông tin thành công!");
+        } catch(err)  {
+            console.error("Lỗi khi cập nhật tài khoản:", err);
+            toast.error("Cập nhật thất bại, vui lòng thử lại!");
         }
     };
 
@@ -71,23 +65,40 @@ const MyProfile = () => {
     }, []);
 
     // Hàm thêm địa chỉ mới
-    const handleAddAddress = useCallback((newAddress) => {
-        setAddresses((prevAddresses) => [...prevAddresses, newAddress]);
+    const handleAddAddress = useCallback(async (newAddress) => {
+        try {
+            await createAddress(newAddress);
+            setAddresses((prevAddresses) => [...prevAddresses, newAddress]);
+            toast.success("Thêm địa chỉ giao hàng thành công!");
+        } catch(err) {
+            toast.error("Thêm địa chỉ mới thất bại, vui lòng thử lại!");
+        }
     }, []);
-
+    
     // Hàm xóa địa chỉ
     const handleDeleteAddress = useCallback(async (id) => {
-        await delAdress(id);
-        setAddresses((prevAddresses) => prevAddresses.filter(item => item.id !== id));
+        try {
+            await deleteAdress(id);
+            setAddresses((prevAddresses) => prevAddresses.filter(item => item.id !== id));
+            toast.success("Xóa địa chỉ thành công!");
+        } catch(err) {
+            toast.error("Xóa địa chỉ thất bại, vui lòng thử lại!");
+        }
     }, []);
 
     // Hàm cập nhật địa chỉ
-    const handleUpdateAddress = useCallback((updatedAddress) => {
-        setAddresses((prevAddresses) =>
-            prevAddresses.map(address => 
-                address.id === updatedAddress.id ? updatedAddress : address
-            )
-        );
+    const handleUpdateAddress = useCallback(async (updatedAddress) => {
+        try {
+            await createAddress(updatedAddress);
+            setAddresses((prevAddresses) =>
+                prevAddresses.map(address => 
+                    address.id === updatedAddress.id ? updatedAddress : address
+                )
+            );
+            toast.success("Cập nhật địa chỉ thành công!");
+        } catch(err) {
+            toast.error("Cập nhật địa chỉ thất bại, vui lòng thử lại!");
+        } 
     }, []);
 
     return (
