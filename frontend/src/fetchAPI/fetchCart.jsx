@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 
 
 export const getMyCart = async (page, limit) => {
-    const response = await axiosClient.get(`/Cart?_page=${page}&_limit=${limit}`);
+    const response = await axiosClient.get(`/resultCart`);
 
-    return response.data[0];
+    return response.data;
 }
  
  

@@ -4,11 +4,13 @@ import Title from "../components/Title";
 import {
   cancelOrder,
   getListOrders,
+  getAllOrders
 } from "../fetchAPI/fetchOrders"; 
 import { toast } from "react-toastify";
 import ErrorMessage from "/src/components/errorMessage";
 import Cookies from "js-cookie";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 const Orders = () => {
   const {
@@ -118,14 +120,14 @@ const Orders = () => {
             >
               <div className="text-lg font-semibold mb-2">
                 Đơn hàng từ:{" "}
-                <span className="text-blue-600">{order.sellerName}</span>
+                <Link to={``}><span className="text-blue-600">{order.sellerName}</span> </Link>
               </div>
 
               {/* Trạng thái giao hàng và nút hủy đơn */}
               <div className="flex justify-between items-center mb-4">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    order.deliveryState === "Waiting "
+                    order.deliveryState === "Waiting"
                       ? "bg-gray-100 text-gray-600" // Chờ duyệt
                       : order.deliveryState === "Approved"
                       ? "bg-blue-100 text-yellow-600" // Đang giao
@@ -138,7 +140,7 @@ const Orders = () => {
                       : "" // Nếu không có trạng thái nào
                   }`}
                 >
-                  {order.deliveryState === "Waiting "
+                  {order.deliveryState === "Waiting"
                     ? "Chờ duyệt"
                     : order.deliveryState === "Approved"
                     ? "Đã duyệt"
@@ -152,7 +154,7 @@ const Orders = () => {
                 </span>
                 <button
                   onClick={() => handleCancelOrder(order.orderId)}
-                  disabled={order.deliveryState !== "WAITING"}
+                  disabled={order.deliveryState !== "Waiting"}
                   className="px-4 py-2 rounded border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Hủy đơn hàng
@@ -172,9 +174,12 @@ const Orders = () => {
                       alt={product.productName}
                     />
                     <div>
-                      <p className="sm:text-base font-medium text-gray-900">
-                        {product.productName || "Sản phẩm không xác định"}
-                      </p>
+                      <Link to={`/product/${product.productId}`}>
+                        <p className="sm:text-base font-medium text-gray-900 hover:text-blue-200">
+                          {product.productName || "Sản phẩm không xác định"}
+                        </p>
+                      </Link>
+                      
                       <div className="flex items-center gap-3 mt-2 text-base">
                         <p className="text-lg font-semibold text-gray-900">
                           {formatCurrency(product.price)}
@@ -209,7 +214,7 @@ const Orders = () => {
                     {order.deliveryAddress.phone}
                   </p>
                   <p>
-                    <strong>Địa chỉ:</strong> {order.deliveryAddress.Detail},{" "}
+                    <strong>Địa chỉ:</strong> {order.deliveryAddress.detail},{" "}
                     {order.deliveryAddress.ward},
                     {order.deliveryAddress.district},{" "}
                     {order.deliveryAddress.province}
@@ -222,8 +227,12 @@ const Orders = () => {
                     Thông tin đơn hàng
                   </h3>
                   <p>
+                    <strong>Phí ship:</strong>{" "}
+                    {formatCurrency(10000)}
+                  </p>
+                  <p>
                     <strong>Tổng tiền:</strong>{" "}
-                    {formatCurrency(totalAmount(order))}
+                    {formatCurrency(Number(order.price))}
                   </p>
                   <p>
                     <strong>Tổng số lượng:</strong> {totalQuantity(order)}

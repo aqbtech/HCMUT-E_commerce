@@ -7,6 +7,7 @@ import { getMyCart, updateQuantity, fetchCart, deleteFromCart } from '../fetchAP
 import ErrorMessage from '/src/components/errorMessage';
 import Cookies from 'js-cookie'
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
   const { systemError, setSystemError, formatCurrency, navigate, curState } = useContext(ShopContext);
@@ -164,7 +165,7 @@ const Cart = () => {
       </div>
       {Object.keys(groupedCartData).map((sellerId) => (
         <div key={sellerId} className="border mb-6 p-4 bg-gray-50">
-          <h2 className="text-lg font-bold mb-4">{groupedCartData[sellerId].sellerName}</h2>
+          <Link to={``}><h2 className="text-lg font-bold mb-4">{groupedCartData[sellerId].sellerName}</h2></Link>
           {groupedCartData[sellerId].items.map((item) => (
             <div
               key={item.productInstanceId} // Key là productInstanceId duy nhất
@@ -178,7 +179,7 @@ const Cart = () => {
               <div className="flex items-start gap-6">
                 <img className="w-16 sm:w-20" src={item.IMG || 'default.jpg'} alt={item.productName} />
                 <div>
-                  <p className="text-xl sm:text-lg font-medium">{item.productName}</p>
+                  <Link to={`/product/${item.productId}`}> <p className="text-xl sm:text-lg font-medium text-blue-500">{item.productName}</p> </Link>
                   <div className="flex items-center gap-5 mt-2">
                     <p>{formatCurrency(item.price)}</p>
                     <ul>

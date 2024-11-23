@@ -5,7 +5,8 @@ import { axiosClient2, axiosClient } from '../fetchAPI/axios';
 
 
 export const getAllOrders = async (page) => {
-  const response = await axiosClient.get(`/allOrders?_page=${page}&_limit=1`)
+  const response = await axiosClient.get(`/resultOrder`)
+  console.log("lay don hang thanh cong", response);
   return response.data;
 }
 

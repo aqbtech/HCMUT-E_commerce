@@ -2,15 +2,15 @@ import { axiosClient, axiosPublic } from '../fetchAPI/axios';
 
 
 export const getAllProducts = async (api) =>{
-  const res = await axiosClient.get(`/products${api}`);
+  const res = await axiosClient.get(`/result1`);
   
   return res.data;
 }
 
 export const getDetailProduct = async (api) =>{
-  const res = await axiosClient.get(`/result?productId=${api}`);
+  const res = await axiosClient.get(`/productDetail`);
   console.log(`Lấy thành công sản phẩm:`, res);
-  return res.data[0];
+  return res.data;
 }
 
 export const getReview = async (api) => {
