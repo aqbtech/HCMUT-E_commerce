@@ -7,18 +7,30 @@ import AddressTab from '../components/profilePage/AddressTab';
 import { deleteAdress, updateAddress, getAddress, createAddress } from '../fetchAPI/fetchAddress';
 import { updateAccount, getInfo } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie'
 //---
 const MyProfile = () => {
-    const { account, setAccount } = useContext(ShopContext);
+    const { account, navigate } = useContext(ShopContext);
     const [addresses, setAddresses] = useState([]);
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const initialTab = searchParams.get('tab') || 'profile';
     const [activeTab, setActiveTab] = useState(initialTab);
 
+    const handleTabChange = (newTab) => {
+        setActiveTab(newTab); // Cập nhật state
+        setSearchParams({ tab: newTab }); // Cập nhật query param
+    };
+
     // Cập nhật tab đang hoạt động khi initialTab thay đổi (dựa trên query params)
     useEffect(() => {
-        setActiveTab(initialTab);
-    }, [initialTab]);
+        const tab = searchParams.get('tab') || 'profile';
+        setActiveTab(tab);
+
+        if (!Cookies.get("username")) {
+            const currentTab = location.search; // Lấy query parameter hiện tại (vd: ?tab=profile)
+            return navigate("/Login", { state: { from: location.pathname + currentTab } });
+        }
+    }, [searchParams]);
 
     // Hàm cập nhật thông tin tài khoản
     const handleSave = async (updatedAccount) => {
@@ -33,23 +45,16 @@ const MyProfile = () => {
 
     // Hàm đổi mật khẩu
     const handleForgotPass = async (curPass, newPass) => {
-        if (curPass !== account.pass) {
-            toast.error("Mật khẩu hiện tại sai!");
-            return;
+        const body = {
+            "password" : curPass,
+            "newPassword" : newPass
         }
-        const updateData = { pass: newPass };
         try {
-            const response = await updateAccount(account.id, updateData);
-            if (response.status === 200) {
-                alert("Đổi mật khẩu thành công!");
-                const freshAccount = await getInfo(account.id);
-                setAccount(freshAccount);
-            } else {
-                alert("Cập nhật thất bại.");
-            }
+            const response = await updateAccount(body);
+            toast.success("Đổi mật khẩu thành công!");
         } catch (error) {
             console.error("Lỗi khi đổi mật khẩu:", error);
-            alert("Đã xảy ra lỗi trong quá trình đổi mật khẩu.");
+            toast.error("Đổi mật khẩu thất bại, vui lòng thử lại!");
         }
     };
 
@@ -76,7 +81,7 @@ const MyProfile = () => {
     }, []);
     
     // Hàm xóa địa chỉ
-    const handleDeleteAddress = useCallback(async (id) => {
+    const handleDeleteAddress = useCallback(async (id) => { 
         try {
             await deleteAdress(id);
             setAddresses((prevAddresses) => prevAddresses.filter(item => item.id !== id));
@@ -108,19 +113,19 @@ const MyProfile = () => {
                 <h2 className="text-xl font-bold mb-4">Tài Khoản Của Tôi</h2>
                 <ul>
                     <li 
-                        onClick={() => setActiveTab("profile")} 
+                        onClick={() => handleTabChange("profile")} 
                         className={`cursor-pointer py-2 ${activeTab === "profile" ? "text-orange-600 font-bold" : ""}`}
                     >
                         Hồ Sơ
                     </li>
                     <li 
-                        onClick={() => setActiveTab("password")} 
+                        onClick={() => handleTabChange("password")} 
                         className={`cursor-pointer py-2 ${activeTab === "password" ? "text-orange-600 font-bold" : ""}`}
                     >
                         Đổi Mật Khẩu
                     </li>
                     <li 
-                        onClick={() => setActiveTab("address")} 
+                        onClick={() => handleTabChange("address")} 
                         className={`cursor-pointer py-2 ${activeTab === "address" ? "text-orange-600 font-bold" : ""}`}
                     >
                         Địa chỉ mua hàng

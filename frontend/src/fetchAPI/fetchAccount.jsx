@@ -9,7 +9,7 @@ export const register = async (body) => {
 
 export const SignIn = async (body)  => {
   return await axiosPublic.post('/auth/token', body);
-   
+    
 }
 
 export const resetPassword = async (body) => {
@@ -25,6 +25,9 @@ export const getInfo = async (username) => {
 
 export const updateAccount = async (body) => {
   return await axiosClient2.patch(`/user/info/${Cookies.get('username')}`, body);
+}
 
+export const changePass = async (body) => {
+  return await axiosClient2.post(`/user/change`, body);
 }
 

@@ -50,7 +50,6 @@ const Cart = () => {
 
   useEffect(() => {
     if (!Cookies.get("username")) {
-      console.log(curState);
       navigate(`/Login`);
       return;
     }
