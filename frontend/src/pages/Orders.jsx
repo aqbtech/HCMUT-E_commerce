@@ -245,7 +245,7 @@ const Orders = () => {
       </div>
 
       {/* Nút Xem thêm */}
-      {userOrders?.length > 0 && (
+      {userOrders?.length > 0 && hasMore &&(
         <div className="flex justify-center gap-4 mt-8">
           <button
             onClick={handleLoadMore}
