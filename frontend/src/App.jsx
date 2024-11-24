@@ -16,7 +16,7 @@ import Footer from '../src/components/homePage/Footer'
 import Test from './pages/Test';
 import Regist from './pages/Regist';
 import Admin from './pages/Admin'
-//import ShopViewer from './pages/ShopViewer';
+import ShopView from './pages/ShopView';
 import MyProfile from './pages/MyProfile';
 //import ShopManage from './pages/ShopManage';
 import ResetPassword from './pages/ResetPassword';
@@ -41,7 +41,7 @@ const App = () => {
           <Route path='/test' element={<Test />}></Route>
           <Route path='/admin' element={<Admin />}></Route>
           <Route path='/regist' element={<Regist />}></Route>
-          {/* <Route path='/shopView/:shopId' element={<ShopViewer />}></Route> */}
+          <Route path='/shopView/:shopId' element={<ShopView />}></Route>
           <Route path='/myProfile' element={<MyProfile />}></Route>
           {/* <Route path='/shop' element={<ShopManage/>}></Route> */}
           <Route path='/reset' element={<ResetPassword/>}></Route>

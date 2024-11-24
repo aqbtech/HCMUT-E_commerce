@@ -25,6 +25,20 @@ export const fetchProductsWithFilters = async () => {
   return res.data;
 }
 
+
+export const getProductForShopView =  async () => {
+  
+  try {
+    const res = await axiosClient.get(`/productShop`)
+    console.log(`Lấy thành công sản phẩm:`, res);
+    return res.data;
+} catch(err) {
+    console.log(`Lỗi khi lấy thông tin shop: `, err );
+    throw err;
+}
+}
+
+
 //-----
 export const getProduct = async (page) => {
   try {
@@ -58,4 +72,5 @@ export const getReviewById = async (productId, page) => {
     throw err;
   }
 }
+
 
