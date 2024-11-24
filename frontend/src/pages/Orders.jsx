@@ -232,7 +232,7 @@ const Orders = () => {
                   </p>
                   <p>
                     <strong>Tổng tiền:</strong>{" "}
-                    {formatCurrency(Number(order.price))}
+                    {formatCurrency(Number(order.price) + 10000)}
                   </p>
                   <p>
                     <strong>Tổng số lượng:</strong> {totalQuantity(order)}

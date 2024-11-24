@@ -19,6 +19,12 @@ export const getReview = async (api) => {
   return res.data;
 }
 
+export const fetchProductsWithFilters = async () => {
+  const res = await axiosClient.get(`/keyword`);
+  
+  return res.data;
+}
+
 //-----
 export const getProduct = async (page) => {
   try {
@@ -31,7 +37,6 @@ export const getProduct = async (page) => {
   }
 }
 
-
 export const getProductsById = async (productId) => {
   try {
       const res = await axiosPublic.get(`/query_product_detail?productId=${productId}`);
@@ -43,7 +48,6 @@ export const getProductsById = async (productId) => {
   }
 };
 
-
 export const getReviewById = async (productId, page) => {
   try {
     const res = await axiosPublic.get(`/${productId}/reviews?page=${page}`);
@@ -54,3 +58,4 @@ export const getReviewById = async (productId, page) => {
     throw err;
   }
 }
+
