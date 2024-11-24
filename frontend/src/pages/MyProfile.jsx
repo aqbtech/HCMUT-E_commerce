@@ -4,10 +4,15 @@ import { ShopContext } from '../context/ShopContext';
 import ProfileTab from '../components/profilePage/ProfileTab'
 import PasswordTab from '../components/profilePage/PasswordTab';
 import AddressTab from '../components/profilePage/AddressTab';
-import { deleteAdress, updateAddress, getAddress, createAddress } from '../fetchAPI/fetchAddress';
+import { deleteAdress, updateAddress, getAddress, createAddress} from '../fetchAPI/fetchAddress';
+import {getBankAccounts,createBankAccount } from '../fetchAPI/fetchBank';
 import { updateAccount, getInfo } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie'
+import BankTab from '../components/profilePage/BankTab';
+import BankModal from '../components/profilePage/BankModal';
+
+
 //---
 const MyProfile = () => {
     const { account, navigate } = useContext(ShopContext);
@@ -15,6 +20,29 @@ const MyProfile = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const initialTab = searchParams.get('tab') || 'profile';
     const [activeTab, setActiveTab] = useState(initialTab);
+    const [bankAccounts, setBankAccounts] = useState([]); // Danh sách tài khoản ngân hàng
+    const [isModalOpen, setIsModalOpen] = useState(false); // Kiểm soát hiển thị modal
+
+    // Lấy danh sách tài khoản ngân hàng khi component render
+    useEffect(() => {
+        const fetchBankAccounts = async () => { 
+            const data = await getBankAccounts(); 
+            setBankAccounts(data);
+        };
+        fetchBankAccounts();
+    }, []);
+
+
+    // Hàm thêm tài khoản ngân hàng mới
+    const handleAddBankAccount = async (newBankAccount) => {
+        try {
+            await createBankAccount(newBankAccount); 
+            setBankAccounts((prev) => [...prev, newBankAccount]);
+            toast.success("Thêm tài khoản ngân hàng thành công!");
+        } catch (err) {
+            toast.error("Thêm tài khoản ngân hàng thất bại!");
+        }
+    };
 
     const handleTabChange = (newTab) => {
         setActiveTab(newTab); // Cập nhật state
@@ -125,6 +153,12 @@ const MyProfile = () => {
                         Đổi Mật Khẩu
                     </li>
                     <li 
+                        onClick={() => handleTabChange("bank")} 
+                        className={`cursor-pointer py-2 ${activeTab === "bank" ? "text-orange-600 font-bold" : ""}`}
+                    >
+                        Tài Khoản Ngân Hàng
+                    </li>
+                    <li 
                         onClick={() => handleTabChange("address")} 
                         className={`cursor-pointer py-2 ${activeTab === "address" ? "text-orange-600 font-bold" : ""}`}
                     >
@@ -137,6 +171,22 @@ const MyProfile = () => {
             <div className="w-3/4 p-6 bg-white">
                 {activeTab === "profile" && <ProfileTab account={account} onSave={handleSave} />}
                 {activeTab === "password" && <PasswordTab onChangePass={handleForgotPass} />}
+                {activeTab === "bank" && (
+                    <>
+                        <BankTab 
+                            bankAccounts={bankAccounts} 
+                            onAddAccount={() => setIsModalOpen(true)} 
+                            setBankAccounts={setBankAccounts}
+                        />
+                        {isModalOpen && (
+                            <BankModal 
+                                onClose={() => setIsModalOpen(false)} 
+                                onSave={handleAddBankAccount} 
+                            />
+                        )}
+                    </>
+                )}
+
                 {activeTab === "address" && (
                     <AddressTab 
                         addresses={addresses} 
