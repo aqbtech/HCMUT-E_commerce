@@ -1,11 +1,9 @@
 package com.se.backend.controller.web;
 
 import com.se.backend.dto.request.*;
-import com.se.backend.dto.response.CancelOrderResponse;
-import com.se.backend.dto.response.GetOrderResponse;
-import com.se.backend.dto.response.ResponseAPITemplate;
+import com.se.backend.dto.response.*;
+import com.se.backend.service.BuyerService;
 import com.se.backend.service.business.OrderService;
-import com.se.backend.dto.response.CreateOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,6 +22,26 @@ public class BuyerController {
 
     @Autowired
     private final OrderService orderService;
+    @Autowired
+    private final BuyerService buyerService;
+
+    @GetMapping("/get_information")
+    public ResponseAPITemplate<BuyerInformationResopnse> getInfo(@RequestParam String username){
+        BuyerInformationResopnse response = buyerService.getBuyerInformation(username);
+        return ResponseAPITemplate.<BuyerInformationResopnse>builder()
+                .result(response)
+                .build();
+    }
+
+    @PutMapping("/update_information")
+    public ResponseAPITemplate<String> updateInfo(
+            @RequestParam String username,
+            @RequestBody UpdateBuyerInformationRequest request){
+        String response = buyerService.updateBuyerInformation(username, request);
+        return ResponseAPITemplate.<String>builder()
+                .message(response)
+                .build();
+    }
 
     @PutMapping("/delete_order")
     public ResponseAPITemplate<CancelOrderResponse> cancelOrder(@RequestBody CancelOrderRequest request){
@@ -33,20 +51,6 @@ public class BuyerController {
                 .build();
     }
 
-//    @GetMapping("/order/getall/{buyerId}")
-//    public ResponseAPITemplate<List<CreateOrderResponse>> getAllOrder(@PathVariable("buyerId") String buyerId){
-//        List<CreateOrderResponse> response = orderService.getAll(buyerId);
-//            return ResponseAPITemplate.<List<CreateOrderResponse>>builder()
-//                    .result(response)
-//                    .build();
-//    }
-//    @GetMapping("/order/{id}")
-//    public ResponseAPITemplate<CreateOrderResponse> detailInfoOfPaymentOrder(@PathVariable("id") String order_id){
-//        CreateOrderResponse response = orderService.findById(order_id);
-//        return ResponseAPITemplate.<CreateOrderResponse>builder()
-//                .result(response)
-//                .build();
-//    }
     @PostMapping("/order")
     public ResponseAPITemplate<CreateOrderResponse> createOrder(
             @RequestBody CreateOrderRequest request){
