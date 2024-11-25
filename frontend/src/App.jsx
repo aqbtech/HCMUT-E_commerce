@@ -20,6 +20,7 @@ import ShopView from './pages/ShopView';
 import MyProfile from './pages/MyProfile';
 //import ShopManage from './pages/ShopManage';
 import ResetPassword from './pages/ResetPassword';
+import NotFound from "../src/components/NotFound";
 
 
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
           <Route path='/myProfile' element={<MyProfile />}></Route>
           {/* <Route path='/shop' element={<ShopManage/>}></Route> */}
           <Route path='/reset' element={<ResetPassword/>}></Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer/>
       </div>

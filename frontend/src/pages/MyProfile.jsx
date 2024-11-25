@@ -23,32 +23,6 @@ const MyProfile = () => {
     const [bankAccounts, setBankAccounts] = useState([]); // Danh sách tài khoản ngân hàng
     const [isModalOpen, setIsModalOpen] = useState(false); // Kiểm soát hiển thị modal
 
-    // Lấy danh sách tài khoản ngân hàng khi component render
-    useEffect(() => {
-        const fetchBankAccounts = async () => { 
-            const data = await getBankAccounts(); 
-            setBankAccounts(data);
-        };
-        fetchBankAccounts();
-    }, []);
-
-
-    // Hàm thêm tài khoản ngân hàng mới
-    const handleAddBankAccount = async (newBankAccount) => {
-        try {
-            await createBankAccount(newBankAccount); 
-            setBankAccounts((prev) => [...prev, newBankAccount]);
-            toast.success("Thêm tài khoản ngân hàng thành công!");
-        } catch (err) {
-            toast.error("Thêm tài khoản ngân hàng thất bại!");
-        }
-    };
-
-    const handleTabChange = (newTab) => {
-        setActiveTab(newTab); // Cập nhật state
-        setSearchParams({ tab: newTab }); // Cập nhật query param
-    };
-
     // Cập nhật tab đang hoạt động khi initialTab thay đổi (dựa trên query params)
     useEffect(() => {
         const tab = searchParams.get('tab') || 'profile';
@@ -59,6 +33,13 @@ const MyProfile = () => {
             return navigate("/Login", { state: { from: location.pathname + currentTab } });
         }
     }, [searchParams]);
+
+
+    const handleTabChange = (newTab) => {
+        setActiveTab(newTab); // Cập nhật state
+        setSearchParams({ tab: newTab }); // Cập nhật query param
+    };
+
 
     // Hàm cập nhật thông tin tài khoản
     const handleSave = async (updatedAccount) => {
@@ -88,15 +69,16 @@ const MyProfile = () => {
 
     // Lấy danh sách địa chỉ khi component lần đầu render
     useEffect(() => {
-        // Lấy danh sách địa chỉ
-        const fetchAddresses = async () => {
-            const data = await getAddress();
-            setAddresses(data);
-        };
+        if (activeTab === 'address') {
+            const fetchAddresses = async () => {
+                const data = await getAddress();
+                setAddresses(data);
+            };
 
-        fetchAddresses(); 
-    }, []);
-
+            fetchAddresses();
+        }
+    }, [activeTab]);
+    
     // Hàm thêm địa chỉ mới
     const handleAddAddress = useCallback(async (newAddress) => {
         try {
@@ -133,6 +115,30 @@ const MyProfile = () => {
             toast.error("Cập nhật địa chỉ thất bại, vui lòng thử lại!");
         } 
     }, []);
+
+    // Lấy danh sách tài khoản ngân hàng khi component render
+    useEffect(() => {
+        if (activeTab === 'bank') {
+            const fetchBankAccounts = async () => { 
+                const data = await getBankAccounts(); 
+                setBankAccounts(data);
+            };
+            fetchBankAccounts();
+        }
+    }, [activeTab]);
+
+
+    // Hàm thêm tài khoản ngân hàng mới
+    const handleAddBankAccount = async (newBankAccount) => {
+        try {
+            await createBankAccount(newBankAccount); 
+            setBankAccounts((prev) => [...prev, newBankAccount]);
+            toast.success("Thêm tài khoản ngân hàng thành công!");
+        } catch (err) {
+            toast.error("Thêm tài khoản ngân hàng thất bại!");
+        }
+    };
+    
 
     return (
         <div className="flex">

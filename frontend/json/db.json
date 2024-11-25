@@ -1024,10 +1024,10 @@
     "shopName": "Cocoon Vietnam Chính Hãng",
     "id": "123",
     "location": "Ha Noi",
-    "rating": 5,
+    "rating": 4.6,
     "numberOfProduct": 100,
-    "participateTime" : "5 năm",
-    "description": "Shop này chuyên bán trái cây nha quý vị :)))"
+    "followers" : 100,
+    "isFollowed" : true
   },
   "productShop": {
     "content": [
