@@ -14,6 +14,14 @@ export const updateOrder = async (orderId) => {
   const response = await axiosClient.get(`/allOrders/${orderId}`)
 }
  
+
+export const getReviewableProdcuts = async () => {
+  const response = await axiosClient.get(`/orderReview`)
+  console.log("Lấy các sản phẩm cần đánh giá thành công:", response);
+  return response.data;
+}
+
+
 //----
   export const createOrder = async (body) => {
     const response = await axiosClient2.post(`/buyer/order`,body)
@@ -31,12 +39,13 @@ export const updateOrder = async (orderId) => {
     const response = axiosClient2.put(`/buyer/delete_order`, body);
   } 
 
-  export const getReviewableProdcuts = async () => {
-    const response = await axiosClient.get(`/orderReview`)
-    console.log("Lấy các sản phẩm cần đánh giá thành công:", response);
-    return response.data;
-  }
 
-  export const submitProductReview = async () => {
-
+  export const submitProductReview = async (body) => {
+    try{
+      const response = await axiosClient2.post(`/review`, body)
+      console.log("Đánh giá sản phẩm thành công!")
+    } catch(err) {
+      console.log("Lỗi khi đánh giá sản phẩm")
+      throw err
+    }
   }
