@@ -1,1018 +1,283 @@
 {
-  "products": [
-    {
-      "id": "aaaaa",
-      "name": "dumama",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 100,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Women",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L"],
-      "date": 1716634345448,
-      "bestseller": true,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaab",
-      "name": "Men Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 200,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["M", "L", "XL"],
-      "date": 1716621345448,
-      "bestseller": true,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaac",
-      "name": "Girls Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 220,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "L", "XL"],
-      "date": 1716234545448,
-      "bestseller": true,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaad",
-      "name": "Men Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 110,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "XXL"],
-      "date": 1716621345448,
-      "bestseller": true,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaae",
-      "name": "Women Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 130,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Women",
-      "subCategory": "Topwear",
-      "sizes": ["M", "L", "XL"],
-      "date": 1716622345448,
-      "bestseller": true,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaaf",
-      "name": "Girls Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 140,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "L", "XL"],
-      "date": 1716623423448,
-      "bestseller": true,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaag",
-      "name": "Men Tapered Fit Flat-Front Trousers",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 190,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Men",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "L", "XL"],
-      "date": 1716621542448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaah",
-      "name": "Men Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 140,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716622345448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaai",
-      "name": "Girls Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 100,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["M", "L", "XL"],
-      "date": 1716621235448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaaj",
-      "name": "Men Tapered Fit Flat-Front Trousers",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 110,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Men",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "L", "XL"],
-      "date": 1716622235448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaak",
-      "name": "Men Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 120,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L"],
-      "date": 1716623345448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaal",
-      "name": "Men Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 150,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716624445448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaam",
-      "name": "Women Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 130,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716625545448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaan",
-      "name": "Boy Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 160,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716626645448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaao",
-      "name": "Men Tapered Fit Flat-Front Trousers",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 140,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716627745448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaap",
-      "name": "Girls Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 170,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716628845448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaaq",
-      "name": "Men Tapered Fit Flat-Front Trousers",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 150,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716629945448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaar",
-      "name": "Boy Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 180,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716631045448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaas",
-      "name": "Boy Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 160,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716632145448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaat",
-      "name": "Women Palazzo Pants with Waist Belt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 190,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716633245448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaau",
-      "name": "Women Zip-Front Relaxed Fit Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 170,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716634345448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaav",
-      "name": "Women Palazzo Pants with Waist Belt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 200,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716635445448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaaw",
-      "name": "Boy Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 180,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716636545448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaax",
-      "name": "Boy Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 210,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716637645448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaay",
-      "name": "Girls Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 190,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716638745448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaaz",
-      "name": "Women Zip-Front Relaxed Fit Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 220,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716639845448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaaba",
-      "name": "Girls Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 200,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716640945448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabb",
-      "name": "Men Slim Fit Relaxed Denim Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 230,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716642045448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabc",
-      "name": "Women Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 210,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716643145448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabd",
-      "name": "Girls Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 240,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716644245448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabe",
-      "name": "Men Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 220,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716645345448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabf",
-      "name": "Men Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 250,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716646445448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabg",
-      "name": "Girls Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 230,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716647545448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabh",
-      "name": "Women Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 260,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716648645448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabi",
-      "name": "Women Zip-Front Relaxed Fit Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 240,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716649745448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabj",
-      "name": "Women Zip-Front Relaxed Fit Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 270,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716650845448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabk",
-      "name": "Women Round Neck Cotton Top",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 250,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716651945448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabl",
-      "name": "Men Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 280,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716653045448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabm",
-      "name": "Men Printed Plain Cotton Shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 260,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716654145448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabn",
-      "name": "Men Slim Fit Relaxed Denim Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 290,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716655245448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabo",
-      "name": "Men Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 270,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716656345448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabp",
-      "name": "Boy Round Neck Pure Cotton T-shirt",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 300,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716657445448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabq",
-      "name": "Kid Tapered Slim Fit Trouser",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 280,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716658545448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabr",
-      "name": "Women Zip-Front Relaxed Fit Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 310,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Women",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716659645448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabs",
-      "name": "Men Slim Fit Relaxed Denim Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 290,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716660745448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabt",
-      "name": "Men Slim Fit Relaxed Denim Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 320,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716661845448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabu",
-      "name": "Kid Tapered Slim Fit Trouser",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 300,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716662945448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabv",
-      "name": "Men Slim Fit Relaxed Denim Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 330,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716664045448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabw",
-      "name": "Kid Tapered Slim Fit Trouser",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 310,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716665145448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabx",
-      "name": "Kid Tapered Slim Fit Trouser",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 340,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Kids",
-      "subCategory": "Bottomwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716666245448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "aaabz",
-      "name": "Men Slim Fit Relaxed Denim Jacket",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 350,
-      "image": [
-        "https://picsum.photos/390/450",
-        "https://picsum.photos/390/450"
-      ],
-      "category": "Men",
-      "subCategory": "Winterwear",
-      "sizes": ["S", "M", "L", "XL"],
-      "date": 1716668445448,
-      "bestseller": false,
-      "seller": "abc",
-      "status": 1
-    },
-    {
-      "id": "baaaa",
-      "name": "dumama",
-      "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-      "price": 100,
-      "image": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn5xwb6f.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmt7gpmhfkh91.webp"
-      ],
-      "category": "Women",
-      "subCategory": "Topwear",
-      "sizes": ["S", "M", "L"],
-      "date": 1716634345448,
-      "bestseller": true,
-      "seller": "abc",
-      "status": 1
+  "result1" : {
+    "content" : [
+      {
+        "img" : [
+          "https://bizweb.dktcdn.net/100/390/808/products/tao-fujji-ae0e548e6dad48938bd3b4e860850ed9.jpg?v=1593677607867",
+          "https://bizweb.dktcdn.net/100/390/808/products/tao-fujji-ae0e548e6dad48938bd3b4e860850ed9.jpg?v=1593677607867",
+          "https://bizweb.dktcdn.net/100/390/808/products/tao-fujji-ae0e548e6dad48938bd3b4e860850ed9.jpg?v=1593677607867"
+
+        ],
+        "minPrice" : 100000,
+        "name" : "Apple",
+        "productId" : "a726bd9a-f195-0d6c-30a9-6220ca580250",
+        "rating" : 3
+      },
+      {
+        "img" : [
+          "https://orionmagazine.org/wp-content/uploads/2021/10/figunsplash-771x771.jpg"
+        ],
+        "minPrice" : 170000,
+        "name" : "Fig",
+        "productId" : "15aa6023-df37-a3e1-e067-5a9626c2ff24",
+        "rating" : 2
+      },
+      {
+        "img" : [
+          "https://raintreenursery.com/cdn/shop/products/bobgordonelderberry_1536x2305_crop_center.jpg?v=1709197898"
+        ],
+        "minPrice" : 200000,
+        "name" : "Elderberry",
+        "productId" : "678bb1e4-130e-9c40-4843-be0fc498a3f6",
+        "rating" : 4
+      },
+      {
+        "img" : [
+          "https://shop-static.arborday.org/media/0004950_catawba-grape-vine.jpeg"
+        ],
+        "minPrice" : 300000,
+        "name" : "Grape",
+        "productId" : "80f36cc5-6613-6a4e-84d3-5cb4c84aedf7",
+        "rating" : 4.5
+      },
+      {
+        "img" : [
+          "https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2275pmk968u0c.webp"
+
+        ],
+        "minPrice" : 50000,
+        "name" : "Kiwi",
+        "productId" : "8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc",
+        "rating" : 3
+      },
+      {
+        "img" : [
+          "https://www.classicfinefoods-international.com/675-full_default/nectarine-white.jpg"
+
+        ],
+        "minPrice" : 120000,
+        "name" : "Nectarine",
+        "productId" : "69d60f96-16df-edcc-bd1d-633e78233df4",
+        "rating" : 4.5
+      },
+      {
+        "img" : [
+          "https://product.hstatic.net/200000077081/product/dao-dai-loan_66c80a1b3ca84b61be2c39d94d9a1955.jpg"
+        ],
+        "minPrice" : 130000,
+        "name" : "Peach",
+        "productId" : "15c9e862-b50f-0820-bdc4-216171e88ab5",
+        "rating" : 3
+      },
+      {
+        "img" : [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTQBrp5xBZuyoxuxfeSS5hk1vPPjy_FuayA&s"
+        ],
+        "minPrice" : 150000,
+        "name" : "Quince",
+        "productId" : "b4fb95ec-0555-3236-b96e-c8750a83adbe",
+        "rating" : 3.5
+      },
+      {
+        "img" : [
+          "https://exoticfruits.co.uk/cdn/shop/products/ugli-fruit-jamaican-tangelo-exoticfruitscouk-765123.jpg?v=1645489533",
+          "https://exoticfruits.co.uk/cdn/shop/products/ugli-fruit-jamaican-tangelo-exoticfruitscouk-765123.jpg?v=1645489533",
+          "https://exoticfruits.co.uk/cdn/shop/products/ugli-fruit-jamaican-tangelo-exoticfruitscouk-765123.jpg?v=1645489533"
+
+        ],
+        "minPrice" : 100000,
+        "name" : "Ugli fruit",
+        "productId" : "544d47d1-8e43-20bc-8cb3-84de33f2fd65",
+        "rating" : 3
+      },
+      {
+        "img" : [
+          "https://product.hstatic.net/1000282430/product/seedless-watermelon-around-2.5kg-whole-fruit_master.jpg"
+        ],
+        "minPrice" : 50000,
+        "name" : "Watermelon",
+        "productId" :"c54d6f0d-4f7e-d70d-a3c5-c1505b163497",
+        "rating" : 5
+      }
+    ],
+    "page" : {
+      "number" : 0,
+      "size" : "10",
+      "totalElements" : 10,
+      "totalPages" : 1
     }
-  ],
-  "productDetail": [
-    {
+  },
+  "resultOrder"  :{
+    "content" : [
+      {
+        "deliveryAddress" : {
+          "detail" : "10980 Pleasant View Place",
+          "district" : "OR",
+          "id" : "1",
+          "name" : "Jess Van Daalen",
+          "phone" : "(706) 075-8440",
+          "province" : "Oregon",
+          "ward" : "10980 Pleasant View Place"
+        },
+        "deliveryState" : "Waiting",
+        "listProduct" : [
+          {
+            "IMG" : "https://media.istockphoto.com/id/183387755/vi/anh/c%E1%BA%ADn-c%E1%BA%A3nh-qu%E1%BA%A3-l%C3%AA-v%C3%A0ng-t%C6%B0%C6%A1i-v%E1%BB%9Bi-con-%C4%91%C6%B0%E1%BB%9Dng-c%E1%BA%AFt.jpg?s=612x612&w=0&k=20&c=TS7f2Fs1qgsdEKKCxZCHLTa1i0DxQLRT9-tuVWlP5iY=",
+            "listAtt" : [
+              {
+                "name" : "texture",
+                "value"  : "Smooth"
+              },
+              {
+                "name" : "origin",
+                "value"  : "Italy"
+              },
+              {
+                "name" : "composition",
+                "value"  : "100% Cotton"
+              }
+            ],
+            "productId" : "780eaa2a-957d-00bb-845f-03b977148763",
+            "price" : 5576,
+            "productName" : "Quince",
+            "quantity" : 1
+          }
+        ],
+        "method" : "cod",
+        "shipPrice" : 10000,
+        "orderId" :"b40fe935-8519-e6f2-3282-491e31acea24",
+        "price" : 15576,
+        "sellerName" : "Arts & Crafts Haven"
+      }
+    ],
+    "page" : {
+      "number" : 0,
+      "size" : "10",
+      "totalElements" : 1,
+      "totalPages" : 1
+    }
+  },
+  "resultCart" : {
+    "content" : [
+      {
+        "IMG" : "https://media.istockphoto.com/id/183387755/vi/anh/c%E1%BA%ADn-c%E1%BA%A3nh-qu%E1%BA%A3-l%C3%AA-v%C3%A0ng-t%C6%B0%C6%A1i-v%E1%BB%9Bi-con-%C4%91%C6%B0%E1%BB%9Dng-c%E1%BA%AFt.jpg?s=612x612&w=0&k=20&c=TS7f2Fs1qgsdEKKCxZCHLTa1i0DxQLRT9-tuVWlP5iY=",
+        "listName" : [
+          "texture", "origin", "composition"
+        ],
+        "listValue" : [
+          "Rough", "Japan", "100% Cotton"
+        ],
+        "price" : 5677,
+        "productId" : "b4fb95ec-0555-3236-b96e-c8750a83adbe",
+        "productInstanceId" : "a51405c4-7e14-2c06-28cd-e475d6621a66",
+        "productName" :"Quince",
+        "quantity" : 1,
+        "sellerId" : "dmickelwright31174",
+        "shopName" : "Arts & Crafts Haven"
+      }
+    ],
+    "page" : {
+      "number" : 0,
+      "size" : "10",
+      "totalElements" : 1,
+      "totalPages" : 1
+    }
+  },
+  "productDetail": {
       "images": [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp",
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwxoz5gn0bmjbd.webp"
+         "https://media.istockphoto.com/id/183387755/vi/anh/c%E1%BA%ADn-c%E1%BA%A3nh-qu%E1%BA%A3-l%C3%AA-v%C3%A0ng-t%C6%B0%C6%A1i-v%E1%BB%9Bi-con-%C4%91%C6%B0%E1%BB%9Dng-c%E1%BA%AFt.jpg?s=612x612&w=0&k=20&c=TS7f2Fs1qgsdEKKCxZCHLTa1i0DxQLRT9-tuVWlP5iY=",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTQBrp5xBZuyoxuxfeSS5hk1vPPjy_FuayA&s",
+           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTQBrp5xBZuyoxuxfeSS5hk1vPPjy_FuayA&s"
       ],
-      "id": "saew-001",
-      "productName": "quan ngan",
-      "rating": 4.9,
-      "description": "quan dep lam mua di",
-      "minPrice": 500,
-      "totalQuantityInStock": 1000,
+      "productId": "b4fb95ec-0555-3236-b96e-c8750a83adbe",
+      "product_name": "Quince",
+      "rating": 3.5,
+      "description": "A unique fruit with a sweet fragrance and slight tartness, perfect for jams and cooking, offering both rich flavor and nutritional benefits",
+      "minPrice": 5455,
+      "maxPrice" : 6555,
+      "totalQuantityInStock": 1042,
       "listAtt": [
         {
-          "name": "size",
-          "values": ["XS", "S", "M", "L", "XL"]
+          "name": "texture",
+          "values": ["Rough", "Smooth", "Soft"]
         },
         {
-          "name": "color",
-          "values": ["pink", "green", "red", "yellow"]
+          "name": "origin",
+          "values": ["Japan", "Italy"]
+        },
+        {
+          "name": "composition",
+          "values": ["100% Cotton"]
         }
       ],
       "listInstants": [
         {
-          "instantId": "saew-001-xs-pink",
+          "instantId": "01bcb508-3b83-e7f0-5081-ca130f3ebb82",
           "attributes": {
-            "size": "XS",
-            "color": "pink"
+            "composition" :"100% Cotton",
+            "origin": "Italy",
+            "texture" : "Rough"
           },
-          "price": 100,
-          "quantity": 200,
-          "img": "123"
+          "price": 6216,
+          "quantityInStock": 62
         },
         {
-          "instantId": "saew-001-s-pink",
+          "instantId": "a51405c4-7e14-2c06-28cd-e475d6621a66",
           "attributes": {
-            "size": "S",
-            "color": "pink"
+            "composition" :"100% Cotton",
+            "origin": "Japan",
+            "texture" : "Rough"
           },
-          "price": 105,
-          "quantity": 150,
-          "img": "123"
+          "price": 5677,
+          "quantityInStock": 63
         },
         {
-          "instantId": "saew-001-m-green",
+          "instantId": "4ae730f9-37a3-79a3-fd79-6ccab9954d91",
           "attributes": {
-            "size": "M",
-            "color": "green"
+            "composition" :"100% Cotton",
+            "origin": "Japan",
+            "texture" : "Smooth"
           },
-          "price": 110,
-          "quantity": 100,
-          "img": "123"
+          "price": 5455,
+          "quantityInStock": 61
+        },
+        {
+          "instantId": "780eaa2a-957d-00bb-845f-03b977148763",
+          "attributes": {
+            "composition" :"100% Cotton",
+            "origin": "Italy",
+            "texture" : "Smooth"
+          },
+          "price": 5576,
+          "quantityInStock": 730
+        },
+        {
+          "instantId": "549ff9be-4f34-fe8c-cadf-f7573e9075ef",
+          "attributes": {
+            "composition" :"100% Cotton",
+            "origin": "Japan",
+            "texture" : "Soft"
+          },
+          "price": 6555,
+          "quantityInStock": 56
+        },
+        {
+          "instantId": "959f14f5-dedd-12e3-3556-144636d76cb1",
+          "attributes": {
+            "composition" :"100% Cotton",
+            "origin": "Italy",
+            "texture" : "Soft"
+          },
+          "price": 5688,
+          "quantityInStock": 70
         }
       ],
       "seller": {
-        "sellerId": "chinhaaaa",
-        "shopName": "Haven",
-        "location": "Ha Noi"
+        "sellerId": "dmickelwright31174",
+        "shopName": "Arts & Crafts Haven",
+        "location": "Oregon"
       }
-    },
-    {
-      "productName": "quan jean",
-      "id": "123-001",
-      "rating": 4.7,
-      "description": "quan dep lam mua di",
-      "minPrice": 550,
-      "totalQuantityInStock": 1200,
-      "listAtt": [
-        {
-          "name": "size",
-          "values": ["XS", "S", "M", "L", "XL"]
-        },
-        {
-          "name": "color",
-          "values": ["blue", "black", "white", "grey"]
-        }
-      ],
-      "listInstants": [
-        {
-          "instantId": "123-001-xs-blue",
-          "attributes": {
-            "size": "XS",
-            "color": "blue"
-          },
-          "price": 110,
-          "quantity": 250,
-          "img": "123"
-        },
-        {
-          "instantId": "123-001-s-black",
-          "attributes": {
-            "size": "S",
-            "color": "black"
-          },
-          "price": 115,
-          "quantity": 180,
-          "img": "123"
-        },
-        {
-          "instantId": "123-001-m-white",
-          "attributes": {
-            "size": "M",
-            "color": "white"
-          },
-          "price": 120,
-          "quantity": 120,
-          "img": "123"
-        }
-      ],
-      "seller": {
-        "sellerId": "chinhaaaa",
-        "shopName": "Haven",
-        "location": "Ha Noi"
-      }
-    }
-  ],
+  },
 
   "categories": [
     {
@@ -1104,7 +369,7 @@
       ]
     },
     {
-      "categoryName": "food&drink",
+      "categoryName": "food",
       "categoryId": "5",
       "subCategories": [
         {
@@ -1130,7 +395,7 @@
       ]
     },
     {
-      "categoryName": "food&drink",
+      "categoryName": "drink",
       "categoryId": "6",
       "subCategories": [
         {
@@ -1156,7 +421,7 @@
       ]
     },
     {
-      "categoryName": "food&drink",
+      "categoryName": "fruit",
       "categoryId": "7",
       "subCategories": [
         {
@@ -1575,6 +840,338 @@
         "Detail": "3a/2 khu pho 1"
       },
       "method": "COD"
+    }
+  ],
+
+  "keyword": {
+    "content": [
+      {
+        "img": "https://bizweb.dktcdn.net/100/390/808/products/tao-fujji-ae0e548e6dad48938bd3b4e860850ed9.jpg?v=1593677607867",
+        "minPrice": 100000,
+        "name": "Apple",
+        "productId": "a726bd9a-f195-0d6c-30a9-6220ca580250",
+        "rating": 3
+      },
+      {
+        "img": "https://orionmagazine.org/wp-content/uploads/2021/10/figunsplash-771x771.jpg",
+        "minPrice": 170000,
+        "name": "Fig",
+        "productId": "15aa6023-df37-a3e1-e067-5a9626c2ff24",
+        "rating": 2
+      },
+      {
+        "img": "https://raintreenursery.com/cdn/shop/products/bobgordonelderberry_1536x2305_crop_center.jpg?v=1709197898",
+        "minPrice": 200000,
+        "name": "Elderberry",
+        "productId": "678bb1e4-130e-9c40-4843-be0fc498a3f6",
+        "rating": 4
+      },
+      {
+        "img": "https://shop-static.arborday.org/media/0004950_catawba-grape-vine.jpeg",
+        "minPrice": 300000,
+        "name": "Grape",
+        "productId": "80f36cc5-6613-6a4e-84d3-5cb4c84aedf7",
+        "rating": 4.5
+      },
+      {
+        "img": "https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2275pmk968u0c.webp",
+        "minPrice": 50000,
+        "name": "Kiwi",
+        "productId": "8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc",
+        "rating": 3
+      },
+      {
+        "img": "https://www.classicfinefoods-international.com/675-full_default/nectarine-white.jpg",
+        "minPrice": 120000,
+        "name": "Nectarine",
+        "productId": "69d60f96-16df-edcc-bd1d-633e78233df4",
+        "rating": 4.5
+      },
+      {
+        "img": "https://product.hstatic.net/200000077081/product/dao-dai-loan_66c80a1b3ca84b61be2c39d94d9a1955.jpg",
+        "minPrice": 130000,
+        "name": "Peach",
+        "productId": "15c9e862-b50f-0820-bdc4-216171e88ab5",
+        "rating": 3
+      },
+      {
+        "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTQBrp5xBZuyoxuxfeSS5hk1vPPjy_FuayA&s",
+        "minPrice": 150000,
+        "name": "Quince",
+        "productId": "b4fb95ec-0555-3236-b96e-c8750a83adbe",
+        "rating": 3.5
+      },
+      {
+        "img": "https://exoticfruits.co.uk/cdn/shop/products/ugli-fruit-jamaican-tangelo-exoticfruitscouk-765123.jpg?v=1645489533",
+        "minPrice": 100000,
+        "name": "Ugli fruit",
+        "productId": "544d47d1-8e43-20bc-8cb3-84de33f2fd65",
+        "rating": 3
+      },
+      {
+        "img": "https://product.hstatic.net/1000282430/product/seedless-watermelon-around-2.5kg-whole-fruit_master.jpg",
+        "minPrice": 50000,
+        "name": "Watermelon",
+        "productId": "c54d6f0d-4f7e-d70d-a3c5-c1505b163497",
+        "rating": 5
+      },
+      {
+        "img": "https://product.hstatic.net/1000282430/product/seedless-watermelon-around-2.5kg-whole-fruit_master.jpg",
+        "minPrice": 50000,
+        "name": "Watermelon",
+        "productId": "c54d1236f0d-4f7e-d70d-a3c5-c1505b163497",
+        "rating": 5
+      },
+      {
+        "img": "https://product.hstatic.net/1000282430/product/seedless-watermelon-around-2.5kg-whole-fruit_master.jpg",
+        "minPrice": 50000,
+        "name": "Watermelon",
+        "productId": "c54d6123f0d-4f7e-d70d-a3c5-c1505b163497",
+        "rating": 5
+      }
+    ],
+    "page": {
+      "number": 0,
+      "size": 10,
+      "totalElements": 100,
+      "totalPages": 10
+    },
+    "filters": {
+      "applied": {
+        "location": [],
+        "categories": [
+          "men"
+        ],
+        "ratings": []
+      },
+      "available": {
+        "location": [
+          "Ha Noi",
+          "Bien Hoa",
+          "TP.HCM"
+        ],
+        "categories": [
+          "men",
+          "women",
+          "child"
+        ],
+        "rating": [
+          "0-1",
+          "1-2",
+          "2-3",
+          "3-4",
+          "4-5"
+        ]
+      }
+    }
+  },
+  "shopInfo" : {
+    "shopName": "Cocoon Vietnam Chính Hãng",
+    "id": "123",
+    "location": "Ha Noi",
+    "rating": 4.6,
+    "numberOfProduct": 100,
+    "followers" : 100,
+    "isFollowed" : true
+  },
+  "productShop": {
+    "content": [
+      {
+        "img": "https://bizweb.dktcdn.net/100/390/808/products/tao-fujji-ae0e548e6dad48938bd3b4e860850ed9.jpg?v=1593677607867",
+        "minPrice": 100000,
+        "name": "Apple",
+        "productId": "a726bd9a-f195-0d6c-30a9-6220ca580250",
+        "rating": 3
+      },
+      {
+        "img": "https://orionmagazine.org/wp-content/uploads/2021/10/figunsplash-771x771.jpg",
+        "minPrice": 170000,
+        "name": "Fig",
+        "productId": "15aa6023-df37-a3e1-e067-5a9626c2ff24",
+        "rating": 2
+      },
+      {
+        "img": "https://raintreenursery.com/cdn/shop/products/bobgordonelderberry_1536x2305_crop_center.jpg?v=1709197898",
+        "minPrice": 200000,
+        "name": "Elderberry",
+        "productId": "678bb1e4-130e-9c40-4843-be0fc498a3f6",
+        "rating": 4
+      },
+      {
+        "img": "https://shop-static.arborday.org/media/0004950_catawba-grape-vine.jpeg",
+        "minPrice": 300000,
+        "name": "Grape",
+        "productId": "80f36cc5-6613-6a4e-84d3-5cb4c84aedf7",
+        "rating": 4.5
+      },
+      {
+        "img": "https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2275pmk968u0c.webp",
+        "minPrice": 50000,
+        "name": "Kiwi",
+        "productId": "8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc",
+        "rating": 3
+      },
+      {
+        "img": "https://www.classicfinefoods-international.com/675-full_default/nectarine-white.jpg",
+        "minPrice": 120000,
+        "name": "Nectarine",
+        "productId": "69d60f96-16df-edcc-bd1d-633e78233df4",
+        "rating": 4.5
+      },
+      {
+        "img": "https://product.hstatic.net/200000077081/product/dao-dai-loan_66c80a1b3ca84b61be2c39d94d9a1955.jpg",
+        "minPrice": 130000,
+        "name": "Peach",
+        "productId": "15c9e862-b50f-0820-bdc4-216171e88ab5",
+        "rating": 3
+      },
+      {
+        "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTQBrp5xBZuyoxuxfeSS5hk1vPPjy_FuayA&s",
+        "minPrice": 150000,
+        "name": "Quince",
+        "productId": "b4fb95ec-0555-3236-b96e-c8750a83adbe",
+        "rating": 3.5
+      },
+      {
+        "img": "https://exoticfruits.co.uk/cdn/shop/products/ugli-fruit-jamaican-tangelo-exoticfruitscouk-765123.jpg?v=1645489533",
+        "minPrice": 100000,
+        "name": "Ugli fruit",
+        "productId": "544d47d1-8e43-20bc-8cb3-84de33f2fd65",
+        "rating": 3
+      },
+      {
+        "img": "https://product.hstatic.net/1000282430/product/seedless-watermelon-around-2.5kg-whole-fruit_master.jpg",
+        "minPrice": 50000,
+        "name": "Watermelon",
+        "productId": "c54d6f0d-4f7e-d70d-a3c5-c1505b163497",
+        "rating": 5
+      }
+    ],
+    "page": {
+      "number": 0,
+      "size": 10,
+      "totalElements": 100,
+      "totalPages": 1
+    },
+    "sort_options": {
+      "applied": "relevance",
+      "available": [
+        {
+          "id": "relevance",
+          "name": "Liên quan nhất"
+        },
+        {
+          "id": "price_asc",
+          "name": "Giá thấp đến cao"
+        },
+        {
+          "id": "price_desc",
+          "name": "Giá cao đến thấp"
+        }
+      ]
+    }
+  },
+
+ "orderReview": [
+    {
+      "reviewId": "REV_UNIQUE_ID_1",
+      "productId": "PROD001",
+      "productName": "Áo thun nam cao cấp",
+      "productImage": "/images/product/ao-thun.jpg",
+      "orderId": "ORD001",
+      "orderDate": "2024-05-01",
+      "price": 250000,
+      "ListAtt": [
+        {
+          "name": "size",
+          "value": "S"
+        },
+        {
+          "name": "color",
+          "value": "green"
+        }
+      ],
+      "isReviewed": true,
+      "reviewInfo": {
+        "rating": 4,
+        "content": "Giày đẹp, chất lượng tốt",
+        "reviewDate": "2024-05-25"
+      }
+    },
+    {
+      "reviewId": "REV_UNIQUE_ID_2",
+      "productId": "PROD001",
+      "productName": "Áo thun nam cao cấp",
+      "productImage": "/images/product/ao-thun.jpg",
+      "orderId": "ORD002",
+      "orderDate": "2024-05-15",
+      "price": 250000,
+      "ListAtt": [
+        {
+          "name": "size",
+          "value": "S"
+        },
+        {
+          "name": "color",
+          "value": "green"
+        }
+      ],
+      "isReviewed": false,
+      "reviewInfo": {
+        "rating": null,
+        "content": null,
+        "reviewDate": null
+      }
+    },
+    {
+      "reviewId": "REV_UNIQUE_ID_3",
+      "productId": "PROD002",
+      "productName": "Quần jean nam",
+      "productImage": "/images/product/quan-jean.jpg",
+      "orderId": "ORD003",
+      "orderDate": "2024-05-20",
+      "price": 450000,
+      "ListAtt": [
+        {
+          "name": "size",
+          "value": "S"
+        },
+        {
+          "name": "color",
+          "value": "green"
+        }
+      ],
+      "isReviewed": false,
+      "reviewInfo": {
+        "rating": null,
+        "content": null,
+        "reviewDate": null
+      }
+    },
+    {
+      "reviewId": "REV_UNIQUE_ID_4",
+      "productId": "PROD003",
+      "productName": "Giày thể thao",
+      "productImage": "/images/product/giay-the-thao.jpg",
+      "orderId": "ORD004",
+      "orderDate": "2024-05-20",
+      "price": 450000,
+      "ListAtt": [
+        {
+          "name": "size",
+          "value": "S"
+        },
+        {
+          "name": "color",
+          "value": "green"
+        }
+      ],
+      "isReviewed": true,
+      "reviewInfo": {
+        "rating": 4,
+        "content": "Giày đẹp, chất lượng tốt",
+        "reviewDate": "2024-05-25"
+      }
     }
   ]
 }

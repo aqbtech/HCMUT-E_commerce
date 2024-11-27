@@ -7,6 +7,7 @@ import { getMyCart, updateQuantity, fetchCart, deleteFromCart } from '../fetchAP
 import ErrorMessage from '/src/components/errorMessage';
 import Cookies from 'js-cookie'
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
   const { systemError, setSystemError, formatCurrency, navigate, curState } = useContext(ShopContext);
@@ -49,7 +50,6 @@ const Cart = () => {
 
   useEffect(() => {
     if (!Cookies.get("username")) {
-      console.log(curState);
       navigate(`/Login`);
       return;
     }
@@ -162,40 +162,44 @@ const Cart = () => {
       <div className="text-2xl mb-3">
         <Title text1="GIỎ" text2="HÀNG" />
       </div>
-      {Object.keys(groupedCartData).map((sellerId) => (
-        <div key={sellerId} className="border mb-6 p-4 bg-gray-50">
-          <h2 className="text-lg font-bold mb-4">{groupedCartData[sellerId].sellerName}</h2>
-          {groupedCartData[sellerId].items.map((item) => (
-            <div
-              key={item.productInstanceId} // Key là productInstanceId duy nhất
-              className="py-4 border-t text-gray-700 grid grid-cols-[0.5fr_4fr_0.5fr_0.5fr] sm:grid-cols-[1fr_4fr_2fr_1fr] items-center gap-4"
-            >
-              <input
-                type="checkbox"
-                checked={selectedItems.includes(item.productInstanceId)}
-                onChange={() => handleSelectItem(item.productInstanceId)}
-              />
-              <div className="flex items-start gap-6">
-                <img className="w-16 sm:w-20" src={item.IMG || 'default.jpg'} alt={item.productName} />
-                <div>
-                  <p className="text-xl sm:text-lg font-medium">{item.productName}</p>
-                  <div className="flex items-center gap-5 mt-2">
-                    <p>{formatCurrency(item.price)}</p>
-                    <ul>
-                      {item.listValue.map((att, idx) => (
-                        <li
-                          key={`${item.productInstanceId}-${idx}`} // Đảm bảo key duy nhất cho từng thuộc tính
-                          className="px-2 sm:px-3 sm:py-1 border bg-slate-50"
-                        >
-                          {att}
-                        </li>
-                      ))}
-                    </ul>
+
+      {Object.keys(groupedCartData).length > 0 ? (
+        Object.keys(groupedCartData).map((sellerId) => (
+          <div key={sellerId} className="border mb-6 p-4 bg-gray-50">
+            <Link to={``}><h2 className="text-lg font-bold mb-4">{groupedCartData[sellerId].sellerName}</h2></Link>
+            {groupedCartData[sellerId].items.map((item) => (
+              <div
+                key={item.productInstanceId} // Key là productInstanceId duy nhất
+                className="py-4 border-t text-gray-700 grid grid-cols-[0.5fr_4fr_0.5fr_0.5fr] sm:grid-cols-[1fr_4fr_2fr_1fr] items-center gap-4"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedItems.includes(item.productInstanceId)}
+                  onChange={() => handleSelectItem(item.productInstanceId)}
+                />
+                <div className="flex items-start gap-6">
+                  <img className="w-16 sm:w-20" src={item.IMG || 'default.jpg'} alt={item.productName} />
+                  <div>
+                    <Link to={`/product/${item.productId}`}>
+                      <p className="text-xl sm:text-lg font-medium text-blue-500">{item.productName}</p>
+                    </Link>
+                    <div className="flex items-center gap-5 mt-2">
+                      <p>{formatCurrency(item.price)}</p>
+                      <ul>
+                        {item.listValue.map((att, idx) => (
+                          <li
+                            key={`${item.productInstanceId}-${idx}`} // Đảm bảo key duy nhất cho từng thuộc tính
+                            className="px-2 sm:px-3 sm:py-1 border bg-slate-50"
+                          >
+                            {att}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <input
+                <input
                   type="number"
                   min={1}
                   max={9999} // Giới hạn số lượng tối đa nếu tồn tại maxQuantity
@@ -213,21 +217,29 @@ const Cart = () => {
                     if (newQuantity < 1) {
                       handleQuantityChange(item.productInstanceId, 1); // Đặt về tối thiểu là 1
                     } else if (newQuantity > (item.maxQuantity || Infinity)) {
-                      handleQuantityChange(item.productInstanceId, item.maxQuantity); // Đặt về tối đa
+                      handleQuantityChange(item.productInstanceId, 10); // Đặt về tối đa
                     }
                   }}
                 />
-               <img
-                src={assets.bin_icon}
-                alt="Remove item"
-                className="w-4 mr-4 sm:w-5 cursor-pointer"
-                onClick={() => handleRemoveItem(item.productInstanceId)}
-              />
-            </div>
-          ))}
-        </div>
-      ))}
-       <div className="flex justify-center gap-4 mt-8">
+                <img
+                  src={assets.bin_icon}
+                  alt="Remove item"
+                  className="w-4 mr-4 sm:w-5 cursor-pointer"
+                  onClick={() => handleRemoveItem(item.productInstanceId)}
+                />
+              </div>
+            ))}
+          </div>
+        ))
+        ) : (
+          <div className="text-center p-6 bg-gray-50">
+            <h2 className="text-xl font-bold">Giỏ hàng trống!</h2>
+            <p>Chưa có sản phẩm nào trong giỏ hàng của bạn. Hãy thêm sản phẩm để tiếp tục mua sắm.</p>
+          </div>
+      )}
+
+      {
+        hasMore ? <div className="flex justify-center gap-4 mt-8">
         <button
           onClick={loadMoreItems}
           disabled={!hasMore}
@@ -235,7 +247,9 @@ const Cart = () => {
         >
           Xem thêm
         </button>
-      </div>
+      </div> : ""
+      }
+       
       <div className="flex justify-end my-20">
         <div className="w-full sm:w-[450px]">
           <div className="text-2xl">

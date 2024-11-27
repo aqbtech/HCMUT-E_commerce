@@ -1,161 +1,218 @@
-import { useContext, useEffect, useState } from 'react'
-import { ShopContext } from '../context/ShopContext'
-import { assets } from '../assets/assets'
-import Title from '../components/Title'
-import ProductItem from '../components/ProductItem'
-import { getAllProducts} from '../fetchAPI/fetchProduct'
-import { getCategories } from '../fetchAPI/fetchCategory'
+import { useContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import Title from "../components/Title";
+import ProductItem from "../components/ProductItem";
+import { fetchProductsWithFilters } from "../fetchAPI/fetchProduct";
+import { assets } from "../assets/assets";
+import { ShopContext } from "../context/ShopContext";
 
+const SearchPage = () => {
+  const { navigate } = useContext(ShopContext);
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get("keyword");
 
-const Collection = () => {
-  
+  const [isFilter, setIsFilter] = useState(false);
   const [listProduct, setListProduct] = useState([]);
-  const [listCategories, setListCategories] = useState([])
-  const {search, showSearch } = useContext(ShopContext)
-  const [showFilter, setShowFilter] = useState(false)
-  const [filterProducts, setFilterProducts] = useState([])
-  const [category, setCategory] = useState([]);
-  const [subCategory, setSubCategory] = useState([]);
-  const [sortType, setSortType] = useState([]);
- 
-  
-  useEffect(()=> {
-    getAllProducts("").then((res) =>{
-      console.log(res)
-        setListProduct(res)
-    });
-  }, [] )
+  const [page, setPage] = useState(0);
+  const [sort, setSort] = useState("");
+  const [availableFilters, setAvailableFilters] = useState({});
+  const [filters, setFilters] = useState({
+    categories: [],
+    location: [],
+    rating: [],
+  });
+  const [totalPages, setTotalPages] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(()=> {
-    getCategories().then((res) =>{
-      setListCategories(res)
-    });
-  }, [] )
-   
- 
-  const toggleCategory = (e) => {
-    if (category.includes(e.target.value)) {
-      setCategory(prev => prev.filter(item => item !== e.target.value))
-    } else {
-      setCategory(prev => [...prev, e.target.value])
+  const listSorting = [
+    { name: "Liên quan nhất", value: "" },
+    { name: "Giá thấp đến cao", value: "price,asc" },
+    { name: "Giá cao đến thấp", value: "price,desc" },
+  ];
+
+  const fetchProducts = async () => {
+    try {
+      console.log("Filet:", filters, isFilter)
+      const response = await fetchProductsWithFilters(keyword, page, sort, filters, isFilter);
+      setListProduct(response?.content || []);
+      setAvailableFilters(response?.filters?.available || {});
+      setTotalPages(response?.page?.totalPages || 0);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setErrorMessage("Đã xảy ra lỗi khi tải sản phẩm.");
     }
   };
-   
-  const toggleSubCategory  = (e) => {
-    if(subCategory.includes(e.target.value)) {
-      setSubCategory(prev => prev.filter(item => item !== e.target.value))
-    } else {
-      setSubCategory(prev => [...prev, e.target.value])
-    }
-  }
-
-
-  const applyFilter = () => {
-    let productsCopy = listProduct.slice();
-
-    if(showSearch && search){
-      productsCopy = productsCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
-    }
-
-    if(category.length > 0) {
-      productsCopy = productsCopy.filter(item => category.includes(item.category))
-    }
-
-    if(subCategory.length > 0) {
-      productsCopy = productsCopy.filter(item => subCategory.includes(item.subCategory))
-    }
-
-    setFilterProducts(productsCopy);
-    
-  }
-
-  
-  const sortProduct = () => {
-    let fpCopy = filterProducts.slice();
-
-    switch (sortType) {
-      case 'low-high' :
-        setFilterProducts(fpCopy.sort((a,b) => (a.price-b.price)));
-        break;
-      
-      case 'high-low' :
-        setFilterProducts(fpCopy.sort((a,b) => (b.price-a.price)));
-        break;
-
-      default: 
-        applyFilter();
-        break;
-    }
-  };
-
-  useEffect(() =>{
-    sortProduct();
-  }, [sortType]) 
 
 
   useEffect(() => {
-    applyFilter();
-  }, [category, subCategory, search, showSearch])
+    if(keyword.length === 0) {
+      setErrorMessage("Không tìm thấy sản phẩm")
+    } 
+    fetchProducts();
+  }, [filters, page, sort]);
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => {
+      const updatedFilters = { ...prev };
+      const currentValues = updatedFilters[key] || [];
+
+      if (currentValues.includes(value)) {
+        updatedFilters[key] = currentValues.filter((item) => item !== value);
+      } else {
+        updatedFilters[key] = [...currentValues, value];
+      }
+
+    // Kiểm tra nếu bất kỳ bộ lọc nào còn giá trị
+    const hasFilters = Object.values(updatedFilters).some(
+      (filterValues) => filterValues.length > 0
+    );
+    setIsFilter(hasFilters); // Cập nhật trạng thái isFilter
+      
+      return updatedFilters;
+    });
+    setPage(0);
+  };
+
+  const handleSortChange = (e) => {
+    setSort(e.target.value);
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  if (errorMessage) {
+    return (
+      <div className="col-span-full flex flex-col items-center justify-center text-gray-500 min-h-[600px] space-y-6">
+        <div className="flex flex-col items-center">
+          <img src={assets.notFound} alt="Không tìm thấy sản phẩm" className="w-24 h-24" />
+          <p className="text-lg font-medium mt-4">{errorMessage}</p>
+        </div>
+        <button
+          onClick={() => navigate(`/`)}
+          className="px-6 py-3 text-grey text-sm rounded-md shadow-md hover:bg-black transition"
+        >
+          Quay về trang chủ
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
-      {/*filter options */}
-      <div className='min-w-60'>
-        <p onClick={() => setShowFilter(!showFilter)} className='my-2 text-xl flex items-center cursor-pointer gap-2'>FILTER
-            <img className={`h-3 sm:hidden ${showFilter ? 'rotate-90' : ''}`} src={assets.arrow} alt="" />
-        </p>
-        
-        {/* Category Filter */}
-        <div className={`border border-gray-300 pl-5 py-3 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
-          <p className='mb-3 text-sm font-medium'>CATEGORIES</p>
-          <div className='flex flex-col gap-2 text-sm font-light text-gray-700 '>
-            {listCategories.map((cat) => (
-              <p key={cat.id} className='flex gap-2'>
-                <input className='w-3' type="checkbox" value={cat.name} onChange={toggleCategory} />{cat.name}
-              </p>
+    <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
+      {/* Bộ lọc */}
+      <div className="min-w-60">
+        <p className="my-2 text-xl flex items-center cursor-pointer gap-2">BỘ LỌC</p>
+        <div className="border border-gray-300 pl-5 py-3">
+          {/* Location Filter */}
+          <div className="mb-4">
+            <p className="font-semibold">Địa Điểm</p>
+            {availableFilters.location?.map((filterValue) => (
+              <label key={filterValue} className="block">
+                <input
+                  type="checkbox"
+                  className="mr-3"
+                  checked={filters.location.includes(filterValue)}
+                  onChange={() => handleFilterChange("location", filterValue)}
+                />
+                {filterValue}
+              </label>
+            ))}
+          </div>
+
+          {/* Categories Filter */}
+          <div className="mb-4">
+            <p className="font-semibold">Danh Mục</p>
+            {availableFilters.categories?.map((filterValue) => (
+              <label key={filterValue} className="block">
+                <input
+                  type="checkbox"
+                  className="mr-3"
+                  checked={filters.categories.includes(filterValue)}
+                  onChange={() => handleFilterChange("categories", filterValue)}
+                />
+                {filterValue}
+              </label>
+            ))}
+          </div>
+
+          {/* Ratings Filter */}
+          <div className="mb-4">
+            <p className="font-semibold">Đánh Giá</p>
+            {availableFilters.rating?.map((filterValue) => (
+              <label key={filterValue} className="block">
+                <input
+                  type="checkbox"
+                  className="mr-3"
+                  checked={filters.rating.includes(filterValue)}
+                  onChange={() => handleFilterChange("rating", filterValue)}
+                />
+                {filterValue}
+              </label>
             ))}
           </div>
         </div>
-        {/* SubCategpry filter */}
-        <div className={`border border-gray-300 pl-5 py-3 my-6 ${showFilter ? '' : 'hidden'} sm:block`}>
-            <p className='mb-3 text-sm font-medium'>TYPE</p>
-            <div className='flex flex-col gap-2 text-sm font-light text-gray-700 '>
-              <p className='flex gap-2'>
-                <input className='w-3' type="checkbox" value={'Topwear'} onChange={toggleSubCategory}/>Topwear
-              </p>
-              <p className='flex gap-2'>
-                <input className='w-3' type="checkbox" value={'Bottomwear'} onChange={toggleSubCategory}/>BottomWear
-              </p>
-              <p className='flex gap-2'>
-                <input className='w-3' type="checkbox" value={'Winterwear'} onChange={toggleSubCategory}/>WinterWear
-              </p>
-            </div>
-          </div>
-      </div> 
-      {/* Right side */}
-      <div className='flex-1'>
+      </div>
 
-        <div className='flex justify-between text-base sm:text-2xl mb-4'>
-          <Title text1={'ALL'} text2={"COLLECTIONS"}/>
-          {/* Product Pord */}
-          <select onChange={(e)=>setSortType(e.target.value) } className='border-2 border-gray-300 text-sm px-2'>
-            <option value="relavent">Sort by: Bán Chạy</option>
-            <option value="low-high">Sort by: Thấp - Cao</option>
-            <option value="high-low">Sort by: Cao - Thấp</option>
+      {/* Sản phẩm */}
+      <div className="flex-1">
+        <div className="flex justify-between text-base sm:text-2xl mb-4">
+          <Title text1={"SẢN"} text2={"PHẨM"} />
+          <select
+            onChange={handleSortChange}
+            value={sort}
+            className="border-2 border-gray-300 text-sm px-2"
+          >
+            {listSorting.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.name}
+              </option>
+            ))}
           </select>
         </div>
-        {/* Map Products */}
-        <div className='grid gird-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>
-          {
-            filterProducts.map((item, index) => (
-              <ProductItem key={index} id={item.id} name={item.name} price={item.price} image={item.image}/>
-            )) 
-          }
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
+          {listProduct.map((item) => (
+            <ProductItem
+              key={item.productId}
+              id={item.productId}
+              name={item.name}
+              price={item.minPrice}
+              image={item.img}
+              rating={item.rating}
+            />
+          ))}
         </div>
-          
+
+        {/* Phân trang */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center space-x-2 mt-4">
+            <button
+              onClick={() => handlePageChange(Math.max(page - 1, 0))}
+              disabled={page === 0}
+              className={`px-3 py-1 border rounded ${
+                page === 0 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-white text-gray-800"
+              }`}
+            >
+              Trang trước
+            </button>
+            <span className="px-4 py-1 border rounded bg-gray-100 text-gray-800">
+              Trang {page + 1} / {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(Math.min(page + 1, totalPages - 1))}
+              disabled={page === totalPages - 1}
+              className={`px-3 py-1 border rounded ${
+                page === totalPages - 1 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-white text-gray-800"
+              }`}
+            >
+              Trang sau
+            </button>
+          </div>
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Collection
+export default SearchPage;

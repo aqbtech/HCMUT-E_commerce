@@ -4,41 +4,43 @@ import LatestProduct from '../components/homePage/LatestProduct';
 import BestSeller from '../components/homePage/BestSeller';
 import OurPolicy from '../components/homePage/OurPolicy';
 import Category from '../components/homePage/Category';
-import { getAllProducts, getProduct } from '../fetchAPI/fetchProduct';
+import { getAllProducts, getProduct, getProductOfCategory} from '../fetchAPI/fetchProduct';
 import { getCategories } from '../fetchAPI/fetchCategory';
 import SearchBar from '../components/global/SearchBar';
 import { ShopContext } from '../context/ShopContext';
 import ErrorMessage from '/src/components/errorMessage';
 
 const Home = () => { 
-  const { systemError, setSystemError } = useContext(ShopContext);
+  const { systemError, setSystemError, navigate } = useContext(ShopContext);
   const [listProduct, setListProduct] = useState([]);
   const [listCategories, setListCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [category, setCategory] = useState("");
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
   
-  // Hàm load sản phẩm với các tham số lọc và phân trang
-  const loadProducts = async (category, subCategory, page = 1, limit = 10) => {
-    const categoryFilter = category ? `&categories=${category}` : '';
-    const subCategoryFilter = subCategory ? `&subCategory=${subCategory}` : '';
-    const apiUrl = `?page=${page}&size=${limit}${categoryFilter}${subCategoryFilter}`;
-
+  // Hàm load sản phẩm phân trang
+  const loadProducts = async (page = 0) => {
     try {
-      const response = await  getProduct(page);
-      setListProduct(response.content)
-      setHasMore(listProduct.length + response.content.length < response.totalElements);
+      if (category.length === 0) {
+        const response = await getProduct(page);
+        setListProduct(page === 0 ? response.content : [...listProduct, ...response.content]);
+        setHasMore(listProduct.length + response.content.length < response.totalElements);
+      } else {
+        const response = await getProductOfCategory(category, page);
+        setListProduct(page === 0 ? response.content : [...listProduct, ...response.content]);
+        setHasMore(listProduct.length + response.content.length < response.totalElements);
+      }
     } catch(err) {
       setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
     }
   };
 
-  // Load sản phẩm khi trang và các bộ lọc thay đổi
+  // Load sản phẩm khi trang thay đổi
   useEffect(() => {
-    loadProducts(selectedCategory, selectedSubCategory, page); 
-  }, [selectedCategory, selectedSubCategory, page]);
+    loadProducts(page); 
+  }, [page, category]);
 
   // Load danh mục khi trang được mở
   useEffect(() => {
@@ -48,16 +50,9 @@ const Home = () => {
   }, []);
 
   // Hàm xử lý khi chọn danh mục
-  const handleCategorySelect = (categoryName) => {
-    setSelectedCategory(categoryName);
-    setSelectedSubCategory(null);
-    setPage(1); // Reset trang khi thay đổi danh mục
-  };
-
-  // Hàm xử lý khi chọn danh mục con
-  const handleSubCategorySelect = (subCategoryName) => {
-    setSelectedSubCategory(subCategoryName);
-    setPage(1); // Reset trang khi thay đổi danh mục con
+  const handleCategorySelect = (newCategory) => {
+    setCategory(newCategory);
+    setPage(0); // Đặt lại page về 0 khi thay đổi danh mục
   };
 
   // Chuyển sang trang tiếp theo
@@ -74,16 +69,14 @@ const Home = () => {
   if (systemError) {
     return <ErrorMessage message={systemError} />;
   }
-
   return (
     <div>
       <Content />
-      {/* <Category 
+      <Category 
         data={listCategories} 
         onCategorySelect={handleCategorySelect} 
-        onSubCategorySelect={handleSubCategorySelect} 
         selectedCategory={selectedCategory}
-      /> */}
+      />
       <LatestProduct data={listProduct} />
       <div className="flex justify-center gap-4 mt-4">
         <button

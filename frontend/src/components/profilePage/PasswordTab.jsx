@@ -1,10 +1,30 @@
 // src/components/PasswordTab.js
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const PasswordTab = ({ onChangePass }) => {
     const [curPass, setCurPass] = useState('');
     const [newPass, setNewPass] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
+
+    const validatePassword = () => {
+        // Kiểm tra mật khẩu hiện tại
+        if (!curPass || !newPass || !confirmPass) return toast.error("Vui lòng nhập đầy đủ thông tin!")
+
+        // Kiểm tra mật khẩu mới không trùng với mật khẩu hiện tại
+        if (newPass === curPass) return toast.error('Mật khẩu mới không được trùng với mật khẩu hiện tại.');
+
+        // Kiểm tra mật khẩu mới và xác nhận mật khẩu phải khớp
+        if (newPass !== confirmPass) return toast.error('Mật khẩu mới và xác nhận mật khẩu không khớp.');
+
+        return true;
+    };
+
+    const handleSubmit = () => {
+        if (validatePassword()) {
+            onChangePass(curPass, newPass);
+        }
+    };
 
     return (
         <div>
@@ -22,7 +42,7 @@ const PasswordTab = ({ onChangePass }) => {
             <label className="block mb-2">Mật khẩu mới</label>
             <input
                 type="password"
-                className="w-full p-2 border border-gray-300 rounded mb-4"
+                className="w-full p-2 border border-gray-300 rounded mb-4" 
                 value={newPass} // sửa thành newPass
                 onChange={(e) => setNewPass(e.target.value)}
             />
@@ -36,7 +56,7 @@ const PasswordTab = ({ onChangePass }) => {
             />
 
             <button
-                onClick={() => onChangePass(curPass, newPass)} // sửa thành callback function
+                onClick={handleSubmit}// sửa thành callback function
                 className="bg-orange-500 text-white px-4 py-2 rounded"
             >
                 Xác nhận

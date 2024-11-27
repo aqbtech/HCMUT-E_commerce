@@ -6,8 +6,8 @@ const ProfileTab = ({ account, onSave }) => {
     const [Hovatendem, setHovatendem] = useState("account.Hovatendem");
     const [email, setEmail] = useState("account.email");
     const [phone, setPhone] = useState("account.sdt");
-    const [gender, setGender] = useState("Nam");
-    const [birthday, setBirthday] = useState("05-05-2004");
+    const [gender, setGender] = useState("Nam" || "account.sex");
+    const [birthday, setBirthday] = useState("2023-05-05");
 
     return ( 
         <div>
@@ -49,14 +49,7 @@ const ProfileTab = ({ account, onSave }) => {
                     <label className="block mb-2">Ngày sinh</label>
                     <input className="w-full p-2 border border-gray-300 rounded mb-4" type='date' value={birthday} onChange={(e) => setBirthday(e.target.value)} />
 
-                    <button type='button' onClick={() => onSave({ id: username, ten: name, Hovatendem, email, sdt: phone, date: birthday })} className="bg-gray-300 text-white px-4 py-2 rounded hover:bg-black hover:text-white">Lưu</button>
-                </div>
-                <div className="flex flex-col items-center">
-                    <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                        <span className="text-gray-400 text-4xl">👤</span>
-                    </div>
-                    <button className="bg-gray-300 px-4 py-2 rounded hover:bg-black hover:text-white">Chọn Ảnh</button>
-                    <p className="text-gray-500 text-sm mt-2">Dung lượng tối đa 1MB, định dạng .JPEG, .PNG</p>
+                    <button type='button' onClick={() => onSave({ username: username, lastName: name, fistName: Hovatendem, email: email, phone: phone, DOB: birthday, sex: gender})} className="bg-gray-300 text-white px-4 py-2 rounded hover:bg-black hover:text-white">Lưu</button>
                 </div>
             </div>
         </div>

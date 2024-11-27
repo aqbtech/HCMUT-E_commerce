@@ -19,7 +19,7 @@ const Navbar = () => {
   // Xử lý tìm kiếm khi nhấn Enter
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && search.trim()) {
-      window.location.href = `/search?query=${encodeURIComponent(search)}`;
+      window.location.href = `/search?keyword=${encodeURIComponent(search)}`;
     }
   };
   
@@ -74,6 +74,9 @@ const Navbar = () => {
                     </Link>
                     <Link to="/orders">
                       <p className="cursor-pointer hover:text-black">Đơn hàng</p>
+                    </Link>
+                    <Link to="/review">
+                    <p className="cursor-pointer hover:text-black">Đánh giá</p>
                     </Link>
                     <Link to="/">
                       <p onClick={() => onSubmitHandler()} className="cursor-pointer hover:text-black">
