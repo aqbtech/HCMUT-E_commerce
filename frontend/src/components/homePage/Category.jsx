@@ -32,8 +32,8 @@ const Category = ({ data, onCategorySelect}) => {
           </div>
         {data.map((item) => (
           <div
-            key={item.categoryId}
-            onClick={() => handleCategoryClick(item.categoryId)}
+            key={item.categoryName}
+            onClick={() => handleCategoryClick(item.categoryName)}
             className="flex flex-col items-center cursor-pointer"
           >
             <div className="bg-gray-200 h-20 w-20 flex items-center justify-center rounded-full mb-2">

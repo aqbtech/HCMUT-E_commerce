@@ -1,3 +1,4 @@
+import { categories } from '../assets/assets';
 import { axiosClient, axiosPublic } from '../fetchAPI/axios';
 
 
@@ -26,16 +27,15 @@ export const fetchProductsWithFilters = async () => {
 }
 
 
-export const getProductForShopView =  async () => {
-  
+export const getProductForShopView =  async () => {  
   try {
     const res = await axiosClient.get(`/productShop`)
     console.log(`Lấy thành công sản phẩm:`, res);
     return res.data;
-} catch(err) {
-    console.log(`Lỗi khi lấy thông tin shop: `, err );
-    throw err;
-}
+  } catch(err) {
+      console.log(`Lỗi khi lấy thông tin shop: `, err );
+      throw err;
+  }
 }
 
 
@@ -73,4 +73,41 @@ export const getReviewById = async (productId, page) => {
   }
 }
 
+export const getProductForSearch = async (keyword, page, sort, body, isFilter) => {
+  try {
+    if(isFilter) {
+      const res = await axiosPublic.get(`$keyword=${keyword}&page=${page}&size=12&sort=${sort}`, body); 
+      console.log(`Tìm kiếm sản phẩm thành công`);
+      return res.data.result;
+    } else {
+      const res = await axiosPublic.get(`$keyword=${keyword}&page=${page}&size=10&sort=${sort}`); 
+      console.log(`Tìm kiếm sản phẩm thành công`);
+      return res.data.result;
+    }
+  } catch(err) {
+    console.log("Lỗi khi tìm kiếm sản phẩm");
+    throw err;
+  }
+}
 
+export const getProductForShop = async (shopId) => {
+  try {
+    const res = await axiosPublic.get(``); 
+    console.log(`Thành công lấy sản phẩm của shop`);
+    return res.data.result;
+  } catch(err) {
+    console.log("Lỗi khi lấy sản phẩm của shop");
+    throw err;
+  }
+}
+
+export const getProductOfCategory = async (category, page) => {
+  try {
+    const res = await axiosPublic.get(`/home-page?page=${page}`)
+    console.log(`Thành công lấy sản phẩm của danh mục`);
+    return res.data.result;
+  } catch(err) {
+    console.log("Lỗi khi lấy sản phẩm của danh mục");
+    throw err;
+  }
+}

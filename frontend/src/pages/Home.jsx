@@ -4,7 +4,7 @@ import LatestProduct from '../components/homePage/LatestProduct';
 import BestSeller from '../components/homePage/BestSeller';
 import OurPolicy from '../components/homePage/OurPolicy';
 import Category from '../components/homePage/Category';
-import { getAllProducts, getProduct } from '../fetchAPI/fetchProduct';
+import { getAllProducts, getProduct, getProductOfCategory} from '../fetchAPI/fetchProduct';
 import { getCategories } from '../fetchAPI/fetchCategory';
 import SearchBar from '../components/global/SearchBar';
 import { ShopContext } from '../context/ShopContext';
@@ -15,6 +15,7 @@ const Home = () => {
   const [listProduct, setListProduct] = useState([]);
   const [listCategories, setListCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [category, setCategory] = useState("");
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
@@ -22,9 +23,15 @@ const Home = () => {
   // Hàm load sản phẩm phân trang
   const loadProducts = async (page = 0) => {
     try {
-      const response = await  getProduct(page);
-      setListProduct(response.content)
-      setHasMore(listProduct.length + response.content.length < response.totalElements);
+      if (category.length === 0) {
+        const response = await getProduct(page);
+        setListProduct(page === 0 ? response.content : [...listProduct, ...response.content]);
+        setHasMore(listProduct.length + response.content.length < response.totalElements);
+      } else {
+        const response = await getProductOfCategory(category, page);
+        setListProduct(page === 0 ? response.content : [...listProduct, ...response.content]);
+        setHasMore(listProduct.length + response.content.length < response.totalElements);
+      }
     } catch(err) {
       setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
     }
@@ -33,7 +40,7 @@ const Home = () => {
   // Load sản phẩm khi trang thay đổi
   useEffect(() => {
     loadProducts(page); 
-  }, [page]);
+  }, [page, category]);
 
   // Load danh mục khi trang được mở
   useEffect(() => {
@@ -43,8 +50,9 @@ const Home = () => {
   }, []);
 
   // Hàm xử lý khi chọn danh mục
-  const handleCategorySelect = (categoryId) => {
-    navigate(`/search?category=${categoryId}`);
+  const handleCategorySelect = (newCategory) => {
+    setCategory(newCategory);
+    setPage(0); // Đặt lại page về 0 khi thay đổi danh mục
   };
 
   // Chuyển sang trang tiếp theo
