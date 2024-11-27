@@ -369,7 +369,7 @@
       ]
     },
     {
-      "categoryName": "food&drink",
+      "categoryName": "food",
       "categoryId": "5",
       "subCategories": [
         {
@@ -395,7 +395,7 @@
       ]
     },
     {
-      "categoryName": "food&drink",
+      "categoryName": "drink",
       "categoryId": "6",
       "subCategories": [
         {
@@ -421,7 +421,7 @@
       ]
     },
     {
-      "categoryName": "food&drink",
+      "categoryName": "fruit",
       "categoryId": "7",
       "subCategories": [
         {
@@ -843,145 +843,119 @@
     }
   ],
 
-  "keyword" : {
+  "keyword": {
     "content": [
       {
-        "img" : [
-          "https://bizweb.dktcdn.net/100/390/808/products/tao-fujji-ae0e548e6dad48938bd3b4e860850ed9.jpg?v=1593677607867",
-          "https://bizweb.dktcdn.net/100/390/808/products/tao-fujji-ae0e548e6dad48938bd3b4e860850ed9.jpg?v=1593677607867",
-          "https://bizweb.dktcdn.net/100/390/808/products/tao-fujji-ae0e548e6dad48938bd3b4e860850ed9.jpg?v=1593677607867"
-
-        ],
-        "minPrice" : 100000,
-        "name" : "Apple",
-        "productId" : "a726bd9a-f195-0d6c-30a9-6220ca580250",
-        "rating" : 3
+        "img": "https://bizweb.dktcdn.net/100/390/808/products/tao-fujji-ae0e548e6dad48938bd3b4e860850ed9.jpg?v=1593677607867",
+        "minPrice": 100000,
+        "name": "Apple",
+        "productId": "a726bd9a-f195-0d6c-30a9-6220ca580250",
+        "rating": 3
       },
       {
-        "img" : [
-          "https://orionmagazine.org/wp-content/uploads/2021/10/figunsplash-771x771.jpg"
-        ],
-        "minPrice" : 170000,
-        "name" : "Fig",
-        "productId" : "15aa6023-df37-a3e1-e067-5a9626c2ff24",
-        "rating" : 2
+        "img": "https://orionmagazine.org/wp-content/uploads/2021/10/figunsplash-771x771.jpg",
+        "minPrice": 170000,
+        "name": "Fig",
+        "productId": "15aa6023-df37-a3e1-e067-5a9626c2ff24",
+        "rating": 2
       },
       {
-        "img" : [
-          "https://raintreenursery.com/cdn/shop/products/bobgordonelderberry_1536x2305_crop_center.jpg?v=1709197898"
-        ],
-        "minPrice" : 200000,
-        "name" : "Elderberry",
-        "productId" : "678bb1e4-130e-9c40-4843-be0fc498a3f6",
-        "rating" : 4
+        "img": "https://raintreenursery.com/cdn/shop/products/bobgordonelderberry_1536x2305_crop_center.jpg?v=1709197898",
+        "minPrice": 200000,
+        "name": "Elderberry",
+        "productId": "678bb1e4-130e-9c40-4843-be0fc498a3f6",
+        "rating": 4
       },
       {
-        "img" : [
-          "https://shop-static.arborday.org/media/0004950_catawba-grape-vine.jpeg"
-        ],
-        "minPrice" : 300000,
-        "name" : "Grape",
-        "productId" : "80f36cc5-6613-6a4e-84d3-5cb4c84aedf7",
-        "rating" : 4.5
+        "img": "https://shop-static.arborday.org/media/0004950_catawba-grape-vine.jpeg",
+        "minPrice": 300000,
+        "name": "Grape",
+        "productId": "80f36cc5-6613-6a4e-84d3-5cb4c84aedf7",
+        "rating": 4.5
       },
       {
-        "img" : [
-          "https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2275pmk968u0c.webp"
-
-        ],
-        "minPrice" : 50000,
-        "name" : "Kiwi",
-        "productId" : "8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc",
-        "rating" : 3
+        "img": "https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2275pmk968u0c.webp",
+        "minPrice": 50000,
+        "name": "Kiwi",
+        "productId": "8907bc34-08cb-f0a7-f1fe-4c0b4ad6d5bc",
+        "rating": 3
       },
       {
-        "img" : [
-          "https://www.classicfinefoods-international.com/675-full_default/nectarine-white.jpg"
-
-        ],
-        "minPrice" : 120000,
-        "name" : "Nectarine",
-        "productId" : "69d60f96-16df-edcc-bd1d-633e78233df4",
-        "rating" : 4.5
+        "img": "https://www.classicfinefoods-international.com/675-full_default/nectarine-white.jpg",
+        "minPrice": 120000,
+        "name": "Nectarine",
+        "productId": "69d60f96-16df-edcc-bd1d-633e78233df4",
+        "rating": 4.5
       },
       {
-        "img" : [
-          "https://product.hstatic.net/200000077081/product/dao-dai-loan_66c80a1b3ca84b61be2c39d94d9a1955.jpg"
-        ],
-        "minPrice" : 130000,
-        "name" : "Peach",
-        "productId" : "15c9e862-b50f-0820-bdc4-216171e88ab5",
-        "rating" : 3
+        "img": "https://product.hstatic.net/200000077081/product/dao-dai-loan_66c80a1b3ca84b61be2c39d94d9a1955.jpg",
+        "minPrice": 130000,
+        "name": "Peach",
+        "productId": "15c9e862-b50f-0820-bdc4-216171e88ab5",
+        "rating": 3
       },
       {
-        "img" : [
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTQBrp5xBZuyoxuxfeSS5hk1vPPjy_FuayA&s"
-        ],
-        "minPrice" : 150000,
-        "name" : "Quince",
-        "productId" : "b4fb95ec-0555-3236-b96e-c8750a83adbe",
-        "rating" : 3.5
+        "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRTQBrp5xBZuyoxuxfeSS5hk1vPPjy_FuayA&s",
+        "minPrice": 150000,
+        "name": "Quince",
+        "productId": "b4fb95ec-0555-3236-b96e-c8750a83adbe",
+        "rating": 3.5
       },
       {
-        "img" : [
-          "https://exoticfruits.co.uk/cdn/shop/products/ugli-fruit-jamaican-tangelo-exoticfruitscouk-765123.jpg?v=1645489533",
-          "https://exoticfruits.co.uk/cdn/shop/products/ugli-fruit-jamaican-tangelo-exoticfruitscouk-765123.jpg?v=1645489533",
-          "https://exoticfruits.co.uk/cdn/shop/products/ugli-fruit-jamaican-tangelo-exoticfruitscouk-765123.jpg?v=1645489533"
-
-        ],
-        "minPrice" : 100000,
-        "name" : "Ugli fruit",
-        "productId" : "544d47d1-8e43-20bc-8cb3-84de33f2fd65",
-        "rating" : 3
+        "img": "https://exoticfruits.co.uk/cdn/shop/products/ugli-fruit-jamaican-tangelo-exoticfruitscouk-765123.jpg?v=1645489533",
+        "minPrice": 100000,
+        "name": "Ugli fruit",
+        "productId": "544d47d1-8e43-20bc-8cb3-84de33f2fd65",
+        "rating": 3
       },
       {
-        "img" : [
-          "https://product.hstatic.net/1000282430/product/seedless-watermelon-around-2.5kg-whole-fruit_master.jpg"
-        ],
-        "minPrice" : 50000,
-        "name" : "Watermelon",
-        "productId" :"c54d6f0d-4f7e-d70d-a3c5-c1505b163497",
-        "rating" : 5
+        "img": "https://product.hstatic.net/1000282430/product/seedless-watermelon-around-2.5kg-whole-fruit_master.jpg",
+        "minPrice": 50000,
+        "name": "Watermelon",
+        "productId": "c54d6f0d-4f7e-d70d-a3c5-c1505b163497",
+        "rating": 5
+      },
+      {
+        "img": "https://product.hstatic.net/1000282430/product/seedless-watermelon-around-2.5kg-whole-fruit_master.jpg",
+        "minPrice": 50000,
+        "name": "Watermelon",
+        "productId": "c54d1236f0d-4f7e-d70d-a3c5-c1505b163497",
+        "rating": 5
+      },
+      {
+        "img": "https://product.hstatic.net/1000282430/product/seedless-watermelon-around-2.5kg-whole-fruit_master.jpg",
+        "minPrice": 50000,
+        "name": "Watermelon",
+        "productId": "c54d6123f0d-4f7e-d70d-a3c5-c1505b163497",
+        "rating": 5
       }
     ],
     "page": {
       "number": 0,
       "size": 10,
       "totalElements": 100,
-      "totalPages": 1
+      "totalPages": 10
     },
     "filters": {
       "applied": {
-        "price_range": {
-          "min": 100000,
-          "max": 500000
-        },
+        "location": [],
         "categories": [
           "men"
         ],
-        "ratings": 4,
-        "sort_options" :{
-          "id": "relevance",
-          "name": "Liên quan nhất"
-        }
+        "ratings": []
       },
       "available": {
-        "price_range": [
-          {
-            "min": 100000,
-            "max": 500000
-          },
-          {
-            "min": 100000,
-            "max": 500000
-          }
+        "location": [
+          "Ha Noi",
+          "Bien Hoa",
+          "TP.HCM"
         ],
         "categories": [
           "men",
           "women",
           "child"
         ],
-        "ratings": [
+        "rating": [
           "0-1",
           "1-2",
           "2-3",
@@ -989,35 +963,6 @@
           "4-5"
         ]
       }
-    },
-    "sort_options": {
-      "applied" : "relevance",
-      "available" : [
-        {
-          "id": "relevance",
-          "name": "Liên quan nhất"
-        },
-        {
-          "id": "newest",
-          "name": "Mới nhất"
-        },
-        {
-          "id": "price_asc",
-          "name": "Giá thấp đến cao"
-        },
-        {
-          "id": "price_desc",
-          "name": "Giá cao đến thấp"
-        },
-        {
-          "id": "rating",
-          "name": "Đánh giá cao"
-        },
-        {
-          "id": "sold",
-          "name": "Bán chạy"
-        }
-      ]
     }
   },
   "shopInfo" : {
@@ -1125,5 +1070,108 @@
         }
       ]
     }
-  }
+  },
+
+ "orderReview": [
+    {
+      "reviewId": "REV_UNIQUE_ID_1",
+      "productId": "PROD001",
+      "productName": "Áo thun nam cao cấp",
+      "productImage": "/images/product/ao-thun.jpg",
+      "orderId": "ORD001",
+      "orderDate": "2024-05-01",
+      "price": 250000,
+      "ListAtt": [
+        {
+          "name": "size",
+          "value": "S"
+        },
+        {
+          "name": "color",
+          "value": "green"
+        }
+      ],
+      "isReviewed": true,
+      "reviewInfo": {
+        "rating": 4,
+        "content": "Giày đẹp, chất lượng tốt",
+        "reviewDate": "2024-05-25"
+      }
+    },
+    {
+      "reviewId": "REV_UNIQUE_ID_2",
+      "productId": "PROD001",
+      "productName": "Áo thun nam cao cấp",
+      "productImage": "/images/product/ao-thun.jpg",
+      "orderId": "ORD002",
+      "orderDate": "2024-05-15",
+      "price": 250000,
+      "ListAtt": [
+        {
+          "name": "size",
+          "value": "S"
+        },
+        {
+          "name": "color",
+          "value": "green"
+        }
+      ],
+      "isReviewed": false,
+      "reviewInfo": {
+        "rating": null,
+        "content": null,
+        "reviewDate": null
+      }
+    },
+    {
+      "reviewId": "REV_UNIQUE_ID_3",
+      "productId": "PROD002",
+      "productName": "Quần jean nam",
+      "productImage": "/images/product/quan-jean.jpg",
+      "orderId": "ORD003",
+      "orderDate": "2024-05-20",
+      "price": 450000,
+      "ListAtt": [
+        {
+          "name": "size",
+          "value": "S"
+        },
+        {
+          "name": "color",
+          "value": "green"
+        }
+      ],
+      "isReviewed": false,
+      "reviewInfo": {
+        "rating": null,
+        "content": null,
+        "reviewDate": null
+      }
+    },
+    {
+      "reviewId": "REV_UNIQUE_ID_4",
+      "productId": "PROD003",
+      "productName": "Giày thể thao",
+      "productImage": "/images/product/giay-the-thao.jpg",
+      "orderId": "ORD004",
+      "orderDate": "2024-05-20",
+      "price": 450000,
+      "ListAtt": [
+        {
+          "name": "size",
+          "value": "S"
+        },
+        {
+          "name": "color",
+          "value": "green"
+        }
+      ],
+      "isReviewed": true,
+      "reviewInfo": {
+        "rating": 4,
+        "content": "Giày đẹp, chất lượng tốt",
+        "reviewDate": "2024-05-25"
+      }
+    }
+  ]
 }

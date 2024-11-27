@@ -21,7 +21,7 @@ import MyProfile from './pages/MyProfile';
 //import ShopManage from './pages/ShopManage';
 import ResetPassword from './pages/ResetPassword';
 import NotFound from "../src/components/NotFound";
-
+import ReviewPage from './pages/ReviewPage';
 
 const App = () => {
   return (
@@ -46,6 +46,7 @@ const App = () => {
           <Route path='/myProfile' element={<MyProfile />}></Route>
           {/* <Route path='/shop' element={<ShopManage/>}></Route> */}
           <Route path='/reset' element={<ResetPassword/>}></Route>
+          <Route path='/review' element={<ReviewPage/>}></Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer/>

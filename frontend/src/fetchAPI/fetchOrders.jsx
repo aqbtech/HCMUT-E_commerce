@@ -22,7 +22,7 @@ export const updateOrder = async (orderId) => {
     
   export const getListOrders = async (username, page, limmit) => {
     const response = await axiosClient2.get(`/buyer/order/${username}?page=${page}&limit=${limmit}`)
-    console.log("Laasy hafng thanh cong:", response);
+    console.log("Lấy đơn hàng thành công:", response);
     return response.data.result;
   };
 
@@ -30,3 +30,13 @@ export const updateOrder = async (orderId) => {
   export const cancelOrder = async (body) => {
     const response = axiosClient2.put(`/buyer/delete_order`, body);
   } 
+
+  export const getReviewableProdcuts = async () => {
+    const response = await axiosClient.get(`/orderReview`)
+    console.log("Lấy các sản phẩm cần đánh giá thành công:", response);
+    return response.data;
+  }
+
+  export const submitProductReview = async () => {
+
+  }

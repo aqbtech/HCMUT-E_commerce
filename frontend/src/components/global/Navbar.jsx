@@ -75,6 +75,9 @@ const Navbar = () => {
                     <Link to="/orders">
                       <p className="cursor-pointer hover:text-black">Đơn hàng</p>
                     </Link>
+                    <Link to="/review">
+                    <p className="cursor-pointer hover:text-black">Đánh giá</p>
+                    </Link>
                     <Link to="/">
                       <p onClick={() => onSubmitHandler()} className="cursor-pointer hover:text-black">
                         Đăng xuất
