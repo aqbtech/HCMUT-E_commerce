@@ -21,11 +21,40 @@ export const updateOrder = async (orderId) => {
     
   export const getListOrders = async (username, page, limmit) => {
     const response = await axiosClient2.get(`/buyer/order/${username}?page=${page}&limit=${limmit}`)
-    console.log("Laasy hafng thanh cong:", response);
+    console.log("Lay hang thanh cong:", response);
     return response.data.result;
   };
+
+export const getListWaitingOrders = async (username, page, limmit) => {
+  const response = await axiosClient2.get(`/seller/waiting_order/${username}?page=${page}&limit=${limmit}`)
+  console.log("Lay don hang thanh cong:", response);
+  return response.data.result;
+};
+
+
+export const getListApprovedOrders = async (username, page, limmit) => {
+  const response = await axiosClient2.get(`/seller/approved_order/${username}?page=${page}&limit=${limmit}`)
+  console.log("Lay don hang thanh cong:", response);
+  return response.data.result;
+};
+
+export const getListCancelledOrders = async (username, page, limmit) => {
+  const response = await axiosClient2.get(`/seller/cancelled_order/${username}?page=${page}&limit=${limmit}`)
+  console.log("Lay don hang thanh cong:", response);
+  return response.data.result;
+};
 
 
   export const cancelOrder = async (body) => {
     const response = axiosClient2.put(`/buyer/delete_order`, body);
-  } 
+  }
+
+
+export const approveOrderForSeller = async (body) => {
+  const response = axiosClient2.put(`/seller/approve_order`, body);
+}
+
+
+export const cancelOrderForSeller = async (body) => {
+  const response = axiosClient2.put(`/seller/delete_order`, body);
+}

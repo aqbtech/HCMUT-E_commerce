@@ -20,7 +20,7 @@ import Admin from './pages/Admin'
 import MyProfile from './pages/MyProfile';
 //import ShopManage from './pages/ShopManage';
 import ResetPassword from './pages/ResetPassword';
-
+import ShopManagement from "./pages/ShopManagement.jsx";
 
 const App = () => {
   return (
@@ -43,7 +43,7 @@ const App = () => {
           <Route path='/regist' element={<Regist />}></Route>
           {/* <Route path='/shopView/:shopId' element={<ShopViewer />}></Route> */}
           <Route path='/myProfile' element={<MyProfile />}></Route>
-          {/* <Route path='/shop' element={<ShopManage/>}></Route> */}
+           <Route path='/shop' element={<ShopManagement/>}></Route>
           <Route path='/reset' element={<ResetPassword/>}></Route>
         </Routes>
         <Footer/>
