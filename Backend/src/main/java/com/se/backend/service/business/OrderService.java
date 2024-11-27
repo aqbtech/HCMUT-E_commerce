@@ -368,6 +368,32 @@ public class OrderService  {
         );
     }
 
+    public Page<GetOrderResponse> getCancelledOrder(String username, Pageable pageable){
+        List<GetOrderResponse> responses = new ArrayList<>();
+        Seller seller = sellerRepository.findById(username)
+                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
+        Page<Order> orderPage = orderRepository.findCancelOrderBySeller(seller, pageable);
+        if(orderPage.isEmpty()){
+            return new PageImpl<>(responses);
+        }
+        for(Order o: orderPage.getContent()){
+            List<Order_ProductInstance> order_productInstanceList = o.getOrderProductInstances();
+            List<ProductInstance> productInstances = new ArrayList<>();
+            for(Order_ProductInstance opI: order_productInstanceList){
+                ProductInstance productInstance = opI.getProductInstance();
+                productInstances.add(productInstance);
+            }
+            responses.add(this.OrderResponseHandler(o, productInstances));
+        }
+
+        return new PageImpl<>(
+                responses,
+                pageable,
+                orderPage.getTotalElements()
+        );
+    }
+
+
     public CreateOrderResponse findById(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new WebServerException(ErrorCode.ORDER_NOT_FOUND));
@@ -401,7 +427,7 @@ public class OrderService  {
             }
         }
 
-        order.setStatus("CANCEL");
+        order.setStatus("CANCELLED");
         try {
             orderRepository.save(order);
         }
