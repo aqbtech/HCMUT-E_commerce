@@ -1,6 +1,5 @@
 import { axiosClient2 } from '../fetchAPI/axios';
 import Cookies from 'js-cookie'
-import { toast } from 'react-toastify';
 
 export const getBankAccounts = async () => {
     try {
@@ -16,6 +15,17 @@ export const getBankAccounts = async () => {
   export const createBankAccount =  async (body) => {
     try {
       const res = await axiosClient2.post(`bank/${Cookies.get('username')}`, body)
+      console.log("Thêm thành công tài khoản ngân hàng:", res);
+      return res;
+    } catch(err) {
+      console.log("Lỗi khi thêm tài khoản ngân hàng:", err);
+      throw err
+    }
+  }
+
+  export const deleteBankAccount = async (bankId) => {
+    try {
+      const res = await axiosClient2.post(`delete_bank/${bankId}`)
       console.log("Thêm thành công tài khoản ngân hàng:", res);
       return res;
     } catch(err) {

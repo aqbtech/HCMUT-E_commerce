@@ -5,7 +5,7 @@ import ProfileTab from '../components/profilePage/ProfileTab'
 import PasswordTab from '../components/profilePage/PasswordTab';
 import AddressTab from '../components/profilePage/AddressTab';
 import { deleteAdress, updateAddress, getAddress, createAddress} from '../fetchAPI/fetchAddress';
-import {getBankAccounts,createBankAccount } from '../fetchAPI/fetchBank';
+import {getBankAccounts,createBankAccount, deleteBankAccount } from '../fetchAPI/fetchBank';
 import { updateAccount, getInfo } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie'
@@ -138,7 +138,16 @@ const MyProfile = () => {
             toast.error("Thêm tài khoản ngân hàng thất bại!");
         }
     };
-    
+
+    const handleDeleteBankAccount = useCallback(async (id) => { 
+        try {
+            await deleteBankAccount(id);
+            setBankAccounts((prevBankAccounts) => prevBankAccounts.filter(item => item.id !== id));
+            toast.success("Xóa tài khoản ngân hàng thành công!");
+        } catch(err) {
+            toast.error("Xóa tài khoản ngân hàng thất bại, vui lòng thử lại!");
+        }
+    }, []);
 
     return (
         <div className="flex">
@@ -181,8 +190,8 @@ const MyProfile = () => {
                     <>
                         <BankTab 
                             bankAccounts={bankAccounts} 
-                            onAddAccount={() => setIsModalOpen(true)} 
-                            setBankAccounts={setBankAccounts}
+                            onSaveBankAccount={handleAddBankAccount} 
+                            onDeleteBankAccount={handleDeleteBankAccount}
                         />
                         {isModalOpen && (
                             <BankModal 
