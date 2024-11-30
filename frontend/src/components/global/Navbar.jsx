@@ -3,16 +3,23 @@ import { assets } from '../../assets/assets';
 import { Link, NavLink } from 'react-router-dom';
 import { ShopContext } from '../../context/ShopContext';
 import Cookies from 'js-cookie';
+import { logOut } from '../../fetchAPI/fetchAccount';
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const { search, setSearch, curState, setCurState, setAccount } = useContext(ShopContext);
 
   const onSubmitHandler = async () => {
-    setCurState('UnLogin');
-    Cookies.remove('username');
-    Cookies.remove('token');
-    setAccount(null);
+    try {
+      await logOut();
+      setCurState('UnLogin');
+      Cookies.remove('username');
+      Cookies.remove('token');
+      setAccount(null);
+      console.log("logOut success");
+    } catch(err) {
+      console.log(err);
+    }
     window.location.reload();
   };
 
