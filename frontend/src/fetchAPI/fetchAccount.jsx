@@ -37,3 +37,8 @@ export const logOut = async() => {
   }
   return await axiosClient2.post(`/auth/logout`, body);
 }
+
+export const getMininalProfile = async() => {
+  const response = await axiosClient2.get(`/minimalProfile`);
+  return response.result.data;
+} 
