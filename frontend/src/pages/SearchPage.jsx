@@ -26,13 +26,13 @@ const SearchPage = () => {
 
   const listSorting = [
     { name: "Liên quan nhất", value: "" },
-    { name: "Giá thấp đến cao", value: "price,asc" },
-    { name: "Giá cao đến thấp", value: "price,desc" },
+    { name: "Giá thấp đến cao", value: "asc" },
+    { name: "Giá cao đến thấp", value: "desc" },
   ];
 
   const fetchProducts = async () => {
     try {
-      console.log("Filet:", filters, isFilter)
+      console.log("Filter:", filters, isFilter)
       const response = await fetchProductsWithFilters(keyword, page, sort, filters, isFilter);
       setListProduct(response?.content || []);
       setAvailableFilters(response?.filters?.available || {});
@@ -43,9 +43,8 @@ const SearchPage = () => {
     }
   };
 
-
   useEffect(() => {
-    if(keyword.length === 0) {
+    if(!keyword) {
       setErrorMessage("Không tìm thấy sản phẩm")
     } 
     fetchProducts();

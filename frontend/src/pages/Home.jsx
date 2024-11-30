@@ -11,10 +11,9 @@ import { ShopContext } from '../context/ShopContext';
 import ErrorMessage from '/src/components/errorMessage';
 
 const Home = () => { 
-  const { systemError, setSystemError, navigate } = useContext(ShopContext);
+  const { systemError, setSystemError } = useContext(ShopContext);
   const [listProduct, setListProduct] = useState([]);
   const [listCategories, setListCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -75,7 +74,6 @@ const Home = () => {
       <Category 
         data={listCategories} 
         onCategorySelect={handleCategorySelect} 
-        selectedCategory={selectedCategory}
       />
       <LatestProduct data={listProduct} />
       <div className="flex justify-center gap-4 mt-4">
