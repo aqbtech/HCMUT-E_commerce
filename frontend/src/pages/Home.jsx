@@ -25,11 +25,11 @@ const Home = () => {
       if (category.length === 0) {
         const response = await getProduct(page);
         setListProduct(page === 0 ? response.content : [...listProduct, ...response.content]);
-        setHasMore(listProduct.length + response.content.length < response.totalElements);
+        setHasMore(page + 1 < response.page.totalPages);
       } else {
         const response = await getProductOfCategory(category, page);
         setListProduct(page === 0 ? response.content : [...listProduct, ...response.content]);
-        setHasMore(listProduct.length + response.content.length < response.totalElements);
+        setHasMore(page + 1 < response.page.totalPages);
       }
     } catch(err) {
       setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");

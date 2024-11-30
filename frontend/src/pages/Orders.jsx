@@ -45,7 +45,7 @@ const Orders = () => {
           return [...prevData, ...newData];
         });
       }
-      setHasMore(userOrders.length + res.content.length < res.page.totalElements);
+      setHasMore(currentPage + 1 < res.page.totalPages);
     } catch (err) {
       setSystemError(
         err.response?.data?.message ||

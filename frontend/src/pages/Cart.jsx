@@ -36,8 +36,8 @@ const Cart = () => {
           );
           return [...prevData, ...newData];
         });
-      }
-      setHasMore(cartData.length + res.content.length < res.totalElements);
+      } 
+      setHasMore(currentPage + 1 < res.page.totalPages);
     } catch (err) {
       console.error('Error fetching cart items:', err);
       setSystemError(err.response?.data?.message || err.response?.data?.error || 'Mất kết nối máy chủ');
@@ -45,7 +45,7 @@ const Cart = () => {
       setLoading(false); // Kết thúc loading (dù thành công hay thất bại)
       
     }
-  };
+  }; 
   
 
   useEffect(() => {
@@ -56,8 +56,8 @@ const Cart = () => {
     getCart();
   }, [currentPage]);
 
-    const loadMoreItems = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+  const loadMoreItems = () => {
+  if(hasMore) setCurrentPage((prevPage) => prevPage + 1);
   };
 
   // Cập nhật tổng số tiền
@@ -237,13 +237,13 @@ const Cart = () => {
             <p>Chưa có sản phẩm nào trong giỏ hàng của bạn. Hãy thêm sản phẩm để tiếp tục mua sắm.</p>
           </div>
       )}
-
+ 
       {
         hasMore ? <div className="flex justify-center gap-4 mt-8">
         <button
           onClick={loadMoreItems}
           disabled={!hasMore}
-          className="border px-4 py-2 font-medium hover:bg-gray-300 disabled:opacity-50"
+          className="border-2 border-gray-300  px-4 py-2 font-medium hover:bg-gray-300"
         >
           Xem thêm
         </button>
