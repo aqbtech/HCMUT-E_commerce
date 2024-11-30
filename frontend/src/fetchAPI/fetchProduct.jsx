@@ -90,9 +90,9 @@ export const getProductForSearch = async (keyword, page, sort, body, isFilter) =
   }
 }
 
-export const getProductForShop = async (shopId) => {
+export const getProductForShop = async (shopId, page, categories, sort ) => {
   try {
-    const res = await axiosPublic.get(``); 
+    const res = await axiosPublic.get(`/product_shop?shopId=${shopId}&category=${categories}&sort=${sort}&page=${page}`); 
     console.log(`Thành công lấy sản phẩm của shop`);
     return res.data.result;
   } catch(err) {
@@ -103,7 +103,7 @@ export const getProductForShop = async (shopId) => {
 
 export const getProductOfCategory = async (category, page) => {
   try {
-    const res = await axiosPublic.get(`/home-page?page=${page}`)
+    const res = await axiosPublic.get(`/home-page?page=${page}&category=${category}`)
     console.log(`Thành công lấy sản phẩm của danh mục`);
     return res.data.result;
   } catch(err) {

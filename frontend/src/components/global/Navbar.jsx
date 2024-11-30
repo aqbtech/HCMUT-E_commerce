@@ -7,7 +7,7 @@ import { logOut } from '../../fetchAPI/fetchAccount';
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
-  const { search, setSearch, curState, setCurState, setAccount } = useContext(ShopContext);
+  const { search, setSearch, curState, setCurState, setAccount, navigate } = useContext(ShopContext);
 
   const onSubmitHandler = async () => {
     try {
@@ -17,10 +17,11 @@ const Navbar = () => {
       Cookies.remove('token');
       setAccount(null);
       console.log("logOut success");
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
-    window.location.reload();
+    
+    navigate(-1);
   };
 
   // Xử lý tìm kiếm khi nhấn Enter

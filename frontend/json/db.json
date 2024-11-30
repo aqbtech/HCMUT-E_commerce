@@ -1052,23 +1052,6 @@
       "size": 10,
       "totalElements": 100,
       "totalPages": 1
-    },
-    "sort_options": {
-      "applied": "relevance",
-      "available": [
-        {
-          "id": "relevance",
-          "name": "Liên quan nhất"
-        },
-        {
-          "id": "price_asc",
-          "name": "Giá thấp đến cao"
-        },
-        {
-          "id": "price_desc",
-          "name": "Giá cao đến thấp"
-        }
-      ]
     }
   },
 

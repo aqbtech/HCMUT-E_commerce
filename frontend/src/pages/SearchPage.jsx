@@ -160,7 +160,7 @@ const SearchPage = () => {
           <select
             onChange={handleSortChange}
             value={sort}
-            className="border-2 border-gray-300 text-sm px-2"
+            className="border-2 border-gray-300 text-sm px-2 rounded-lg"
           >
             {listSorting.map((option) => (
               <option key={option.value} value={option.value}>
