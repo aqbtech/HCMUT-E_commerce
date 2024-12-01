@@ -23,7 +23,7 @@ public class Security {
 	// If you want to use security, you can add configurations here
 	private final String[] PUBLIC_ENDPOINTS = {
 			"/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
-			"/query_product_detail/**", "/{productId}/reviews", "/home-page"
+			"/query_product_detail/**", "/{productId}/reviews", "/home-page", "/register"
 	};
 	private final CustomJwtDecoder customJwtDecoder;
 
