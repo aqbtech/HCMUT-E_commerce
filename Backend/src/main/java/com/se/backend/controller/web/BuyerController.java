@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -26,7 +28,8 @@ public class BuyerController {
     private final BuyerService buyerService;
 
     @GetMapping("/get_information")
-    public ResponseAPITemplate<BuyerInformationResopnse> getInfo(@RequestParam String username){
+    public ResponseAPITemplate<BuyerInformationResopnse> getInfo(@AuthenticationPrincipal Jwt jwt){
+        String username = jwt.getSubject();
         BuyerInformationResopnse response = buyerService.getBuyerInformation(username);
         return ResponseAPITemplate.<BuyerInformationResopnse>builder()
                 .result(response)
@@ -35,8 +38,9 @@ public class BuyerController {
 
     @PutMapping("/update_information")
     public ResponseAPITemplate<String> updateInfo(
-            @RequestParam String username,
+            @AuthenticationPrincipal Jwt jwt,
             @RequestBody UpdateBuyerInformationRequest request){
+        String username = jwt.getSubject();
         String response = buyerService.updateBuyerInformation(username, request);
         return ResponseAPITemplate.<String>builder()
                 .message(response)

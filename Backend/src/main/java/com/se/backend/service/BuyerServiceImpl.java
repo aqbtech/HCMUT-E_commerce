@@ -31,23 +31,28 @@ public class BuyerServiceImpl implements BuyerService {
         }
     }
 
-    public String updateBuyerInformation(String username,UpdateBuyerInformationRequest request){
+    public String updateBuyerInformation(String username, UpdateBuyerInformationRequest request) {
         Buyer buyer = buyerRepository.findByUsername(username)
-                .orElseThrow(()->new WebServerException(ErrorCode.USER_NOT_FOUND));
-        try {
+                .orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
+        // Chỉ set các trường không null từ request
+        if (request.getFirstName() != null) {
             buyer.setFirstName(request.getFirstName());
+        }
+        else if (request.getLastName() != null) {
             buyer.setLastName(request.getLastName());
+        }
+        else if (request.getEmail() != null) {
             buyer.setEmail(request.getEmail());
+        }
+        else if (request.getPhone() != null) {
             buyer.setPhone(request.getPhone());
+        }
+        else if (request.getDOB() != null) {
             buyer.setDob(request.getDOB());
         }
-        catch (NullPointerException e){
-            throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
-        }
-        try{
+        try {
             buyerRepository.save(buyer);
-        }
-        catch (WebServerException e){
+        } catch (Exception e) {
             throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
         }
 
