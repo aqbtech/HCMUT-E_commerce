@@ -1,5 +1,6 @@
 package com.se.backend.service;
 
+import com.se.backend.dto.request.FilterProductRequest;
 import com.se.backend.dto.request.UserRegister;
 import com.se.backend.dto.response.MinimalUserProfile;
 import com.se.backend.dto.response.ProductDetail;
@@ -14,4 +15,6 @@ public interface GuestService {
 	Page<ReviewDetail> getReviews(String productId, Pageable pageable);
 	Page<ProductSummary> getHomePage(int page);
 	MinimalUserProfile register(UserRegister userRegister);
+	Page<ProductSummary> searchByKeyword(String keyword, int page, String sort);
+	Page<ProductSummary> filterProducts(String keyword, int page, String sort, FilterProductRequest request);
 }

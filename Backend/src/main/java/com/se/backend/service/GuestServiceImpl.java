@@ -1,6 +1,7 @@
 package com.se.backend.service;
 
 import com.se.backend.constant.SystemConstant;
+import com.se.backend.dto.request.FilterProductRequest;
 import com.se.backend.dto.request.UserRegister;
 import com.se.backend.dto.response.*;
 import com.se.backend.entity.*;
@@ -11,6 +12,7 @@ import com.se.backend.mapper.InstanceMapper;
 import com.se.backend.mapper.ProductInfoMapper;
 import com.se.backend.mapper.ProductSummaryMapper;
 import com.se.backend.repository.*;
+import com.se.backend.service.searchService.ProductSpecification;
 import com.se.backend.utils.PaginationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +22,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -136,5 +136,45 @@ public class GuestServiceImpl implements GuestService {
 				.totalQuantityInCart(0)
 				.role(SystemConstant.ROLE_BUYER)
 				.build();
+	}
+	@Override
+	public Page<ProductSummary> searchByKeyword(String keyword, int page, String sort){
+		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
+		Page<Product> products = productRepository.findByNameContaining(keyword, pageable);
+
+		List<Product> productsList = products.getContent();
+		List<ProductSummary> productSummaries = productSummaryMapper.toProductSummaries(productsList);
+
+		if ("asc".equalsIgnoreCase(sort)) {
+			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice));
+		} else if ("desc".equalsIgnoreCase(sort)) {
+			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice).reversed());
+		}
+
+		return PaginationUtils.convertListToPage(productSummaries, pageable);
+	}
+
+	public Page<ProductSummary> filterProducts(String keyword, int page, String sort, FilterProductRequest request) {
+		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
+		Specification<Product> spec = Specification.where(ProductSpecification.hasCategories(request.getCategories()))
+				.and(ProductSpecification.hasLocation(request.getLocations()))
+				.and(ProductSpecification.hasRatingIn(request.getRatings()));
+
+		// Nếu có keyword, thêm điều kiện tìm kiếm
+		if (keyword != null && !keyword.trim().isEmpty()) {
+			spec = spec.and((root, query, criteriaBuilder) ->
+					criteriaBuilder.like(root.get("name"), "%" + keyword + "%"));
+		}
+
+		List<Product> productsList = productRepository.findAll(spec);
+		List<ProductSummary> productSummaries = productSummaryMapper.toProductSummaries(productsList);
+		if ("asc".equalsIgnoreCase(sort)) {
+			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice));
+		} else if ("desc".equalsIgnoreCase(sort)) {
+			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice).reversed());
+		}
+		PaginationUtils.convertListToPage(productSummaries, pageable);
+
+		return PaginationUtils.convertListToPage(productSummaries, pageable);
 	}
 }

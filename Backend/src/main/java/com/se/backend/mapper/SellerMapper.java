@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface SellerMapper {
     @Mapping(target = "shopName", source = "shopName")
-    @Mapping(target = "description", ignore = true)
-    @Mapping(target = "address", ignore = true)
+//    @Mapping(target = "description", ignore = true)
+//    @Mapping(target = "address", ignore = true)
     ShopInformationResponse toShopInformation(Seller seller);
 }
