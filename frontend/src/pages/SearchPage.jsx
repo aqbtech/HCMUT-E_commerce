@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
-import { fetchProductsWithFilters } from "../fetchAPI/fetchProduct";
+import { fetchProductsWithFilters, getProductForSearch } from "../fetchAPI/fetchProduct";
 import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 
@@ -33,7 +33,7 @@ const SearchPage = () => {
   const fetchProducts = async () => {
     try {
       console.log("Filter:", filters, isFilter)
-      const response = await fetchProductsWithFilters(keyword, page, sort, filters, isFilter);
+      const response = await getProductForSearch(keyword, page, sort, filters, isFilter);
       setListProduct(response?.content || []);
       setAvailableFilters(response?.filters?.available || {});
       setTotalPages(response?.page?.totalPages || 0);

@@ -26,6 +26,12 @@ const Regist = () => {
       return false;
     }
 
+    const idRegex = /^[a-zA-Z][a-zA-Z0-9_]{3,19}$/;
+    if (!idRegex.test(id)) {
+      toast.error('Tài khoản không hợp lệ! Tài khoản phải bắt đầu bằng chữ cái, chỉ chứa chữ cái, số, gạch dưới, và dài từ 4-20 ký tự.');
+      return false;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast.error('Email không hợp lệ!');
@@ -38,11 +44,14 @@ const Regist = () => {
       return false;
     }
 
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{3,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[^\s]{8,20}$/;
     if (!passwordRegex.test(pass)) {
-      toast.error('Mật khẩu cần ít nhất 3 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt!');
+      toast.error(
+        "Mật khẩu cần từ 8-20 ký tự, bao gồm chữ hoa, chữ thường, số, ký tự đặc biệt và không chứa khoảng trắng!"
+      );
       return false;
     }
+
 
     if (pass !== confirmPass) {
       toast.error('Mật khẩu không khớp mất rùi :(((');
@@ -64,8 +73,8 @@ const Regist = () => {
       firstName: hovatendem.trim(),
       lastName: ten.trim(),
       email: email.trim(),
-      DOB: date,
       phone: sdt.trim(),
+      dob: date,
     };
 
     try {

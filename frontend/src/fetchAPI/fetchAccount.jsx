@@ -30,26 +30,27 @@ export const logOut = async() => {
 }
 
 export const getMininalProfile = async() => {
-  const response = await axiosClient2.get(`/minimal-profile`);
-  return response.result.data;
+  const response = await axiosClient2.post(`/minimal-profile`);
+  console.log(response);
+  return response.data.result;
 } 
 
 export const getProfile = async () => {
   const response = await axiosClient2.get(`/buyer/get_information`);
-  return response.result.data;
+  return response.data.result;
 } 
 
 export const updateProfile = async (body) => {
   const response = await axiosClient2.put(`/buyer//update_information`, body)
-  return response.result.data;
+  return response.data.result;
 }
 
 export const isRegistSeller = async () => {
   const response = await axiosClient2.get();
-  return response.result.data;
+  return response.data.result;
 }
 
 export const registSeller = async (body) => {
   const response =  await axiosClient2.post(``, body);
-  return response.result.data;
+  return response.data.result;
 }

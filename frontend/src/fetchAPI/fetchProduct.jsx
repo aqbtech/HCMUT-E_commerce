@@ -76,11 +76,11 @@ export const getReviewById = async (productId, page) => {
 export const getProductForSearch = async (keyword, page, sort, body, isFilter) => {
   try {
     if(isFilter) {
-      const res = await axiosPublic.get(`$keyword=${keyword}&page=${page}&size=12&sort=${sort}&isFilter=true`, body); 
+      const res = await axiosPublic.get(`/search?keyword=${keyword}&page=${page}&size=12&sort=${sort}&isFilter=true`, body); 
       console.log(`Tìm kiếm sản phẩm thành công`);
       return res.data.result;
     } else {
-      const res = await axiosPublic.get(`$keyword=${keyword}&page=${page}&size=12&sort=${sort}`); 
+      const res = await axiosPublic.get(`/search?keyword=${keyword}&page=${page}&size=10&sort=${sort}`); 
       console.log(`Tìm kiếm sản phẩm thành công`);
       return res.data.result;
     }

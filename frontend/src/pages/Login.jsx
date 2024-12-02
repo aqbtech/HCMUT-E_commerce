@@ -54,24 +54,25 @@ const Login = () => {
   
       Cookies.set('username', username);
   
-      // const res = await getMininalProfile();
-      // const role = res.role;
-      // const totalQuantityInCart = res.totalQuantityInCart;
+      const res = await getMininalProfile();
+      const role = res.role;
+      const totalQuantityInCart = res.totalQuantityInCart;
   
-      // if (role) Cookies.set('role', role);
-      // if (totalQuantityInCart) Cookies.set('totalQuantityInCart', totalQuantityInCart);
+      if (role) Cookies.set('role', role);
+      if (totalQuantityInCart) Cookies.set('totalQuantityInCart', totalQuantityInCart);
   
-      // toast.success("Đăng nhập thành công!");
+      toast.success("Đăng nhập thành công!");
   
-      // // Điều hướng dựa trên vai trò
-      // if (role === "admin") navigate('/admin');
-      // else if (role === "seller") navigate('/shop');
+      // Điều hướng dựa trên vai trò
+      if (role === "ADMIN") navigate('/admin');
+      else if (role === "SELLER") navigate('/shop');
       navigate(from, { replace: true });
   
     } catch (error) {
       if (error.status === 401) {
         toast.error("Thông tin đăng nhập sai rồi!");
       } else {
+        console.log(error);
         setSystemError(error.response?.data?.message || error.response?.data?.error || "Mất kết nối máy chủ");
       }
     } finally {
