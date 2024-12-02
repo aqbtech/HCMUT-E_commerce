@@ -1,7 +1,7 @@
 package com.se.backend.repository;
 
-import com.se.backend.entity.BuildProduct;
 import com.se.backend.entity.Product;
+import org.hibernate.mapping.Selectable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +23,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
 	@EntityGraph(value = "product-attribute", type = EntityGraph.EntityGraphType.LOAD)
 	Product findProductCartById(String productId);
+
+	@EntityGraph(value = "product", type = EntityGraph.EntityGraphType.LOAD)
+	Product findBasicProductById(String productId);
+	List<Product> findBySeller_Username(String username);
 }
