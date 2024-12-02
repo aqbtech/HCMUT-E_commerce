@@ -6,7 +6,7 @@ import com.se.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 	private final UserService userService;
 
-	@PostMapping("/minimal-profile")
+	@GetMapping("/minimal-profile")
 	public ResponseAPITemplate<MinimalUserProfile> getMinimalProfile(@AuthenticationPrincipal Jwt jwt) {
 		MinimalUserProfile minimalUserProfile = userService.getMinimalProfile(jwt.getSubject());
 		minimalUserProfile.setRole(jwt.getClaim("authorities"));
