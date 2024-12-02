@@ -1,5 +1,6 @@
 package com.se.backend.controller;
 
+
 import com.se.backend.dto.request.FilterProductRequest;
 import com.se.backend.dto.request.UserRegister;
 import com.se.backend.dto.response.*;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import java.util.List;
 
@@ -51,6 +54,12 @@ public class GuestController {
 				.result(res)
 				.build();
 	}
+
+	@GetMapping("/category")
+	public ResponseAPITemplate<List<CategoryResponse>> getAllCategory(){
+		List<CategoryResponse> res = guestService.getAllCategory();
+		return ResponseAPITemplate.<List<CategoryResponse>>builder()
+
 	@PostMapping("/register")
 	public ResponseAPITemplate<?> register(@Valid @RequestBody UserRegister userRegister, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {

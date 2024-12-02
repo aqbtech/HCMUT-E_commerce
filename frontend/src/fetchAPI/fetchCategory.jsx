@@ -20,3 +20,10 @@ export const getAllCategories = async () => {
     throw err;
   })
 }
+
+export const getAllCategory = async () => {
+  const response = await axiosClient2.get(`/category`)
+  console.log(response);
+  return response.data.result;
+};
+
