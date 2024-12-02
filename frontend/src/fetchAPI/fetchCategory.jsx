@@ -26,6 +26,7 @@ export const getAllCategories = async () => {
   })
 }
 
+
 export const getCategoriesForShop = async (shopId) => {
   await axiosClient2.get(`/categories?shopId=${shopId}`)
   .then((res)=> {
@@ -37,3 +38,11 @@ export const getCategoriesForShop = async (shopId) => {
     throw err;
   })
 }
+
+export const getAllCategory = async () => {
+  const response = await axiosClient2.get(`/category`)
+  console.log(response);
+  return response.data.result;
+};
+
+

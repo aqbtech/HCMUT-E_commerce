@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.graalvm.collections.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -68,8 +69,12 @@ public class AuthenticationService implements AuthenticationProvider {
 		if (!authenticated) {
 			throw new WebServerException(ErrorCode.UNAUTHENTICATED);
 		}
-		String token = generateToken(user.getFirst()[0].toString(), user.getFirst()[2].toString());
-		return AuthenticationResponse.builder().token(token).authenticatedToken(true).build();
+		var token = generateToken(user.getFirst()[0].toString(), user.getFirst()[2].toString());
+		return AuthenticationResponse.builder()
+				.token(token.getLeft())
+				.authenticatedToken(true)
+				.role(token.getRight())
+				.build();
 	}
 
 	public void logout(LogoutRequest request) throws ParseException, JOSEException {
@@ -95,20 +100,24 @@ public class AuthenticationService implements AuthenticationProvider {
 		Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
 		// save old token to invalidated token
-		 InvalidatedToken invalidatedToken
-		 	= InvalidatedToken.builder().id(jti).expiryTime(expirationTime).build();
-		 invalidatedTokenRepository.save(invalidatedToken);
+		InvalidatedToken invalidatedToken
+				= InvalidatedToken.builder().id(jti).expiryTime(expirationTime).build();
+		invalidatedTokenRepository.save(invalidatedToken);
 
 		var username = signedJWT.getJWTClaimsSet().getSubject();
 		if (!userRepository.existsByUsername(username))
 			throw new WebServerException(ErrorCode.USER_NOT_FOUND);
 		var token = generateToken(username, signedJWT.getJWTClaimsSet().getClaim("authorities").toString());
-		return AuthenticationResponse.builder().token(token).authenticatedToken(true).build();
+		return AuthenticationResponse.builder()
+				.token(token.getLeft())
+				.authenticatedToken(true)
+				.role(token.getRight())
+				.build();
 	}
 
-	private String generateToken(String username, String... authorities) {
+	private Pair<String, String> generateToken(String username, String... authorities) {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS512).build();
-
+		String scope = buildScope(authorities);
 		JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
 				.subject(username)
 				.issuer("hcmut.se")
@@ -116,7 +125,7 @@ public class AuthenticationService implements AuthenticationProvider {
 				.expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS)
 						.toEpochMilli()))
 				.jwtID((UUID.randomUUID()).toString())
-				.claim("authorities", buildScope(authorities))
+				.claim("authorities", scope)
 				.build();
 
 		Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -124,7 +133,7 @@ public class AuthenticationService implements AuthenticationProvider {
 
 		try {
 			jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-			return jwsObject.serialize();
+			return Pair.create(jwsObject.serialize(), scope);
 		} catch (JOSEException e) {
 			log.error("Error signing token", e);
 			throw new RuntimeException(e);

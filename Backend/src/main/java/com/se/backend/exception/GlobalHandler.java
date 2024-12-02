@@ -20,7 +20,7 @@ public class GlobalHandler {
 	}
 	@ExceptionHandler(WebServerException.class)
 	public ResponseEntity<ResponseAPITemplate<String>> handleWebServerException(WebServerException e) {
-		return handleException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+		return handleException(e, HttpStatus.resolve(e.getErrorCode().getHttpStatusCode().value()));
 	}
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ResponseAPITemplate<String>> handleWebServerException(IllegalArgumentException e) {

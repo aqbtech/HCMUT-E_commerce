@@ -1,8 +1,9 @@
 import {useContext, useEffect, useState } from 'react';
 import {
-    approveOrder,
-    cancelOrder,
-    getListOrdersforSeller,
+    approveOrderForSeller,
+    cancelOrderForSeller,
+    getListApprovedOrders, getListCancelledOrders,
+    getListWaitingOrders,
 } from "../../fetchAPI/fetchOrders.jsx";
 import {ShopContext} from "../../context/ShopContext.jsx";
 import Cookies from "js-cookie";
@@ -12,11 +13,11 @@ import {toast} from "react-toastify";
 
 
 
-
 const OrderManagement = () => {
     const [sellerOrders, setOrders] = useState([]);
     const [loading, setLoading] = useState(false); // Trạng thái loading khi gọi API
     const [hasMore, setHasMore] = useState(false); // Kiểm tra nếu có thêm dữ liệu hay không
+    const [filterState, setFilterState] = useState("WAITING");
     const {
         formatCurrency,
         navigate,
@@ -24,13 +25,32 @@ const OrderManagement = () => {
     } = useContext(ShopContext);
     const username = Cookies.get('username');
     const [currentPage, setCurrentPage] = useState(0)
+    const limit = 2;
 
-    // Hàm lấy danh sách đơn hàng
-    const getOrders = async () => {
+    const getOrdersByState = async (state) => {
         if (loading) return;
         setLoading(true);
         try {
-            const res = await getListOrdersforSeller(username, currentPage, 10);
+            let res;
+            switch (state) {
+                case "WAITING":
+                    res = await getListWaitingOrders(username, currentPage, limit);
+                    break;
+                case "APPROVED":
+                    res = await getListApprovedOrders(username, currentPage, limit);
+                    break;
+                // case "SHIPPING":
+                //     res = await getListShippingOrders(username, currentPage, limit);
+                //     break;
+                // case "COMPLETED":
+                //     res = await getListCompletedOrders(username, currentPage, limit);
+                //     break;
+                case "CANCELLED":
+                    res = await getListCancelledOrders(username, currentPage, limit);
+                    break;
+                default:
+                    return;
+            }
             if (currentPage === 0) {
                 setOrders(res.content);
             } else {
@@ -42,7 +62,7 @@ const OrderManagement = () => {
                     return [...prevData, ...newData];
                 });
             }
-            setHasMore(sellerOrders.length + res.content.length < res.page.totalElements);
+            setHasMore(res.page.totalElements > sellerOrders.length + res.content.length);
         } catch (err) {
             console.error("Lỗi khi lấy đơn hàng: ", err);
         } finally {
@@ -63,18 +83,21 @@ const OrderManagement = () => {
             navigate(`/Login`);
             return;
         }
-        getOrders();
-    }, [currentPage]);
+        getOrdersByState(filterState);
+    }, [currentPage, filterState]);
 
-
+    useEffect(() => {
+        setOrders([]);
+        setCurrentPage(0);
+    }, [filterState]);
     const handleApproveOrder = async (orderId) => {
         const body = { orderId: orderId };
         try {
-            await approveOrder(body);
+            await approveOrderForSeller(body);
             setOrders((prevOrders) =>
                 prevOrders.map((order) =>
                     order.orderId === orderId
-                        ? { ...order, deliveryState: "Shipped" }
+                        ? { ...order, deliveryState: "APPROVED" }
                         : order
                 )
             );
@@ -88,11 +111,11 @@ const OrderManagement = () => {
     const handleCancelOrder = async (orderId) => {
         const body = { orderId: orderId};
         try {
-            await cancelOrder(body);
+            await cancelOrderForSeller(body);
             setOrders((prevOrders) =>
                 prevOrders.map((order) =>
                     order.orderId === orderId
-                        ? { ...order, deliveryState: "Cancelled" }
+                        ? { ...order, deliveryState: "CANCELLED" }
                         : order
                 )
             );
@@ -120,12 +143,32 @@ const OrderManagement = () => {
     ) :(
         <div className="border-t pt-16">
             <h1 className="text-2xl font-bold mb-4">Order Management</h1>
+            <div className="flex border-b mb-4 justify-center items-center">
+                {['WAITING', 'APPROVED', 'SHIPPING', 'COMPLETED', 'CANCELLED'].map((state, index) => (
+                    <button key={index} onClick={() => setFilterState(state)}
+                            className={`px-6 py-2 text-sm font-semibold ${
+                                filterState === state
+                                    ? 'border-b-2 border-blue-500 text-blue-500'
+                                    : 'text-gray-600 hover:text-blue-500'
+                            }`}
+                    >
+                        {state === 'WAITING' && 'Chờ duyệt'}
+                        {state === 'APPROVED' && 'Đã duyệt'}
+                        {state === 'SHIPPING' && 'Đang giao'}
+                        {state === 'COMPLETED' && 'Đã giao'}
+                        {state === 'CANCELLED' && 'Đã hủy'}
+                    </button>
+                ))}
+            </div>
+
 
             {/* Kiểm tra nếu không có đơn hàng nào */}
             {sellerOrders.length === 0 ? (
                 <p className="text-center text-gray-600 mt-8">Bạn chưa có đơn hàng nào.</p>
             ) : (
-                sellerOrders.map((order, orderIndex) => (
+                sellerOrders
+                    .filter((order) => order.deliveryState === filterState)
+                    .map((order, orderIndex) => (
                     <div
                         key={orderIndex}
                         className="p-4 mb-6 bg-white rounded-lg shadow-md text-gray-800"
@@ -139,40 +182,45 @@ const OrderManagement = () => {
                         <div className="flex justify-between items-center mb-4">
                             <span
                                 className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                    order.deliveryState === "Pending"
+                                    order.deliveryState === "WAITING"
                                         ? "bg-gray-100 text-gray-600"
-                                        : order.deliveryState === "Shipped"
+                                        : order.deliveryState === "APPROVED"
                                             ? "bg-yellow-100 text-yellow-600"
-                                            : order.deliveryState === "Done"
+                                            : order.deliveryState === "SHIPPING"
                                                 ? "bg-green-100 text-green-600"
-                                                : order.deliveryState === "Cancelled"
+                                                : order.deliveryState === "CANCELLED"
                                                     ? "bg-red-100 text-red-600"
-                                                    : ""
+                                                    : order.deliveryState === "COMPLETED"
+                                                        ? "bg-red-100 text-red-600"
+                                                        : ""
                                 }`}
                             >
-                                {order.deliveryState === "Pending"
+                                {order.deliveryState === "WAITING"
                                     ? "Chờ duyệt"
-                                    : order.deliveryState === "Shipped"
-                                        ? "Đang giao"
-                                        : order.deliveryState === "Done"
-                                            ? "Đã giao"
-                                            : order.deliveryState === "Cancelled"
+                                    : order.deliveryState === "APPROVED"
+                                        ? "Đã duyệt"
+                                        : order.deliveryState === "SHIPPING"
+                                            ? "Đang giao"
+                                            : order.deliveryState === "CANCELLED"
                                                 ? "Đã hủy"
-                                                : ""}
+                                                : order.deliveryState === "COMPLETED"
+                                                    ? "Đã giao"
+                                                    : ""
+                                }
                             </span>
 
                             {/* Nút hủy và xác nhận */}
                             <div>
                                 <button
                                     onClick={() => handleCancelOrder(order.orderId)}
-                                    disabled={order.deliveryState !== "Pending"}
+                                    disabled={order.deliveryState !== "WAITING"}
                                     className="px-4 py-2 rounded border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Hủy đơn hàng
                                 </button>
                                 <button
                                     onClick={() => handleApproveOrder(order.orderId)}
-                                    disabled={order.deliveryState !== "Pending"}
+                                    disabled={order.deliveryState !== "WAITING"}
                                     className="ml-2 px-4 py-2 rounded border text-sm font-medium bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Xác nhận đơn hàng
