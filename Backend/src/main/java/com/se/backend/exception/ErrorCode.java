@@ -21,7 +21,8 @@ public enum ErrorCode {
 	ORDER_NOT_FOUND(3001, "Order not found", HttpStatus.NOT_FOUND),
 	DELIVERY_INFOR_NOT_FOUND(4001, "Delivery Information not found", HttpStatus.NOT_FOUND),
 	DELIVERY_INFOR_NOT_EXIST(4002, "Delivery Information not exist", HttpStatus.BAD_REQUEST),
-  	INSUFFICIENT_STOCK(2002, "Not enough in stock", HttpStatus.BAD_REQUEST);
+  	INSUFFICIENT_STOCK(2002, "Not enough in stock", HttpStatus.BAD_REQUEST),
+	ADDRESS_NOT_FOUND(4003, "Address not found", HttpStatus.NOT_FOUND);
 	private final int code;
 	private final String message;
 	private final HttpStatusCode httpStatusCode;
