@@ -4,28 +4,33 @@ import { ShopContext } from '../context/ShopContext';
 import ProfileTab from '../components/profilePage/ProfileTab'
 import PasswordTab from '../components/profilePage/PasswordTab';
 import AddressTab from '../components/profilePage/AddressTab';
-import { deleteAdress, updateAddress, getAddress, createAddress} from '../fetchAPI/fetchAddress';
+import { deleteAdress, getAddress, createAddress} from '../fetchAPI/fetchAddress';
 import {getBankAccounts,createBankAccount, deleteBankAccount } from '../fetchAPI/fetchBank';
-import { updateAccount, getInfo } from '../fetchAPI/fetchAccount';
+import { updateProfile, getProfile, changePass, isRegistSeller, registSeller } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie'
 import BankTab from '../components/profilePage/BankTab';
 import BankModal from '../components/profilePage/BankModal';
+import RegistSeller from '../components/profilePage/RegistSeller';
 
 
 //---
 const MyProfile = () => {
-    const { account, navigate } = useContext(ShopContext);
-    const [addresses, setAddresses] = useState([]);
+    const {navigate } = useContext(ShopContext);
     const [searchParams, setSearchParams] = useSearchParams();
     const initialTab = searchParams.get('tab') || 'profile';
+
+
+    const [account, setAccount] = useState({});
+    const [addresses, setAddresses] = useState([]);
     const [activeTab, setActiveTab] = useState(initialTab);
+    const [toSeller, setToseller] = useState(false);
     const [bankAccounts, setBankAccounts] = useState([]); // Danh sách tài khoản ngân hàng
     const [isModalOpen, setIsModalOpen] = useState(false); // Kiểm soát hiển thị modal
 
     // Cập nhật tab đang hoạt động khi initialTab thay đổi (dựa trên query params)
     useEffect(() => {
-        const tab = searchParams.get('tab') || 'profile';
+        const tab = searchParams.get('tab');
         setActiveTab(tab);
 
         if (!Cookies.get("username")) {
@@ -34,6 +39,19 @@ const MyProfile = () => {
         }
     }, [searchParams]);
 
+    useEffect(()=> {
+        const fetchProfile = async () => {
+            try {
+                const response = await getProfile();
+                setAccount(response)
+                console.log("Lấy thông tin cá nhân thành công:", response);
+            } catch(err) {
+                console.log("Lấy thông tin người dùng thất bại", err);
+            }
+        }
+        
+        fetchProfile();
+    })
 
     const handleTabChange = (newTab) => {
         setActiveTab(newTab); // Cập nhật state
@@ -44,7 +62,7 @@ const MyProfile = () => {
     // Hàm cập nhật thông tin tài khoản
     const handleSave = async (updatedAccount) => {
         try {
-            const response = await updateAccount(account, updatedAccount);
+            await updateProfile(updatedAccount);
             toast.success("Cập nhật thông tin thành công!");
         } catch(err)  {
             console.error("Lỗi khi cập nhật tài khoản:", err);
@@ -59,7 +77,7 @@ const MyProfile = () => {
             "newPassword" : newPass
         }
         try {
-            const response = await updateAccount(body);
+            await changePass(body);
             toast.success("Đổi mật khẩu thành công!");
         } catch (error) {
             console.error("Lỗi khi đổi mật khẩu:", error);
@@ -149,8 +167,32 @@ const MyProfile = () => {
         }
     }, []);
 
+    // Lấy danh sách tài khoản ngân hàng khi component render
+    useEffect(() => {
+        if (activeTab === 'regist') {
+            const fetchRegistSeller = async () => { 
+                const data = await isRegistSeller(); 
+                setToseller(data);
+            };
+
+            fetchRegistSeller();
+        }
+    }, [activeTab]);
+
+
+    const handleRegistSeller = useCallback(async (body) => { 
+        try {
+            await registSeller(body);
+            toast.success("Đã gửi đăng kí thành công!");
+            setToseller(true);
+        } catch(err) {
+            toast.error("Gửi đăng kí thất bại!");
+        }
+    }, []);
+
+
     return (
-        <div className="flex">
+        <div className="flex min-h-screen">
             {/* Sidebar tab */}
             <div className="w-1/4 p-4">
                 <h2 className="text-xl font-bold mb-4">Tài Khoản Của Tôi</h2>
@@ -178,6 +220,12 @@ const MyProfile = () => {
                         className={`cursor-pointer py-2 ${activeTab === "address" ? "text-orange-600 font-bold" : ""}`}
                     >
                         Địa chỉ mua hàng
+                    </li>
+                    <li 
+                        onClick={() => handleTabChange("regist")} 
+                        className={`cursor-pointer py-2 ${activeTab === "regist" ? "text-orange-600 font-bold" : ""}`}
+                    >
+                        Đăng kí cửa hàng
                     </li>
                 </ul>
             </div>
@@ -210,6 +258,13 @@ const MyProfile = () => {
                         onUpdateAddress={handleUpdateAddress}
                     />
                 )}
+                {activeTab === "regist" && (
+                    <RegistSeller 
+                        data={toSeller}
+                        onSave={handleRegistSeller}
+                    />
+                )}
+
             </div>
         </div>
     );

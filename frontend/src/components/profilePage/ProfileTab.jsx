@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import Cookies from 'js-cookie'
+
 
 const ProfileTab = ({ account, onSave }) => {
-    const [username, setUsername] = useState(account);
     const [name, setName] = useState("account.ten");
     const [Hovatendem, setHovatendem] = useState("account.Hovatendem");
     const [email, setEmail] = useState("account.email");
@@ -16,7 +17,7 @@ const ProfileTab = ({ account, onSave }) => {
             <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
                     <label className="block mb-2">Tên đăng nhập</label>
-                    <input className="w-full p-2 border border-gray-300 rounded mb-4 text-gray-500" value={username} readOnly />
+                    <input className="w-full p-2 border border-gray-300 rounded mb-4 text-gray-500" value={Cookies.get("username")} readOnly />
 
                     <label className="block mb-2">Họ và tên đệm</label>
                     <input className="w-full p-2 border border-gray-300 rounded mb-4" value={Hovatendem} onChange={(e) => setHovatendem(e.target.value)} />

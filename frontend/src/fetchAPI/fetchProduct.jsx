@@ -80,7 +80,7 @@ export const getProductForSearch = async (keyword, page, sort, body, isFilter) =
       console.log(`Tìm kiếm sản phẩm thành công`);
       return res.data.result;
     } else {
-      const res = await axiosPublic.get(`$keyword=${keyword}&page=${page}&size=10&sort=${sort}`); 
+      const res = await axiosPublic.get(`$keyword=${keyword}&page=${page}&size=12&sort=${sort}`); 
       console.log(`Tìm kiếm sản phẩm thành công`);
       return res.data.result;
     }

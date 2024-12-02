@@ -29,10 +29,10 @@ export const getInfo = async (shopId) => {
     }
     try {
         const res = await axiosPublic(`/shopInfo?id=${shopId}`, body);
-        console.log(`Theo dõi shop thành công!`, res);
+        console.log(`Lay shop thành công!`, res);
         return res.result.data;
     } catch(err) {
-        console.log(`Theo dõi shop thất bại!`, err);
+        console.log(`Lay shop thất bại!`, err);
         throw err;
     }
 }

@@ -3,7 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import { Link } from "react-router-dom";
 import { resetPassword } from "../fetchAPI/fetchAccount";
 import { toast } from "react-toastify";
-import ErrorMessage  from '/src/components/errorMessage';
+import ErrorMessage from "/src/components/errorMessage";
 
 const ResetPassword = () => {
   const { navigate, systemError, setSystemError } = useContext(ShopContext);
@@ -14,45 +14,73 @@ const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-
   const onSubmitHandler = async (event) => {
-    event.preventDefault(); 
+    event.preventDefault();
     if (isLoading) return;
-    if (!username || !pass || !confirmPass || !email) {
+
+    // Kiểm tra các trường trống
+    if (!username.trim() || !email.trim() || !pass.trim() || !confirmPass.trim()) {
       toast.error("Bạn còn sót thông tin nè!");
       return;
     }
 
-    if (pass !== confirmPass) {
-      toast.error("Mật khẩu xác nhận không khớp");
+    // Kiểm tra định dạng email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Email không hợp lệ!");
       return;
     }
 
-    
+    // Kiểm tra mật khẩu xác nhận
+    if (pass !== confirmPass) {
+      toast.error("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+
+    // Kiểm tra độ mạnh của mật khẩu
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(pass)) {
+      toast.error(
+        "Mật khẩu cần ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt!"
+      );
+      return;
+    }
+
     setIsLoading(true);
 
     const body = {
-      "username" : username,
-      "newPassword": pass,
-      "email" : email
+      username: username.trim(),
+      newPassword: pass,
+      email: email.trim(),
     };
 
     try {
       await resetPassword(body);
-      toast.success("Đã reset mật khẩu thành công");
+      toast.success("Đã reset mật khẩu thành công!");
       navigate("/Login");
     } catch (error) {
-      if(error.status === 401) toast.error("Thông tin không đúng!");
-      else if(error.status === 404) toast.error("Tài khoản không tồn tại!");
-      else setSystemError(error.response?.data?.message || error.response?.data?.error || "Mất kết nối máy chủ");
-      throw(error)
+      console.error("Lỗi reset mật khẩu:", error);
+      if (error.status === 401) {
+        toast.error("Thông tin không đúng!");
+      } else if (error.status === 404) {
+        toast.error("Tài khoản không tồn tại!");
+      } else {
+        setSystemError(
+          error.response?.data?.message ||
+            error.response?.data?.error ||
+            "Mất kết nối máy chủ"
+        );
+      }
     } finally {
       setIsLoading(false);
     }
-  };  
+  };
+
+  // Hiển thị lỗi hệ thống nếu có
   if (systemError) {
-    return <ErrorMessage  message={systemError} />;
+    return <ErrorMessage message={systemError} />;
   }
+
   return (
     <div>
       <form
@@ -100,9 +128,14 @@ const ResetPassword = () => {
         </div>
         <button
           type="submit"
-          className="bg-black text-white font-light px-8 py-2 mt-4"
+          disabled={!username || !pass || !email || isLoading}
+          className={`bg-black text-white font-light px-8 py-2 mt-4 ${
+            !username || !pass || !email || isLoading
+              ? "opacity-50 cursor-not-allowed"
+              : ""
+          }`}
         >
-        {isLoading ? "...Loading" : "Xác nhận"}
+          {isLoading ? "Đang xử lý..." : "Xác nhận"}
         </button>
       </form>
     </div>

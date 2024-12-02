@@ -3,14 +3,14 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import { toast } from 'react-toastify';
-import { getMyCart, updateQuantity, fetchCart, deleteFromCart } from '../fetchAPI/fetchCart';
+import { updateQuantity, fetchCart, deleteFromCart } from '../fetchAPI/fetchCart';
 import ErrorMessage from '/src/components/errorMessage';
 import Cookies from 'js-cookie'
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Link } from 'react-router-dom';
 
 const Cart = () => {
-  const { systemError, setSystemError, formatCurrency, navigate, curState } = useContext(ShopContext);
+  const { systemError, setSystemError, formatCurrency, navigate } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [total, setTotal] = useState(0);
