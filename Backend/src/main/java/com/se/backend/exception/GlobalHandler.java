@@ -4,40 +4,35 @@ import com.se.backend.dto.response.ResponseAPITemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalHandler {
-	@ExceptionHandler(WebServerException.class)
-	public ResponseEntity<ResponseAPITemplate<String>> handleWebServerException(WebServerException e) {
-		ResponseEntity<ResponseAPITemplate<String>> res = ResponseEntity.status(e.getErrorCode().getHttpStatusCode())
+	private ResponseEntity<ResponseAPITemplate<String>> handleException(Exception e, HttpStatus status) {
+		return ResponseEntity.status(status)
 				.body(ResponseAPITemplate.<String>builder()
-						.code(e.getErrorCode().getCode())
+						.code(status.value())
 						.message(e.getMessage())
 						.result(null)
 						.build());
-		return res;
+	}
+	@ExceptionHandler(WebServerException.class)
+	public ResponseEntity<ResponseAPITemplate<String>> handleWebServerException(WebServerException e) {
+		return handleException(e, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ResponseAPITemplate<String>> handleWebServerException(IllegalArgumentException e) {
-		ResponseEntity<ResponseAPITemplate<String>> res = ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(ResponseAPITemplate.<String>builder()
-						.code(400)
-						.message(e.getMessage())
-						.result(null)
-						.build());
-		return res;
+		return handleException(e, HttpStatus.BAD_REQUEST);
 	}
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<ResponseAPITemplate<String>> handleAccessDeniedException(AccessDeniedException e) {
-		ResponseEntity<ResponseAPITemplate<String>> res = ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(ResponseAPITemplate.<String>builder()
-						.code(403)
-						.message(e.getMessage())
-						.result(null)
-						.build());
-		return res;
+		return handleException(e, HttpStatus.FORBIDDEN);
+	}
+	@ExceptionHandler(AuthenticationServiceException.class)
+	public ResponseEntity<ResponseAPITemplate<String>> handleAuthenticationServiceException(AuthenticationServiceException e) {
+		return handleException(e, HttpStatus.UNAUTHORIZED);
 	}
 	// more exception handlers
 }

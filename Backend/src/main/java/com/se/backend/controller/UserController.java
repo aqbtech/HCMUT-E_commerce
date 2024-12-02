@@ -4,6 +4,7 @@ import com.se.backend.dto.response.MinimalUserProfile;
 import com.se.backend.dto.response.ResponseAPITemplate;
 import com.se.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
