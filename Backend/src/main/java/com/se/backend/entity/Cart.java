@@ -29,8 +29,8 @@ public class Cart {
 	// -- mapping relationships --
 	// mapping buyer identity relationship
 	@OneToOne
-	@MapsId("buyerId")
-	@JoinColumn(name = "cart_buyer_id", referencedColumnName = "username")
+	@MapsId("username")
+	@JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
 	private Buyer buyer;
 	// mapping cart_product_instance, many-to-many relationship
 	@OneToMany(mappedBy = "cart")

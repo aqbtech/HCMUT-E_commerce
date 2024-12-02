@@ -10,6 +10,12 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @Entity
+@NamedEntityGraphs({
+		@NamedEntityGraph(name = "buyer-minimal",
+				attributeNodes = {
+						@NamedAttributeNode("cart"),
+				})
+})
 @Getter
 @Setter
 @SuperBuilder
