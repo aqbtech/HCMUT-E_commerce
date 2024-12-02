@@ -101,7 +101,7 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
 	public MinimalUserProfile register(UserRegister userRegister) {
 		Buyer newBuyer = Buyer.builder()
 				.username(userRegister.getUsername())
@@ -124,7 +124,7 @@ public class GuestServiceImpl implements GuestService {
 				.build();
 		newBuyer.setCart(newCart);
 		try {
-			buyerRepository.save(newBuyer);
+			buyerRepository.saveAndFlush(newBuyer);
 		} catch (DataIntegrityViolationException e) {
 			throw new WebServerException(ErrorCode.USER_EXISTED);
 		} catch (Exception e) {
@@ -137,8 +137,9 @@ public class GuestServiceImpl implements GuestService {
 				.role(SystemConstant.ROLE_BUYER)
 				.build();
 	}
+
 	@Override
-	public Page<ProductSummary> searchByKeyword(String keyword, int page, String sort){
+	public Page<ProductSummary> searchByKeyword(String keyword, int page, String sort) {
 		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
 		Page<Product> products = productRepository.findByNameContaining(keyword, pageable);
 

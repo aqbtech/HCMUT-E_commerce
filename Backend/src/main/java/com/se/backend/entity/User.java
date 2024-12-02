@@ -16,7 +16,10 @@ import java.time.LocalDate;
 @Table(name = "user")
 public class User {
 	@Id
+	@Column(unique = true)
 	private String username;
+	@Version
+	private Long version;
 	private String password;
 	private String firstName;
 	private String lastName;
