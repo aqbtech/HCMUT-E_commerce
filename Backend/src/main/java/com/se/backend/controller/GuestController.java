@@ -1,5 +1,6 @@
 package com.se.backend.controller;
 
+import com.se.backend.dto.request.FilterProductRequest;
 import com.se.backend.dto.request.UserRegister;
 import com.se.backend.dto.response.*;
 import com.se.backend.service.GuestService;
@@ -61,6 +62,30 @@ public class GuestController {
 		}
 		MinimalUserProfile res = guestService.register(userRegister);
 		return ResponseAPITemplate.<MinimalUserProfile>builder()
+				.result(res)
+				.build();
+	}
+	@GetMapping("/search")
+	public ResponseAPITemplate<Page<ProductSummary>> searchProduct(
+			@RequestParam(value = "keyword", defaultValue = "") String keyword,
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "sort", defaultValue = "name") String sort
+	){
+		Page<ProductSummary> res = guestService.searchByKeyword(keyword, page, sort);
+		return ResponseAPITemplate.<Page<ProductSummary>>builder()
+				.result(res)
+				.build();
+	}
+
+	@PostMapping("/search/filter")
+	public ResponseAPITemplate<Page<ProductSummary>> search_filterProduct(
+			@RequestParam(value = "keyword", defaultValue = "") String keyword,
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "sort", defaultValue = "name") String sort,
+			@RequestBody FilterProductRequest request
+			){
+		Page<ProductSummary> res = guestService.filterProducts(keyword, page, sort, request);
+		return ResponseAPITemplate.<Page<ProductSummary>>builder()
 				.result(res)
 				.build();
 	}
