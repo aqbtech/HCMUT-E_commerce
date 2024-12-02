@@ -18,7 +18,7 @@ public class CategoryPolicy extends Policy {
 	@ManyToMany
 	@JoinTable(name = "category_policy_category",
 			joinColumns = @JoinColumn(name = "policy_id", referencedColumnName = "policy_id"),
-			inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "name"))
+			inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
 	private List<Category> categories;
 	// mapping admin
 	@ManyToMany
