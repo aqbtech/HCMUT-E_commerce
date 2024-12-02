@@ -10,7 +10,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const Login = () => {
-  const {navigate, systemError, setSystemError} = useContext(ShopContext);
+  const {navigate, systemError, setSystemError, setTotalQuantityInCart} = useContext(ShopContext);
   const location = useLocation();
   const [username, setUsername] = useState('');
   const [pass, setPass] = useState('');
@@ -55,11 +55,12 @@ const Login = () => {
       Cookies.set('username', username);
   
       const res = await getMininalProfile();
+    
       const role = res.role;
       const totalQuantityInCart = res.totalQuantityInCart;
-  
-      if (role) Cookies.set('role', role);
-      if (totalQuantityInCart) Cookies.set('totalQuantityInCart', totalQuantityInCart);
+      setTotalQuantityInCart(totalQuantityInCart)
+      Cookies.set('role', role);
+
   
       toast.success("Đăng nhập thành công!");
   

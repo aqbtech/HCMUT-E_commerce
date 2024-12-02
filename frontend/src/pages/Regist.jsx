@@ -5,6 +5,8 @@ import { register } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
 import ErrorMessage from '/src/components/errorMessage';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import Cookies from 'js-cookie'
+
 
 const Regist = () => {
   const { navigate, systemError, setSystemError } = useContext(ShopContext);

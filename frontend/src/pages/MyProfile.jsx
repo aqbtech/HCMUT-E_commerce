@@ -31,7 +31,8 @@ const MyProfile = () => {
     // Cập nhật tab đang hoạt động khi initialTab thay đổi (dựa trên query params)
     useEffect(() => {
         const tab = searchParams.get('tab');
-        setActiveTab(tab);
+     
+        setActiveTab(tab || 'profile' );
 
         if (!Cookies.get("username")) {
             const currentTab = location.search; // Lấy query parameter hiện tại (vd: ?tab=profile)

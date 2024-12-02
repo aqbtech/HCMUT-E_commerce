@@ -8,9 +8,10 @@ import ErrorMessage from '/src/components/errorMessage';
 import Cookies from 'js-cookie'
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Link } from 'react-router-dom';
+import { getMininalProfile } from '../fetchAPI/fetchAccount';
 
 const Cart = () => {
-  const { systemError, setSystemError, formatCurrency, navigate } = useContext(ShopContext);
+  const { systemError, setSystemError, formatCurrency, navigate, setTotalQuantityInCart } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [total, setTotal] = useState(0);
@@ -80,6 +81,8 @@ const Cart = () => {
           item.productInstanceId === productInstanceId ? { ...item, quantity } : item
         )
       );
+      const response = await getMininalProfile()
+      setTotalQuantityInCart(response.totalQuantityInCart)
     } catch (err) {
       const errorCode = err.response?.data?.code; // Lấy mã lỗi từ phản hồi API
       if (err.response?.status === 400 && errorCode === 2002) {
@@ -91,18 +94,22 @@ const Cart = () => {
     }
   };
 
-  const handleRemoveItem = (productInstanceId) => {
-    deleteFromCart(productInstanceId )
-      .then(() => {
-        setCartData((prev) =>
-          prev.filter((item) => item.productInstanceId !== productInstanceId)
-        );
-        toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
-      })
-      .catch((err) => {
-        console.error('Lỗi xóa sản phẩm:', err); // Debug lỗi API
+  const handleRemoveItem = async (productInstanceId) => {
+    try {
+      await deleteFromCart(productInstanceId );
+      setCartData((prev) =>
+        prev.filter((item) => item.productInstanceId !== productInstanceId)
+      );
+      const response = await getMininalProfile()
+      setTotalQuantityInCart(response.totalQuantityInCart)
+      console.log(response, "123");
+      toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
+    } catch(err) {
+      console.error('Lỗi xóa sản phẩm:', err); // Debug lỗi API
         toast.error('Không thể xóa sản phẩm khỏi giỏ hàng!');
-      });
+    }
+
+  
   };
   
 

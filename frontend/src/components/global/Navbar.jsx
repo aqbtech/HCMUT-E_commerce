@@ -7,7 +7,7 @@ import { logOut } from '../../fetchAPI/fetchAccount';
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
-  const { search, setSearch, curState, setCurState, setAccount, navigate } = useContext(ShopContext);
+  const { search, setSearch, curState, setCurState, setAccount, navigate, totalQuantityInCart } = useContext(ShopContext);
 
   const onSubmitHandler = async () => {
     try {
@@ -100,7 +100,12 @@ const Navbar = () => {
           {/* Icon giỏ hàng */}
           {curState === 'Login' && (
             <Link to="/cart" className="relative">
-              <img src={assets.hinh5} className="w-5 cursor-pointer" alt="Cart" />
+              <img src={assets.hinh5} className="w-5 min-w-5 cursor-pointer" alt="Cart" />
+              <span
+                 className="absolute left-3 bottom-[-5px] w-4 text-center leading-4 bg-red-500 text-white aspect-square rounded-full text-xs"
+              >
+                {totalQuantityInCart}
+              </span>
             </Link>
           )}
 

@@ -3,13 +3,12 @@ import Cookies from 'js-cookie'
 
 //--------------------------Mới---------------------------
 export const register = async (body) => {
-  return await axiosPublic.post('/register', body);
-
+  const response = await  axiosPublic.post('/register', body);
+  return response.data.result;
 }
 
 export const SignIn = async (body)  => {
   return await axiosPublic.post('/auth/token', body);
-    
 }
 
 export const resetPassword = async (body) => {
@@ -30,8 +29,7 @@ export const logOut = async() => {
 }
 
 export const getMininalProfile = async() => {
-  const response = await axiosClient2.post(`/minimal-profile`);
-  console.log(response);
+  const response = await axiosClient2.get(`/minimal-profile`);
   return response.data.result;
 } 
 
