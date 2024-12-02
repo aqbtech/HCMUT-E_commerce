@@ -18,6 +18,7 @@ public enum ErrorCode {
 	PRODUCT_NOT_FOUND(1004, "Product not found", HttpStatus.NOT_FOUND),
 	PRODUCT_NOT_BELONG_TO_SELLER(1005, "Product not belong to seller", HttpStatus.NOT_FOUND),
 	CATEGORY_NOT_FOUND(1006, "Category not found", HttpStatus.NOT_FOUND),
+	CATEGORY_HAS_CHILDREN(1007, "Category has children", HttpStatus.BAD_REQUEST),
 	ORDER_NOT_FOUND(3001, "Order not found", HttpStatus.NOT_FOUND),
 	DELIVERY_INFOR_NOT_FOUND(4001, "Delivery Information not found", HttpStatus.NOT_FOUND),
 	DELIVERY_INFOR_NOT_EXIST(4002, "Delivery Information not exist", HttpStatus.BAD_REQUEST),
