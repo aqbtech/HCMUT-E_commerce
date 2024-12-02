@@ -3,11 +3,16 @@ package com.se.backend.controller.web;
 import com.se.backend.dto.request.AddProductToShopRequest;
 import com.se.backend.dto.request.ApproveOrderRequest;
 import com.se.backend.dto.request.CancelOrderRequest;
+
 import com.se.backend.dto.request.UpdateProductRequest;
 import com.se.backend.dto.response.*;
 import com.se.backend.entity.Product;
 import com.se.backend.service.IProductManagementSerivce;
 import com.se.backend.service.ProductManagementServiceImpl;
+
+import com.se.backend.dto.request.UpdateShopInformationRequest;
+import com.se.backend.dto.response.*;
+
 import com.se.backend.service.business.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +37,27 @@ public class SellerConroller {
 
     @Autowired
     private final OrderService orderService;
+    @Autowired
+    private final SellerService sellerService;
+
+    @GetMapping("/shop_information")
+    public ResponseAPITemplate<ShopInformationResponse> getShopInfo(@RequestParam String username){
+        ShopInformationResponse response = sellerService.getShopInformation(username);
+        return ResponseAPITemplate.<ShopInformationResponse>builder()
+                .result(response)
+                .build();
+    }
+
+    @PutMapping("/update_information")
+    public ResponseAPITemplate<String> updateInfo(
+            @RequestParam String username,
+            @RequestBody UpdateShopInformationRequest request){
+        String response = sellerService.updateShopInformation(username, request);
+        return ResponseAPITemplate.<String>builder()
+                .message(response)
+                .build();
+    }
+
     @PutMapping("/approve_order")
     public ResponseAPITemplate<ApproveOrderResponse> approveOrder(@RequestBody ApproveOrderRequest request){
         log.info(request.getOrderId());

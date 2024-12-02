@@ -23,7 +23,8 @@ public class Security {
 	// If you want to use security, you can add configurations here
 	private final String[] PUBLIC_ENDPOINTS = {
 			"/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
-			"/query_product_detail/**", "/{productId}/reviews", "/home-page", "/category"
+			"/query_product_detail/**", "/{productId}/reviews", "/home-page", "/register",
+			"/search", "/search/filter", "/category"
 	};
 	private final CustomJwtDecoder customJwtDecoder;
 
@@ -41,7 +42,7 @@ public class Security {
 		security.oauth2ResourceServer(oauth2 -> oauth2
 				.jwt(jwtConfigurer -> jwtConfigurer
 						.decoder(customJwtDecoder)
-						.jwtAuthenticationConverter(jwtAuthenticationConverter())
+						.jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())
 				).authenticationEntryPoint(new JwtAuthEntryPoint()));
 		security.sessionManagement(session ->
 				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -56,12 +57,6 @@ public class Security {
 		return security.build();
 	}
 
-	@Bean
-	JwtAuthenticationConverter jwtAuthenticationConverter() {
-		JwtAuthenticationConverter jwtAuthCvt = new JwtAuthenticationConverter();
-		jwtAuthCvt.setJwtGrantedAuthoritiesConverter(new CustomJwtGrantedAuthoritiesConverter());
-		return jwtAuthCvt;
-	}
 
 	@Bean
 	PasswordEncoder passwordEncoder() {

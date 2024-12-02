@@ -36,8 +36,12 @@ import cross_icon from './cross_icon.png'
 import plus from './plus.png'
 import zalo from './Logo-ZaloPay-Square.webp';
 import momo from './Logo-MoMo-Circle.webp';
+import notFound from './notFound.png';
+import store from './store.png'
 
 export const assets = {
+    store,
+    notFound,
     zalo,
     momo,
     plus,

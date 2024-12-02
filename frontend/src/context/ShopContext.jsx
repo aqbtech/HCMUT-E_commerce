@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation  } from "react-router-dom";
 import Cookies from 'js-cookie'
 
 
@@ -8,6 +8,7 @@ export const ShopContext = createContext();
  
 const ShopContextProvider = (props) => {
     const navigate = useNavigate(); 
+    const location = useLocation(); 
     
     const [account, setAccount] = useState(Cookies.get('username') || null);
     const [search, setSearch] = useState('');
@@ -21,6 +22,11 @@ const ShopContextProvider = (props) => {
         if(userId) setCurState('Login');
         setAccount(userId);
     }, [Cookies.get('username')]);
+
+    useEffect(() => {
+        setSystemError(""); 
+      }, [location.pathname]);
+
 
     const formatCurrency = (amount) => {
         return amount.toLocaleString('vi-VN', {
@@ -44,6 +50,7 @@ const ShopContextProvider = (props) => {
         })
         return total;
     }
+
 
     const value = {
         products, setProducts,

@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+// best practice this should implement contract interface
 public class AuthenticationResponse {
 	private String token;
 	private boolean authenticatedToken;
+	private String role;
 }

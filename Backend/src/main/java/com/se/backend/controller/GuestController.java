@@ -1,14 +1,19 @@
 package com.se.backend.controller;
 
+
+import com.se.backend.dto.request.FilterProductRequest;
+import com.se.backend.dto.request.UserRegister;
 import com.se.backend.dto.response.*;
 import com.se.backend.service.GuestService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import java.util.List;
 
@@ -50,11 +55,46 @@ public class GuestController {
 				.build();
 	}
 
-
 	@GetMapping("/category")
 	public ResponseAPITemplate<List<CategoryResponse>> getAllCategory(){
 		List<CategoryResponse> res = guestService.getAllCategory();
 		return ResponseAPITemplate.<List<CategoryResponse>>builder()
+
+	@PostMapping("/register")
+	public ResponseAPITemplate<?> register(@Valid @RequestBody UserRegister userRegister, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResponseAPITemplate.<List<ObjectError>>builder()
+					.code(400)
+					.message("Invalid input")
+					.result(bindingResult.getAllErrors())
+					.build();
+		}
+		MinimalUserProfile res = guestService.register(userRegister);
+		return ResponseAPITemplate.<MinimalUserProfile>builder()
+				.result(res)
+				.build();
+	}
+	@GetMapping("/search")
+	public ResponseAPITemplate<Page<ProductSummary>> searchProduct(
+			@RequestParam(value = "keyword", defaultValue = "") String keyword,
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "sort", defaultValue = "name") String sort
+	){
+		Page<ProductSummary> res = guestService.searchByKeyword(keyword, page, sort);
+		return ResponseAPITemplate.<Page<ProductSummary>>builder()
+				.result(res)
+				.build();
+	}
+
+	@PostMapping("/search/filter")
+	public ResponseAPITemplate<Page<ProductSummary>> search_filterProduct(
+			@RequestParam(value = "keyword", defaultValue = "") String keyword,
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "sort", defaultValue = "name") String sort,
+			@RequestBody FilterProductRequest request
+			){
+		Page<ProductSummary> res = guestService.filterProducts(keyword, page, sort, request);
+		return ResponseAPITemplate.<Page<ProductSummary>>builder()
 				.result(res)
 				.build();
 	}

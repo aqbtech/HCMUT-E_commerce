@@ -107,7 +107,7 @@ const Product = () => {
   }, [selectedAttributes, productData?.listInstants]);
 
   
-  const placeOrder = async (productName, productId, quantity, selectedAttributes, selectedInstant) => {
+  const placeOrder = async (productName, productId, quantity, selectedAttributes, selectedInstant, IMG) => {
     if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
     if (!allAttributesSelected()) return toast.error("Vui lòng chọn tất cả các thuộc tính.");
     if(selectedInstant.quantityInStock < quantity) return toast.error("Sản phẩm hiện không đủ, vui lòng giảm bớt số lượng")
@@ -117,7 +117,8 @@ const Product = () => {
       value,
     }));
   
-    const body = { 
+    const body = {
+      "IMG" : IMG,
       "productName": productName,
       "productId": productId,
       "listAtt": ListAtt,
@@ -125,7 +126,6 @@ const Product = () => {
       "quantity": quantity,
       "price": selectedInstant.price
     };
-  
 
     // Ghi đè trực tiếp `ListProductToPlace` trong localStorage với `body`
     localStorage.setItem('ListProductToPlace', JSON.stringify([body]));
@@ -164,7 +164,7 @@ const Product = () => {
     <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
-          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
+          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-auto justify-between sm:justify-normal sm:w-[18.7%] w-full scrollbar-hidden">
             {productData.images?.map((item, index) => (
               <img
                 onClick={() => setImage(item)}
@@ -179,12 +179,11 @@ const Product = () => {
             <img className="w-full h-auto" src={image} alt="" />
           </div>
         </div>
-
         <div className="flex-1">
           <h1 className="font-medium text-2xl mt-2">{productData.product_name}</h1>
           <div className="flex items-center gap-1 mt-2">
-            <p className="pl-2">{productData.rating}</p>
-            <p> <img src={assets.star_icon} alt="" /></p>
+            <span className="text-yellow-500 font-medium text-lg">{productData.rating}</span>
+            <img src={assets.star_icon} alt="Star" className="w-4 h-4" />
           </div>
           <p className="mt-5 text-3xl font-medium">
             {selectedInstant === null
@@ -241,7 +240,7 @@ const Product = () => {
             {isAddLoading ? <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" /> : "THÊM VÀO GIỎ HÀNG" }
           </button>
           <button
-            onClick={() => placeOrder(productData.product_name, productId, quantity, selectedAttributes, selectedInstant)}
+            onClick={() => placeOrder(productData.product_name, productId, quantity, selectedAttributes, selectedInstant, image)}
             disabled={!selectedInstant || selectedInstant === "not_found"}
             className={`bg-black text-white mx-4 px-8 py-3 text-sm active:bg-gray-700 ${
               (!selectedInstant || selectedInstant === "not_found") ? "opacity-50 cursor-not-allowed" : ""
@@ -259,18 +258,28 @@ const Product = () => {
       </div>
 
       <hr /> 
-      <div className="mt-8 text-sm text-gray-700">
+      <div className="mt-8 p-4 border rounded-lg shadow-md bg-white">
         {productData.seller ? (
-          <>
-            <Link to={`/shop/${productData.seller.sellerId}`} className="text-blue-500">
-              <b>{productData.seller.shopName}</b>
-            </Link>
-            <p>Địa chỉ: {productData.seller.location}</p>
-          </>
+          <div>
+            <div className="flex items-center mb-2">
+              <span className="text-blue-500 text-2xl mr-2">🏪</span> {/* Biểu tượng Unicode cho cửa hàng */}
+              <Link 
+                to={`/shop/${productData.seller.sellerId}`} 
+                className="text-xl font-bold text-blue-600 hover:underline"
+              >
+                {productData.seller.shopName}
+              </Link>
+            </div>
+
+            <p className="text-gray-700">
+              <b>Địa chỉ:</b> {productData.seller.location}
+            </p>
+          </div>
         ) : (
-          <p>Thông tin của shop hiện không có!</p>
+          <p className="text-center italic text-gray-500">Thông tin của shop hiện không có!</p>
         )}
       </div>
+
       <hr />
       <div className="mt-5">
         <h2 className="text-lg font-bold">Mô tả sản phẩm</h2>
@@ -296,8 +305,18 @@ const Product = () => {
                 <div className="flex items-center gap-2">
                   <b className="text-gray-800">{reviewItem.reviewerName}</b>
                   <span className="text-yellow-500 inline-flex items-center gap-1">
-                    {reviewItem.rating}
-                    <img src={assets.star_icon} alt="star" className="w-4 h-4" />
+                    {[...Array(5)].map((_, index) => (
+                      <span key={index}>
+                        {index + 1 <= Math.floor(reviewItem.rating) ? (
+                          "★" // Sao đầy
+                        ) : index < reviewItem.rating ? (
+                          "⭑" // Sao nửa
+                        ) : (
+                          "☆" // Sao trống
+                        )}
+                      </span>
+                    ))}
+                    <span className="ml-2 text-gray-700 text-sm">({reviewItem.rating.toFixed(1)})</span>
                   </span>
                 </div>
                 <p className="text-sm text-gray-500">{reviewItem.date}</p>

@@ -1,6 +1,7 @@
 package com.se.backend.entity;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import lombok.*;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Cart_ProductInstanceId implements Serializable {
 	private String productInstanceId;
+	@Embedded
 	private BuyerCartId buyerCartId;
 
 	@Override

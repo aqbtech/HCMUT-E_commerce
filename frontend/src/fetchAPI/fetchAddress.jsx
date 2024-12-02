@@ -16,39 +16,34 @@ export const getAddress = async () => {
 };
 
 export const createAddress =  async (body) => {
-  await axiosClient2.post(`address/${Cookies.get('username')}`, body)
-  .then((res)=> {
+  try {
+    const res = await axiosClient2.post(`address/${Cookies.get('username')}`, body)
     console.log("Tạo thành công địa chỉ giao hàng:", res);
     return res;
-  })
-  .catch((err) => {
+  } catch(err) {
     console.log("Lỗi khi thêm chỉ giao hàng:", err);
     throw err
-  })
+  }
 }
 
-export const updAddress = async(id, body) => {
-  await axiosClient2.patch(`address/${id}`, body)
-  .then((res)=>{
+export const updateAddress = async(id, body) => {
+  try {
+    const res =  await axiosClient2.patch(`address/${id}`, body);
     console.log("Cập nhật địa chỉ thành công:", res)
-    toast.success("Cập nhật địa chỉ giao hàng thành công")
     return res;
-  })
-  .catch((err)=>{
+  } catch(err) {
     console.log("Lỗi khi Cập nhật dịa chỉ giao hàng:", err)
     throw err;
-  }) 
+  }
 } 
 
-export const delAdress = async(id) => {
-  await axiosClient2.delete(`address/${id}`)
-  .then((res) => {
+export const deleteAdress = async(id) => {
+  try {
+    const res = await axiosClient2.delete(`address/${id}`)
     console.log("Xóa địa chỉ thành công:", res)
-    toast.success("xóa địa chỉ giao hàng thành công")
     return res;
-  })
-  .catch((err) => {
+  } catch(err) {
     console.log("Lỗi khi xóa dịa chỉ giao hàng:", err)
     throw err;
-  })
+  }
 }

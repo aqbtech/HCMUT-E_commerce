@@ -65,7 +65,7 @@ public class Product {
 	// -- mapping relationships --
 	// mapping category
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_name", referencedColumnName = "name")
+	@JoinColumn(name = "category_id", referencedColumnName = "id")
 	private Category category;
 
 

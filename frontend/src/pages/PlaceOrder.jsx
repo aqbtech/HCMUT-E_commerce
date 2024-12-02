@@ -119,7 +119,7 @@ const PlaceOrder = () => {
         setListProductToPlace([]); // Đặt lại listProductToPlace thành array rỗng
         toast.success("Đặt hàng thành công!");
         setLoading(false);
-        navigate("/");
+        navigate("/orders");
       })
       .catch((err) => {
         toast.error("Quá trình đặt hàng bị lỗi, vui lòng thử lại");
@@ -131,7 +131,7 @@ const PlaceOrder = () => {
     return <ErrorMessage message={systemError} />;
   }
   return (
-    <div className="flex flex-col gap-4 pt-5 min-h-[80vh] border-t">
+    <div className="flex flex-col gap-4 pt-5 border-t">
       {/* Phần địa chỉ */}
       <div className="mb-4">
         <Title text1="ĐỊA CHỈ" text2="GIAO HÀNG" />

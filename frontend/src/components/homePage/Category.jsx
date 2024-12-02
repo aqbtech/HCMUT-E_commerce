@@ -1,13 +1,11 @@
-import { useState } from 'react';
 import Title from '../Title';
 import { assets } from '../../assets/assets';
 
-const Category = ({ data, onCategorySelect, onSubCategorySelect, selectedCategory }) => {
-  const [showSubCategories, setShowSubCategories] = useState(null); // Hiển thị danh mục con
+const Category = ({ data, onCategorySelect}) => {
 
-  const handleCategoryClick = (categoryName, subCategories) => {
-    onCategorySelect(categoryName);
-    setShowSubCategories(subCategories);
+
+  const handleCategoryClick = (categoryId) => {
+    onCategorySelect(categoryId);
   };
 
   return (
@@ -34,8 +32,8 @@ const Category = ({ data, onCategorySelect, onSubCategorySelect, selectedCategor
           </div>
         {data.map((item) => (
           <div
-            key={item.categoryId}
-            onClick={() => handleCategoryClick(item.categoryName, item.subCategories)}
+            key={item.categoryName}
+            onClick={() => handleCategoryClick(item.categoryName)}
             className="flex flex-col items-center cursor-pointer"
           >
             <div className="bg-gray-200 h-20 w-20 flex items-center justify-center rounded-full mb-2">
@@ -47,23 +45,6 @@ const Category = ({ data, onCategorySelect, onSubCategorySelect, selectedCategor
           </div>
         ))}
       </div>
-
-      {/* Hiển thị danh mục con nếu có */}
-      {showSubCategories && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-y-6 mt-6">
-          {showSubCategories.map((subItem) => (
-            <div
-              key={subItem.subCategoryId}
-              onClick={() => onSubCategorySelect(subItem.subCategoryName)}
-              className="flex flex-col items-center cursor-pointer"
-            >
-              <div className="bg-gray-200 h-16 w-16 flex items-center justify-center rounded-full mb-1">
-                <span className="text-sm font-semibold">{subItem.subCategoryName}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
