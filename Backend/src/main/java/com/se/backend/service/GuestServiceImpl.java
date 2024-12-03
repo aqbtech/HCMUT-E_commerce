@@ -124,13 +124,11 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
-
 	public List<CategoryResponse> getAllCategory() {
 		List<Category> categories = categoryRepository.findAll();
 		List<CategoryResponse> cgres = categories.stream()
-				.map(category -> new CategoryResponse(category.getName()))
+				.map(category -> new CategoryResponse(category.getRichTextName()))
 				.collect(Collectors.toList());
-
 		return cgres;
 	}
 
