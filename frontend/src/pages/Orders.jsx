@@ -101,7 +101,7 @@ const Orders = () => {
       <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
     </div>
   ) : (
-    <div className="border-t pt-16">
+    <div className="border-t pt-16 min-h-screen">
       <div className="text-2xl">
         <Title text1={"ĐƠN"} text2={"HÀNG"} />
       </div>

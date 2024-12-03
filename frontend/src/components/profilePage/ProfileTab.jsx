@@ -3,12 +3,12 @@ import Cookies from 'js-cookie'
 
 
 const ProfileTab = ({ account, onSave }) => {
-    const [name, setName] = useState("account.ten");
-    const [Hovatendem, setHovatendem] = useState("account.Hovatendem");
-    const [email, setEmail] = useState("account.email");
-    const [phone, setPhone] = useState("account.sdt");
-    const [gender, setGender] = useState("Nam" || "account.sex");
-    const [birthday, setBirthday] = useState("2023-05-05");
+    const [name, setName] = useState(account.lastName);
+    const [Hovatendem, setHovatendem] = useState(account.firstName);
+    const [email, setEmail] = useState(account.email);
+    const [phone, setPhone] = useState(account.phone);
+    const [gender, setGender] = useState(account.sex || "Nam");
+    const [birthday, setBirthday] = useState(account.dob);
 
     return ( 
         <div>
@@ -50,7 +50,7 @@ const ProfileTab = ({ account, onSave }) => {
                     <label className="block mb-2">Ngày sinh</label>
                     <input className="w-full p-2 border border-gray-300 rounded mb-4" type='date' value={birthday} onChange={(e) => setBirthday(e.target.value)} />
 
-                    <button type='button' onClick={() => onSave({ username: username, lastName: name, fistName: Hovatendem, email: email, phone: phone, DOB: birthday, sex: gender})} className="bg-gray-300 text-white px-4 py-2 rounded hover:bg-black hover:text-white">Lưu</button>
+                    <button type='button' onClick={() => onSave({ lastName: name, firstName: Hovatendem, email: email, phone: phone, DOB: birthday, sex: gender})} className="bg-gray-300 text-white px-4 py-2 rounded hover:bg-black hover:text-white">Lưu</button>
                 </div>
             </div>
         </div>

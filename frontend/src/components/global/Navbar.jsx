@@ -7,7 +7,8 @@ import { logOut } from '../../fetchAPI/fetchAccount';
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
-  const { search, setSearch, curState, setCurState, setAccount, navigate, totalQuantityInCart } = useContext(ShopContext);
+  const { search, setSearch, curState, setCurState, setAccount, navigate, totalQuantityInCart, role } =
+    useContext(ShopContext);
 
   const onSubmitHandler = async () => {
     try {
@@ -15,22 +16,21 @@ const Navbar = () => {
       setCurState('UnLogin');
       Cookies.remove('username');
       Cookies.remove('token');
+      Cookies.remove("role")
       setAccount(null);
-      console.log("logOut success");
+      console.log('logOut success');
     } catch (err) {
       console.log(err);
     }
-    
     navigate(-1);
   };
 
-  // Xử lý tìm kiếm khi nhấn Enter
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && search.trim()) {
       window.location.href = `/search?keyword=${encodeURIComponent(search)}`;
     }
   };
-  
+
   return (
     <div className="flex flex-col">
       {/* Thanh điều hướng chính */}
@@ -67,31 +67,43 @@ const Navbar = () => {
             <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
               <div className="flex flex-col gap-2 w-40 py-3 px-5 bg-slate-100 text-gray-500 rounded">
                 {curState === 'UnLogin' ? (
-                  <div>
+                  <>
                     <Link to="/Login">
                       <p className="cursor-pointer hover:text-black">Đăng nhập</p>
                     </Link>
                     <Link to="/Regist">
-                      <p className="cursor-pointer hover:text-black">Đăng kí</p>
+                      <p className="cursor-pointer hover:text-black">Đăng ký</p>
                     </Link>
-                  </div>
+                  </>
                 ) : (
-                  <div>
-                    <Link to="/myProfile">
-                      <p className="cursor-pointer hover:text-black">Hồ sơ</p>
-                    </Link>
-                    <Link to="/orders">
-                      <p className="cursor-pointer hover:text-black">Đơn hàng</p>
-                    </Link>
-                    <Link to="/review">
-                    <p className="cursor-pointer hover:text-black">Đánh giá</p>
-                    </Link>
-                    <Link to="/">
-                      <p onClick={() => onSubmitHandler()} className="cursor-pointer hover:text-black">
-                        Đăng xuất
-                      </p>
-                    </Link>
-                  </div>
+                  <>
+                    {(role === 'SELLER' || role === "BUYER") && (
+                      <>
+                        <Link to="/myProfile">
+                          <p className="cursor-pointer hover:text-black">Hồ sơ</p>
+                        </Link>
+                        <Link to="/review">
+                          <p className="cursor-pointer hover:text-black">Đánh giá</p>
+                        </Link>
+                        <Link to="/orders">
+                          <p className="cursor-pointer hover:text-black">Đơn hàng</p>
+                        </Link>
+                        {role === 'SELLER' && (
+                          <Link to="/shop">
+                            <p className="cursor-pointer hover:text-black">Quản lý cửa hàng</p>
+                          </Link>
+                        )}
+                      </>
+                    )}
+                    {role === 'ADMIN' && (
+                      <Link to="/admin">
+                        <p className="cursor-pointer hover:text-black">Trang quản lý</p>
+                      </Link>
+                    )}
+                    <p onClick={() => onSubmitHandler()} className="cursor-pointer hover:text-black">
+                      Đăng xuất
+                    </p>
+                  </>
                 )}
               </div>
             </div>
@@ -101,9 +113,7 @@ const Navbar = () => {
           {curState === 'Login' && (
             <Link to="/cart" className="relative">
               <img src={assets.hinh5} className="w-5 min-w-5 cursor-pointer" alt="Cart" />
-              <span
-                 className="absolute left-3 bottom-[-5px] w-4 text-center leading-4 bg-red-500 text-white aspect-square rounded-full text-xs"
-              >
+              <span className="absolute left-3 bottom-[-5px] w-4 text-center leading-4 bg-red-500 text-white aspect-square rounded-full text-xs">
                 {totalQuantityInCart}
               </span>
             </Link>
@@ -119,7 +129,6 @@ const Navbar = () => {
         </div>
       </div>
 
-
       {/* Sidebar menu cho màn hình nhỏ */}
       <div
         className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all ${
@@ -127,7 +136,6 @@ const Navbar = () => {
         } sm:hidden`}
       >
         <div className="flex flex-col text-gray-600">
-          {/* Hiện nút back khi menu mở */}
           {visible && (
             <>
               <div onClick={() => setVisible(false)} className="flex items-center gap-4 p-3 cursor-pointer">

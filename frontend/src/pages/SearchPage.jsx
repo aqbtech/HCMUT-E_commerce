@@ -82,7 +82,7 @@ const SearchPage = () => {
 
   if (errorMessage) {
     return (
-      <div className="col-span-full flex flex-col items-center justify-center text-gray-500 min-h-[600px] space-y-6">
+      <div className="col-span-full flex flex-col items-center justify-center text-gray-500 min-h-screen space-y-6">
         <div className="flex flex-col items-center">
           <img src={assets.notFound} alt="Không tìm thấy sản phẩm" className="w-24 h-24" />
           <p className="text-lg font-medium mt-4">{errorMessage}</p>
@@ -98,7 +98,7 @@ const SearchPage = () => {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
+    <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t min-h-screen">
       {/* Bộ lọc */}
       <div className="min-w-60">
         <p className="my-2 text-xl flex items-center cursor-pointer gap-2">BỘ LỌC</p>

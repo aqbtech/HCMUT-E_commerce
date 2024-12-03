@@ -165,7 +165,7 @@ const Cart = () => {
       <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
     </div>
   ) : (
-    <div className="border-t pt-14">
+    <div className="border-t pt-14 min-h-screen">
       <div className="text-2xl mb-3">
         <Title text1="GIỎ" text2="HÀNG" />
       </div>

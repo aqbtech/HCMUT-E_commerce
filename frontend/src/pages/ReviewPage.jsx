@@ -96,7 +96,7 @@ const ReviewPage = () => {
         <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
     </div>)
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 min-h-screen">
       <Title text1="ĐÁNH" text2="GIÁ" />
 
       {reviewableProducts?.length === 0 ? (
