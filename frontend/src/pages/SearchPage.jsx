@@ -18,8 +18,8 @@ const SearchPage = () => {
   const [availableFilters, setAvailableFilters] = useState({});
   const [filters, setFilters] = useState({
     categories: [],
-    location: [],
-    rating: [],
+    locations: [],
+    ratings: [],
   });
   const [totalPages, setTotalPages] = useState(0);
 
@@ -33,9 +33,9 @@ const SearchPage = () => {
     try {
       console.log("Filter:", filters, isFilter)
       const response = await getProductForSearch(keyword, page, sort, filters, isFilter);
-      setListProduct(response?.content || []);
-      setAvailableFilters(response?.filters?.available || {});
-      setTotalPages(response?.page?.totalPages || 0);
+      setListProduct(response?.productSummaryPage.content || []);
+      setAvailableFilters(response?.available || {});
+      setTotalPages(response?.productSummaryPage.page.totalPages || 0);
     } catch (err) {
       console.error("Lỗi khi search sản phẩm:", err);
     }
@@ -102,13 +102,13 @@ const SearchPage = () => {
           {/* Location Filter */}
           <div className="mb-4">
             <p className="font-semibold">Địa Điểm</p>
-            {availableFilters.location?.map((filterValue) => (
+            {availableFilters.locations?.map((filterValue) => (
               <label key={filterValue} className="block">
                 <input
                   type="checkbox"
                   className="mr-3"
-                  checked={filters.location.includes(filterValue)}
-                  onChange={() => handleFilterChange("location", filterValue)}
+                  checked={filters.locations.includes(filterValue)}
+                  onChange={() => handleFilterChange("locations", filterValue)}
                 />
                 {filterValue}
               </label>
@@ -134,13 +134,13 @@ const SearchPage = () => {
           {/* Ratings Filter */}
           <div className="mb-4">
             <p className="font-semibold">Đánh Giá</p>
-            {availableFilters.rating?.map((filterValue) => (
+            {availableFilters.ratings?.map((filterValue) => (
               <label key={filterValue} className="block">
                 <input
                   type="checkbox"
                   className="mr-3"
-                  checked={filters.rating.includes(filterValue)}
-                  onChange={() => handleFilterChange("rating", filterValue)}
+                  checked={filters.ratings.includes(filterValue)}
+                  onChange={() => handleFilterChange("ratings", filterValue)}
                 />
                 {filterValue}
               </label>

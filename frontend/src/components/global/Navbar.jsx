@@ -22,6 +22,7 @@ const Navbar = () => {
     } catch (err) {
       console.log(err);
     }
+    window.location.reload();
   };
 
   const handleKeyDown = (e) => {

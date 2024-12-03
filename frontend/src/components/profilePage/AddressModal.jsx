@@ -86,8 +86,23 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
         setWard(selectedWard?.name || '');
     };
 
-    const handleSave = () => {
-        const addressData = {
+    const handleUpdateAddress = () => {
+        const updatedAddress = {
+            Id: initialData.id, // Đảm bảo có ID để xử lý cập nhật
+            name,
+            phone,
+            province,
+            district,
+            ward,
+            detail: detailAddress,
+        };
+
+        onSave(updatedAddress); // Truyền dữ liệu lên component cha
+        onClose(); // Đóng modal
+    };
+
+    const handleCreateAddress = () => {
+        const newAddress = {
             name,
             phone,
             province,
@@ -96,12 +111,16 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
             detailAddress,
         };
 
+        onSave(newAddress); // Truyền dữ liệu lên component cha
+        onClose(); // Đóng modal
+    };
+
+    const handleSave = () => {
         if (initialData && initialData.id) {
-            onSave({ ...addressData, id: initialData.id });
+            handleUpdateAddress();
         } else {
-            onSave(addressData);
+            handleCreateAddress();
         }
-        onClose();
     };
 
     return (

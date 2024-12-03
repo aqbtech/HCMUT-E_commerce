@@ -49,7 +49,8 @@ const PlaceOrder = () => {
   const handleSaveAddress = async (newAddress) => {
     try {
       const savedAddress = await createAddress(newAddress);
-      setAddresses([...addresses, savedAddress]); // Thêm địa chỉ mới vào danh sách
+      const addressData = await getAddress()
+      setAddresses(addressData);
       setSelectedAddressId(savedAddress.id); // Chọn địa chỉ mới làm mặc định
       setIsModalOpen(false); // Đóng modal
       toast.success("Đã lưu địa chỉ mới thành công");

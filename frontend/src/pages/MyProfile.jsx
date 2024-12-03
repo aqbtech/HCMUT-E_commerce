@@ -4,7 +4,7 @@ import { ShopContext } from '../context/ShopContext';
 import ProfileTab from '../components/profilePage/ProfileTab'
 import PasswordTab from '../components/profilePage/PasswordTab';
 import AddressTab from '../components/profilePage/AddressTab';
-import { deleteAdress, getAddress, createAddress} from '../fetchAPI/fetchAddress';
+import { deleteAdress, getAddress, createAddress, updateAddress} from '../fetchAPI/fetchAddress';
 import {getBankAccounts,createBankAccount, deleteBankAccount } from '../fetchAPI/fetchBank';
 import { updateProfile, getProfile, changePass, isRegistSeller, registSeller } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
@@ -28,6 +28,7 @@ const MyProfile = () => {
     const [bankAccounts, setBankAccounts] = useState([]); // Danh sách tài khoản ngân hàng
     const [isModalOpen, setIsModalOpen] = useState(false); // Kiểm soát hiển thị modal
     const [isLoading, setIsLoading] = useState(true);
+    const [loadingAddress, setLoadingAddress] = useState(true);
 
     // Cập nhật tab đang hoạt động khi initialTab thay đổi (dựa trên query params)
     useEffect(() => {
@@ -95,10 +96,15 @@ const MyProfile = () => {
     useEffect(() => {
         if (activeTab === 'address') {
             const fetchAddresses = async () => {
-                const data = await getAddress();
-                setAddresses(data);
+                try {
+                    const data = await getAddress();
+                    setAddresses(data);
+                } catch(err) {
+                    console.log("Lỗi khi tải địa chỉ", err);
+                } finally{
+                    setLoadingAddress(false);
+                }
             };
-
             fetchAddresses();
         }
     }, [activeTab]);
@@ -128,7 +134,8 @@ const MyProfile = () => {
     // Hàm cập nhật địa chỉ
     const handleUpdateAddress = useCallback(async (updatedAddress) => {
         try {
-            await createAddress(updatedAddress);
+            console.log("sua", updatedAddress);
+            await updateAddress(updatedAddress);
             setAddresses((prevAddresses) =>
                 prevAddresses.map(address => 
                     address.id === updatedAddress.id ? updatedAddress : address
@@ -261,7 +268,9 @@ const MyProfile = () => {
                 )}
 
                 {activeTab === "address" && (
-                    <AddressTab 
+                    loadingAddress 
+                        ? <div>Đang tải...</div> 
+                        :<AddressTab 
                         addresses={addresses} 
                         onAddAddress={handleAddAddress} 
                         onDeleteAddress={handleDeleteAddress} 
