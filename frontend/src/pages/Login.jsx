@@ -5,12 +5,11 @@ import {Link} from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { getMininalProfile, SignIn } from '../fetchAPI/fetchAccount';
 import Cookies from 'js-cookie'
-import ErrorMessage  from '/src/components/errorMessage';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const Login = () => {
-  const {navigate, systemError, setSystemError, setTotalQuantityInCart} = useContext(ShopContext);
+  const {navigate, setRole} = useContext(ShopContext);
   const location = useLocation();
   const [username, setUsername] = useState('');
   const [pass, setPass] = useState('');
@@ -31,8 +30,6 @@ const Login = () => {
     return true;
   };
   
-
-
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     if (isLoading) return;
@@ -57,10 +54,8 @@ const Login = () => {
       const res = await getMininalProfile();
     
       const role = res.role;
-      const totalQuantityInCart = res.totalQuantityInCart;
-      setTotalQuantityInCart(totalQuantityInCart)
       Cookies.set('role', role);
-
+      setRole(role);
   
       toast.success("Đăng nhập thành công!");
   
@@ -74,19 +69,15 @@ const Login = () => {
         toast.error("Thông tin đăng nhập sai rồi!");
       } else {
         console.log(error);
-        setSystemError(error.response?.data?.message || error.response?.data?.error || "Mất kết nối máy chủ");
+        alert.error(error);
       }
     } finally {
       setIsLoading(false); // Hoàn tất loading
     }
   };
-  
-    
-  if (systemError) {
-    return <ErrorMessage  message={systemError} />;
-  }
+
   return (
-    <div>
+    <div className='min-h-screen border-t pt-16'>
       <form className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800' action="">
         <div className='inline-flex items-center gap-2 mb-2 mt-10'>
           <p className='prata-regular text-3xl'>Đăng Nhập</p>

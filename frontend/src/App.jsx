@@ -18,10 +18,9 @@ import Regist from './pages/Regist';
 import Admin from './pages/Admin'
 import ShopView from './pages/ShopView';
 import MyProfile from './pages/MyProfile';
-//import ShopManage from './pages/ShopManage';
 import ResetPassword from './pages/ResetPassword';
 import ShopManagement from "./pages/ShopManagement.jsx";
-
+import Error_403 from "./components/Error403.jsx"
 import NotFound from "../src/components/NotFound";
 import ReviewPage from './pages/ReviewPage';
 
@@ -50,6 +49,7 @@ const App = () => {
            <Route path='/shop' element={<ShopManagement/>}></Route>
           <Route path='/reset' element={<ResetPassword/>}></Route>
           <Route path='/review' element={<ReviewPage/>}></Route>
+          <Route path='/Error_403'  element={<Error_403/>}></Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer/>

@@ -4,7 +4,7 @@ import { ShopContext } from '../context/ShopContext';
 import ProfileTab from '../components/profilePage/ProfileTab'
 import PasswordTab from '../components/profilePage/PasswordTab';
 import AddressTab from '../components/profilePage/AddressTab';
-import { deleteAdress, getAddress, createAddress} from '../fetchAPI/fetchAddress';
+import { deleteAdress, getAddress, createAddress, updateAddress} from '../fetchAPI/fetchAddress';
 import {getBankAccounts,createBankAccount, deleteBankAccount } from '../fetchAPI/fetchBank';
 import { updateProfile, getProfile, changePass, isRegistSeller, registSeller } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
@@ -27,6 +27,8 @@ const MyProfile = () => {
     const [toSeller, setToseller] = useState(false);
     const [bankAccounts, setBankAccounts] = useState([]); // Danh sách tài khoản ngân hàng
     const [isModalOpen, setIsModalOpen] = useState(false); // Kiểm soát hiển thị modal
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadingAddress, setLoadingAddress] = useState(true);
 
     // Cập nhật tab đang hoạt động khi initialTab thay đổi (dựa trên query params)
     useEffect(() => {
@@ -40,19 +42,22 @@ const MyProfile = () => {
         }
     }, [searchParams]);
 
-    useEffect(()=> {
+   
+    useEffect(() => {
         const fetchProfile = async () => {
             try {
                 const response = await getProfile();
-                setAccount(response)
+                setAccount(response);
                 console.log("Lấy thông tin cá nhân thành công:", response);
-            } catch(err) {
+            } catch (err) {
                 console.log("Lấy thông tin người dùng thất bại", err);
+            } finally {
+                setIsLoading(false); // Kết thúc trạng thái tải
             }
-        }
-        
+        };
         fetchProfile();
-    })
+    }, []);
+
 
     const handleTabChange = (newTab) => {
         setActiveTab(newTab); // Cập nhật state
@@ -63,6 +68,7 @@ const MyProfile = () => {
     // Hàm cập nhật thông tin tài khoản
     const handleSave = async (updatedAccount) => {
         try {
+            console.log(updatedAccount)
             await updateProfile(updatedAccount);
             toast.success("Cập nhật thông tin thành công!");
         } catch(err)  {
@@ -90,10 +96,15 @@ const MyProfile = () => {
     useEffect(() => {
         if (activeTab === 'address') {
             const fetchAddresses = async () => {
-                const data = await getAddress();
-                setAddresses(data);
+                try {
+                    const data = await getAddress();
+                    setAddresses(data);
+                } catch(err) {
+                    console.log("Lỗi khi tải địa chỉ", err);
+                } finally{
+                    setLoadingAddress(false);
+                }
             };
-
             fetchAddresses();
         }
     }, [activeTab]);
@@ -123,7 +134,8 @@ const MyProfile = () => {
     // Hàm cập nhật địa chỉ
     const handleUpdateAddress = useCallback(async (updatedAddress) => {
         try {
-            await createAddress(updatedAddress);
+            console.log("sua", updatedAddress);
+            await updateAddress(updatedAddress);
             setAddresses((prevAddresses) =>
                 prevAddresses.map(address => 
                     address.id === updatedAddress.id ? updatedAddress : address
@@ -193,7 +205,7 @@ const MyProfile = () => {
 
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen border-t pt-16">
             {/* Sidebar tab */}
             <div className="w-1/4 p-4">
                 <h2 className="text-xl font-bold mb-4">Tài Khoản Của Tôi</h2>
@@ -233,7 +245,11 @@ const MyProfile = () => {
 
             {/* Content tab */}
             <div className="w-3/4 p-6 bg-white">
-                {activeTab === "profile" && <ProfileTab account={account} onSave={handleSave} />}
+                {activeTab === "profile" && (
+                    isLoading 
+                        ? <div>Đang tải...</div> 
+                        : <ProfileTab account={account} onSave={handleSave} />
+                )}
                 {activeTab === "password" && <PasswordTab onChangePass={handleForgotPass} />}
                 {activeTab === "bank" && (
                     <>
@@ -252,7 +268,9 @@ const MyProfile = () => {
                 )}
 
                 {activeTab === "address" && (
-                    <AddressTab 
+                    loadingAddress 
+                        ? <div>Đang tải...</div> 
+                        :<AddressTab 
                         addresses={addresses} 
                         onAddAddress={handleAddAddress} 
                         onDeleteAddress={handleDeleteAddress} 

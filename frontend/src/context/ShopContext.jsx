@@ -1,8 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate, useLocation  } from "react-router-dom";
-import Cookies from 'js-cookie'
 import { getMininalProfile } from "../fetchAPI/fetchAccount";
-
+import { useCookies } from 'react-cookie';
 
 export const ShopContext = createContext();
 
@@ -11,19 +10,22 @@ const ShopContextProvider = (props) => {
     const navigate = useNavigate(); 
     const location = useLocation(); 
     
-    const [account, setAccount] = useState(Cookies.get('username') || null);
+    const [cookies, setCookie, removeCookie] = useCookies(['username']);
+    const [account, setAccount] = useState(cookies.username || null);
+    const [curState, setCurState] = useState(cookies.username ? 'Login' : 'UnLogin');
+    const [role, setRole] = useState(cookies.role);
+
     const [totalQuantityInCart, setTotalQuantityInCart] = useState(0);
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false)
-    const [curState, setCurState]  = useState('UnLogin')
-    const [products, setProducts] = useState([]);
     const [systemError, setSystemError] = useState('');
+    
     /*----------------------------Thông tin tài khoản------------------------------------*/
     useEffect(() => {
-        const userId = Cookies.get('username') 
-        if(userId) setCurState('Login');
-        setAccount(userId);
-    }, [Cookies.get('username')]);
+        setAccount(cookies.username || null);
+        setCurState(cookies.username ? 'Login' : 'UnLogin');
+        setRole(cookies.role);
+    }, [cookies.username, cookies.role]);
 
     useEffect(() => {
         setSystemError(""); 
@@ -43,8 +45,6 @@ const ShopContextProvider = (props) => {
             fetchCart();
         }
     }, [curState]); // Fetch khi trạng thái đăng nhập thay đổi
-
-
 
     const formatCurrency = (amount) => {
         return amount.toLocaleString('vi-VN', {
@@ -72,14 +72,15 @@ const ShopContextProvider = (props) => {
 
 
 
+
     const value = {
-        products, setProducts,
         search, setSearch, showSearch, setShowSearch,
-        navigate,
+        navigate, location,
         curState, setCurState,
         account, setAccount,
         systemError, setSystemError,
         setTotalQuantityInCart, totalQuantityInCart,
+        role, setRole,
         formatCurrency, totalAmount, totalQuantity
     }
 

@@ -1,12 +1,6 @@
-import { axiosClient, axiosClient2 } from '../fetchAPI/axios';
+import { axiosClient, axiosClient2, axiosPublic } from '../fetchAPI/axios';
 
- //---
-export const getCategories = async () =>{
-  const res = await axiosClient(`/categories`);
-  console.log("danh mục là:",res);
-  return res.data
-}
-
+ 
 export const getCateShop = async (shopId) =>{
   const res = await axiosClient(`/categories?shopId=${shopId}`);
   console.log("danh mục là shop là:",res);
@@ -15,15 +9,14 @@ export const getCateShop = async (shopId) =>{
 
 //------------
 export const getAllCategories = async () => {
-  await axiosClient2.get(`/categories`)
-  .then((res)=> {
+  try {
+    const res =  await axiosPublic.get(`/category`)
     console.log(`Lấy thành công danh mục `, res);
-    return res.data
-  })
-  .catch((err)=>{
+    return res.data.result;
+  } catch(err) {
     console.log(`Lỗi khi lấy danh mục:`, err);
     throw err;
-  })
+  }
 }
 
 
