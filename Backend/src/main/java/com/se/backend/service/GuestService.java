@@ -21,7 +21,8 @@ public interface GuestService {
 	List<CategoryResponse> getAllCategory();
 
 	MinimalUserProfile register(UserRegister userRegister);
-	Page<ProductSummary> searchByKeyword(String keyword, int page, String sort);
-	Page<ProductSummary> filterProducts(String keyword, int page, String sort, FilterProductRequest request);
+
 	ShopInfoForGuestResponse getShopInformation(String buyername, String sellername);
+	SearchFilterResponse searchByKeyword(String keyword, int page, String sort);
+	SearchFilterResponse filterProducts(String keyword, int page, String sort, FilterProductRequest request);
 }

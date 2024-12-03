@@ -50,9 +50,13 @@ public class OrderService  {
     @Autowired
     private final DeliveryInfoRepository deliveryInfoRepository;
     @Autowired
+    private final DeliveryRepository deliveryRepository;
+    @Autowired
     private final AttributeInsRepository attributeInsRepository;
     @Autowired
     private final AttributeRepository attributeRepository;
+    @Autowired
+    private final DeliveryDateApiService deliveryDateApiService;
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         long addressId;
@@ -86,6 +90,7 @@ public class OrderService  {
         paymentOrder.setDeliveryInfor(deliveryInfor);
         paymentOrder.setOrder(new ArrayList<>());
         paymentOrder.setReview(new ArrayList<>());
+        paymentOrder.setPayment_method(createOrderRequest.getMethod());
         paymentOrderRepository.save(paymentOrder);
         //----------------------
 
@@ -154,8 +159,18 @@ public class OrderService  {
                 totalPrice += productInstance.getPrice() * quantity;
 
             }
-            order.setTotalPrice(totalPrice);
             order.setOrderProductInstances(orderProducts);
+            FakeAPIDeliveryResponse deliveryResponse = deliveryDateApiService.fakeAPIDelivery(order);
+            Delivery delivery = deliveryRepository.findById(deliveryResponse.getDeliveryName())
+                    .orElseThrow(()->new WebServerException(ErrorCode.UNKNOWN_ERROR));
+            order.setDelivery(delivery);
+            order.setDeliveryCode(deliveryResponse.getDeliveryCode());
+            order.setDeliveryDate(deliveryResponse.getDeliveryDate());
+            order.setDeliveryJoinDate(deliveryResponse.getDeliveryJoinDate());
+            order.setExpectedDeliveryDate(deliveryResponse.getExpectedDeliveryDate());
+            order.setDeliveryStatus(deliveryResponse.getDeliveryStatus());
+            int shipping_fee = deliveryResponse.getFee();
+            order.setTotalPrice(totalPrice + shipping_fee);
 //            order.setDelivery(deliveryInfor);
             try {
                 orderRepository.save(order);
@@ -233,6 +248,9 @@ public class OrderService  {
 
     private GetOrderResponse OrderResponseHandler(Order order, List<ProductInstance> productInstanceList){
         GetOrderResponse result = orderMapper.OrderToResponse(order);
+        Double totalPrice = order.getTotalPrice();
+        Double productPrice = 0.0;
+
         DeliveryInfor deliveryInfor = order.getPaymentOrder().getDeliveryInfor();
         result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
         String method = order.getPaymentOrder().getPayment_method();
@@ -286,8 +304,11 @@ public class OrderService  {
         
         for(int i = 0; i < quantityOfProduct.size(); i++){
             product_of_getOrderResponseList.get(i).setQuantity(quantityOfProduct.get(i));
+            productPrice = (double) (product_of_getOrderResponseList.get(i).getPrice() * quantityOfProduct.get(i));
         }
-
+        Double shipping_fee = totalPrice - productPrice;
+        result.setPrice(String.valueOf(totalPrice));
+        result.setShipping_fee(shipping_fee);
         result.setListProduct(product_of_getOrderResponseList);
         result.setMethod(method);
         return result;
@@ -310,6 +331,7 @@ public class OrderService  {
             }
             responses.add(this.OrderResponseHandler(o, productInstances));
         }
+
 
         return new PageImpl<>(
                 responses,

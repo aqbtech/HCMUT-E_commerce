@@ -10,7 +10,6 @@ import com.se.backend.entity.ProductInstance;
 import com.se.backend.constant.SystemConstant;
 import com.se.backend.dto.request.FilterProductRequest;
 import com.se.backend.dto.request.UserRegister;
-import com.se.backend.dto.response.*;
 import com.se.backend.entity.*;
 
 import com.se.backend.exception.ErrorCode;
@@ -173,7 +172,7 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
-	public Page<ProductSummary> searchByKeyword(String keyword, int page, String sort) {
+	public SearchFilterResponse searchByKeyword(String keyword, int page, String sort){
 		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
 		Page<Product> products = productRepository.findByNameContaining(keyword, pageable);
 
@@ -186,10 +185,28 @@ public class GuestServiceImpl implements GuestService {
 			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice).reversed());
 		}
 
-		return PaginationUtils.convertListToPage(productSummaries, pageable);
+		List<String> ratings = List.of("0-1", "1-2", "2-3", "3-4", "4-5");
+		List<String> categories = this.getCategoriesForFilter(productsList);
+		List<String> locations = this.getLocationsForFilter(productsList);
+		FilterResponse filterResponse = FilterResponse.builder()
+				.categories(categories)
+				.locations(locations)
+				.ratings(ratings)
+				.build();
+		FilterValueResponse filterValueResponse = FilterValueResponse.builder()
+				.categories(new ArrayList<>())
+				.locations(new ArrayList<>())
+				.ratings(new ArrayList<>())
+				.build();
+		Page<ProductSummary> productSummaryPage = PaginationUtils.convertListToPage(productSummaries, pageable);
+		return SearchFilterResponse.builder()
+				.productSummaryPage(productSummaryPage)
+				.available(filterResponse)
+				.filter(filterValueResponse)
+				.build();
 	}
 
-	public Page<ProductSummary> filterProducts(String keyword, int page, String sort, FilterProductRequest request) {
+	public SearchFilterResponse filterProducts(String keyword, int page, String sort, FilterProductRequest request) {
 		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
 		Specification<Product> spec = Specification.where(ProductSpecification.hasCategories(request.getCategories()))
 				.and(ProductSpecification.hasLocation(request.getLocations()))
@@ -209,8 +226,40 @@ public class GuestServiceImpl implements GuestService {
 			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice).reversed());
 		}
 		PaginationUtils.convertListToPage(productSummaries, pageable);
-
-		return PaginationUtils.convertListToPage(productSummaries, pageable);
+		List<String> ratings = List.of("0-1", "1-2", "2-3", "3-4", "4-5");
+		List<String> categories = this.getCategoriesForFilter(productsList);
+		List<String> locations = this.getLocationsForFilter(productsList);
+		FilterResponse a = FilterResponse.builder().build();
+		FilterResponse filterResponse = FilterResponse.builder()
+				.categories(categories)
+				.locations(locations)
+				.ratings(ratings)
+				.build();
+		FilterValueResponse filterValueResponse = FilterValueResponse.builder()
+				.categories(request.getCategories())
+				.locations(request.getLocations())
+				.ratings(request.getRatings())
+				.build();
+		Page<ProductSummary> productSummaryPage = PaginationUtils.convertListToPage(productSummaries, pageable);
+		return SearchFilterResponse.builder()
+				.productSummaryPage(productSummaryPage)
+				.available(filterResponse)
+				.filter(filterValueResponse)
+				.build();
+	}
+	private List<String> getCategoriesForFilter(List<Product> productsList){
+		return productsList.stream()
+				.map(product -> product.getCategory().getRichTextName())
+				.distinct()
+				.sorted()
+				.toList();
+	}
+	private List<String> getLocationsForFilter(List<Product> productsList){
+		return productsList.stream()
+				.map(product -> product.getSeller().getAddress().getProvince())
+				.distinct()
+				.sorted()
+				.toList();
 	}
 
 	@Override
