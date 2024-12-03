@@ -2,6 +2,7 @@ package com.se.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SoftDelete;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@SoftDelete
 @Table(name = "delivery_infor")
 public class DeliveryInfor {
 	@Id
