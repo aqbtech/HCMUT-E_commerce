@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -100,4 +102,15 @@ public class GuestController {
 				.result(res)
 				.build();
 	}
+	@GetMapping("/shop_information")
+	public ResponseAPITemplate<ShopInfoForGuestResponse> getShopInfo(
+			@AuthenticationPrincipal Jwt jwt,
+			@RequestParam("shop") String sellername){
+		String buyername = (jwt != null) ? jwt.getSubject() : "guest";
+		ShopInfoForGuestResponse response = guestService.getShopInformation(buyername, sellername);
+		return ResponseAPITemplate.<ShopInfoForGuestResponse>builder()
+				.result(response)
+				.build();
+	}
+
 }

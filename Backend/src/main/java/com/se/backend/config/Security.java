@@ -24,7 +24,7 @@ public class Security {
 	private final String[] PUBLIC_ENDPOINTS = {
 			"/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
 			"/query_product_detail/**", "/{productId}/reviews", "/home-page", "/register",
-			"/search", "/search/filter", "/category"
+			"/search", "/search/filter", "/category", "/shop_information"
 	};
 	private final CustomJwtDecoder customJwtDecoder;
 

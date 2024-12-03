@@ -15,10 +15,7 @@ import com.se.backend.entity.*;
 
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
-import com.se.backend.mapper.AttributeMapper;
-import com.se.backend.mapper.InstanceMapper;
-import com.se.backend.mapper.ProductInfoMapper;
-import com.se.backend.mapper.ProductSummaryMapper;
+import com.se.backend.mapper.*;
 import com.se.backend.repository.*;
 
 
@@ -61,6 +58,11 @@ public class GuestServiceImpl implements GuestService {
 	private final AttributeMapper attributeMapper;
 	private final InstanceMapper instanceMapper;
 	private final ProductService productService;
+	private final SellerRepository sellerRepository;
+	private final ReviewContentRepository reviewContentRepository;
+	private final AddressMapper addressMapper;
+	private final FollowRepository followRepository;
+
 
 	private final CategoryRepository categoryRepository;
 
@@ -210,4 +212,53 @@ public class GuestServiceImpl implements GuestService {
 
 		return PaginationUtils.convertListToPage(productSummaries, pageable);
 	}
+
+	@Override
+	public ShopInfoForGuestResponse getShopInformation(String buyername, String sellername) {
+		Seller seller = sellerRepository.findByUsername(sellername)
+				.orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
+		Integer follower  = seller.getFollowers();
+		Address address = seller.getAddress();
+		double rating;
+		int numberOfProduct;
+		try{
+			List<Product> products = productRepository.findBySeller(seller);
+			numberOfProduct = products.size();
+		}
+		catch (WebServerException e){
+			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+		}
+		try{
+			List<ReviewContent> reviewContentList = reviewContentRepository.findBySeller(seller);
+			rating = reviewContentList.stream()
+					.filter(review -> review.getRating() != null)
+					.mapToDouble(ReviewContent::getRating)
+					.average()
+					.orElse(0);
+		}
+		catch (WebServerException e){
+			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+		}
+
+		ShopAddressResponse shopAddressResponse = addressMapper.toShopAddressResponse(address);
+		String addressResponse = String.join(",",
+				shopAddressResponse.getSpecific_address(),
+				shopAddressResponse.getCommune(),
+				shopAddressResponse.getDistrict(),
+				shopAddressResponse.getProvince());
+		Boolean isFollowed = false;
+		if(!"guest".equals(buyername)){
+			isFollowed = followRepository.existsByBuyerAndSeller(buyername, sellername);
+		}
+		ShopInfoForGuestResponse response = ShopInfoForGuestResponse.builder()
+				.shopName(seller.getShopName())
+				.followers(follower)
+				.numberOfProduct(numberOfProduct)
+				.rating(rating)
+				.address(addressResponse)
+				.isFollowed(isFollowed)
+				.build();
+		return response;
+	}
+
 }
