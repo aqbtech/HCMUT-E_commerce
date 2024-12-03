@@ -77,26 +77,25 @@ public class GuestController {
 				.build();
 	}
 	@GetMapping("/search")
-	public ResponseAPITemplate<Page<ProductSummary>> searchProduct(
+	public ResponseAPITemplate<SearchFilterResponse> searchProduct(
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
 			@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "sort", defaultValue = "name") String sort
 	){
-		Page<ProductSummary> res = guestService.searchByKeyword(keyword, page, sort);
-		return ResponseAPITemplate.<Page<ProductSummary>>builder()
+		SearchFilterResponse res = guestService.searchByKeyword(keyword, page, sort);
+		return ResponseAPITemplate.<SearchFilterResponse>builder()
 				.result(res)
 				.build();
 	}
-
 	@PostMapping("/search/filter")
-	public ResponseAPITemplate<Page<ProductSummary>> search_filterProduct(
+	public ResponseAPITemplate<SearchFilterResponse> search_filterProduct(
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,
 			@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "sort", defaultValue = "name") String sort,
 			@RequestBody FilterProductRequest request
-			){
-		Page<ProductSummary> res = guestService.filterProducts(keyword, page, sort, request);
-		return ResponseAPITemplate.<Page<ProductSummary>>builder()
+	){
+		SearchFilterResponse res = guestService.filterProducts(keyword, page, sort, request);
+		return ResponseAPITemplate.<SearchFilterResponse>builder()
 				.result(res)
 				.build();
 	}
