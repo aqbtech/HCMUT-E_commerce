@@ -5,16 +5,19 @@ import { getProductForShopView } from "../fetchAPI/fetchProduct";
 import { getInfoShopView, getInfo, follow, unfollow } from "../fetchAPI/fetchShop";
 import { toast } from "react-toastify";
 import ErrorMessage from "/src/components/errorMessage";
-import { assets } from '../../src/assets/assets';
+import { assets, categories } from '../../src/assets/assets';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import ProductItem from "../components/ProductItem";
 import Cookies from 'js-cookie'
+import { getCateShop } from "../fetchAPI/fetchCategory";
 
 const ShopView = () => {
   const { shopId } = useParams();
   const { navigate, systemError, setSystemError } = useContext(ShopContext);
   const [shopInfo, setShopInfo] = useState(null);
   const [listProduct, setListProduct] = useState([]);
+  const [ListCategories, setListCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState("relevance");
@@ -24,7 +27,6 @@ const ShopView = () => {
     setIsLoading(true);
     try {
       const response = await getInfoShopView(shopId);
-    
       setShopInfo(response);
     } catch (err) {
       setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
@@ -35,11 +37,10 @@ const ShopView = () => {
   const fetchProduct = async () => {
     setIsLoading(true);
     try {
-      const response = await getProductForShopView(shopId, page, sortOption);
-     
+      const response = await getProductForShopView(shopId, page, sortOption, categories );
       const products = response.content;
       setListProduct((prev) => (page === 0 ? products : [...prev, ...products]));
-      setHasMore(listProduct.length + response.content.length < response.totalElements);
+      setHasMore(page + 1 < response.page.totalPages);
     } catch (err) {
       console.log(err);
       setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
@@ -47,18 +48,36 @@ const ShopView = () => {
     setIsLoading(false);
   };
 
+  const fetchCategories = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getCateShop(shopId); // Gọi API lấy danh mục
+      setListCategories(response); // Cập nhật danh mục vào state
+    } catch (err) {
+      console.error(err);
+      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
+    }
+    setIsLoading(false);
+  };
+  
+
   useEffect(() => {
     fetchInfo();
+    fetchCategories();
   }, [shopId]);
 
   useEffect(() => {
     fetchProduct();
-  }, [page, shopId, sortOption]);
-
+  }, [page, shopId, sortOption, selectedCategory]);
 
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
     setPage(0);
+  };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value); // Cập nhật danh mục được chọn
+    setPage(0); // Reset lại trang về 0
   };
 
   const handleFollow = async (shopId) => {
@@ -153,18 +172,30 @@ const ShopView = () => {
         </div>
       </div>
 
-
-
-      {/* Sort Options */}
-      <div className="flex justify-end mb-4">
+      <div className="flex items-center justify-between mb-4 mt-4">
+        {/* Sort Option */}
         <select
-          className="border px-3 py-2"
+          className="border px-3 py-2 rounded-lg"
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+        >
+          <option value="">Tất cả danh mục</option>
+          {ListCategories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.categoryName}
+            </option>
+          ))}
+        </select>
+
+        {/* Sort Price */}
+        <select
+          className="border px-3 py-2 rounded-lg"
           value={sortOption}
           onChange={handleSortChange}
         >
           <option value="relevance">Liên quan nhất</option>
-          <option value="price_asc">Giá thấp đến cao</option>
-          <option value="price_desc">Giá cao đến thấp</option>
+          <option value="asc">Giá thấp đến cao</option>
+          <option value="desc">Giá cao đến thấp</option>
         </select>
       </div>
 
@@ -190,9 +221,9 @@ const ShopView = () => {
         <div className="text-center mt-8">
           <button
             onClick={handleLoadMore}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="border-2 border-gray-300  px-4 py-2 font-medium hover:bg-gray-300"
           >
-            Tải thêm
+            Xem thêm
           </button>
         </div>
       )}

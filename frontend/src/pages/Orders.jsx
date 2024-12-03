@@ -45,7 +45,7 @@ const Orders = () => {
           return [...prevData, ...newData];
         });
       }
-      setHasMore(userOrders.length + res.content.length < res.page.totalElements);
+      setHasMore(currentPage + 1 < res.page.totalPages);
     } catch (err) {
       setSystemError(
         err.response?.data?.message ||
@@ -127,34 +127,34 @@ const Orders = () => {
               <div className="flex justify-between items-center mb-4">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    order.deliveryState === "Waiting"
+                    order.deliveryState === "WAITING"
                       ? "bg-gray-100 text-gray-600" // Chờ duyệt
-                      : order.deliveryState === "Approved"
+                      : order.deliveryState === "APPROVED"
                       ? "bg-blue-100 text-yellow-600" // Đang giao
-                      : order.deliveryState === "Shipping"
+                      : order.deliveryState === "SHIPPING"
                       ? "bg-yellow-100 text-yellow-600" 
-                      : order.deliveryState === "Completed"
+                      : order.deliveryState === "COMPLETED"
                       ? "bg-green-100 text-green-600" // Đã giao
-                      : order.deliveryState === "Cancelled"
+                      : order.deliveryState === "CANCELLED"
                       ? "bg-red-100 text-red-600" // Đã hủy
                       : "" // Nếu không có trạng thái nào
                   }`}
                 >
-                  {order.deliveryState === "Waiting"
+                  {order.deliveryState === "WAITING"
                     ? "Chờ duyệt"
-                    : order.deliveryState === "Approved"
+                    : order.deliveryState === "APPROVED"
                     ? "Đã duyệt"
-                    : order.deliveryState === "Shipping"
+                    : order.deliveryState === "SHIPPING"
                     ? "Đang giao"
-                    : order.deliveryState === "Completed"
+                    : order.deliveryState === "COMPLETED"
                     ? "Đã giao"
-                    : order.deliveryState === "Cancelled"
+                    : order.deliveryState === "CANCELLED"
                     ? "Đã hủy"
                     : ""}
                 </span>
                 <button
                   onClick={() => handleCancelOrder(order.orderId)}
-                  disabled={order.deliveryState !== "Waiting"}
+                  disabled={order.deliveryState !== "WAITING"}
                   className="px-4 py-2 rounded border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Hủy đơn hàng

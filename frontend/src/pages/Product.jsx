@@ -7,10 +7,11 @@ import { toast } from "react-toastify";
 import { addToCart } from "../fetchAPI/fetchCart";
 import ErrorMessage  from '/src/components/errorMessage'; 
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { getMininalProfile } from "../fetchAPI/fetchAccount";
 
 const Product = () => {
   const { productId } = useParams();
-  const { navigate, curState, systemError, setSystemError, formatCurrency } = useContext(ShopContext);
+  const { navigate, curState, systemError, setSystemError, formatCurrency, setTotalQuantityInCart} = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
   const [selectedAttributes, setSelectedAttributes] = useState({});
@@ -132,7 +133,6 @@ const Product = () => {
     // Điều hướng đến trang đặt hàng
     navigate('/place-Order');
   };
-  
 
   const handleAddToCart = async (instantId, quantity, selectedInstant) => {
     if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
@@ -147,13 +147,16 @@ const Product = () => {
     if (isAddLoading) return;
     setIsAddLoading(true);
   
-    await addToCart(instantId, quantity)
-      .then(() => {
-        toast.success("Thêm vào giỏ hàng thành công!");
-      })
-      .catch(() => {
-        toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng.");
-      });
+    try {
+      await addToCart(instantId, quantity)
+      const response = await getMininalProfile()
+      setTotalQuantityInCart(response.totalQuantityInCart)
+      toast.success("Thêm vào giỏ hàng thành công!");
+    } catch(err) {
+      toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng.");
+      console.log(err);
+    }
+   
     setIsAddLoading(false);
   };
 

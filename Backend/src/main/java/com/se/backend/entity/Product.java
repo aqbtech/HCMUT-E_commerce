@@ -19,13 +19,40 @@ import java.util.List;
 		@NamedEntityGraph(name = "product-summary", attributeNodes = {
 				@NamedAttributeNode("id"),
 				@NamedAttributeNode("name"),
-				@NamedAttributeNode("description")
-			}
+				@NamedAttributeNode("description"),
+				@NamedAttributeNode("category"),
+				@NamedAttributeNode(value = "seller", subgraph = "location")
+			},
+				subgraphs = {
+				@NamedSubgraph(
+						name = "location",
+						attributeNodes = @NamedAttributeNode("address"))
+		}
 		),
 		@NamedEntityGraph(name = "product-attribute", attributeNodes = {
 				@NamedAttributeNode("attributes"),
 				@NamedAttributeNode("seller")
-		})
+		}),
+		@NamedEntityGraph(
+				name = "product",
+				attributeNodes = {
+						@NamedAttributeNode("name"),
+						@NamedAttributeNode("description"),
+						@NamedAttributeNode("category"),
+//						@NamedAttributeNode("attributes"),
+						@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-productInstance-attributeInstance")
+				},
+				subgraphs = {
+						@NamedSubgraph(
+								name = "buildProduct-productInstance-attributeInstance",
+								attributeNodes = @NamedAttributeNode("productInstance")
+						),
+						@NamedSubgraph(
+								name = "buildProduct-productInstance-attributeInstance",
+								attributeNodes = @NamedAttributeNode("attributeInstance")
+						)
+				}
+		)
 })
 
 @Getter
@@ -41,12 +68,13 @@ public class Product {
 	private String id;
 	private String name;
 	private String description;
-
+	private String status;
 	// -- mapping relationships --
 	// mapping category
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", referencedColumnName = "id")
 	private Category category;
+
 
 	// mapping attribute
 	@OneToMany(mappedBy = "ofProduct", fetch = FetchType.LAZY)

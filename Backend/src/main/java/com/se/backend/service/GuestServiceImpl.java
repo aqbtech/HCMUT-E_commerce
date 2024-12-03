@@ -1,10 +1,17 @@
 package com.se.backend.service;
 
+
+import com.se.backend.dto.response.*;
+import com.se.backend.entity.Attribute;
+import com.se.backend.entity.Category;
+import com.se.backend.entity.Product;
+import com.se.backend.entity.ProductInstance;
+
 import com.se.backend.constant.SystemConstant;
 import com.se.backend.dto.request.FilterProductRequest;
 import com.se.backend.dto.request.UserRegister;
-import com.se.backend.dto.response.*;
 import com.se.backend.entity.*;
+
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.AttributeMapper;
@@ -12,7 +19,10 @@ import com.se.backend.mapper.InstanceMapper;
 import com.se.backend.mapper.ProductInfoMapper;
 import com.se.backend.mapper.ProductSummaryMapper;
 import com.se.backend.repository.*;
+
+
 import com.se.backend.service.searchService.ProductSpecification;
+
 import com.se.backend.utils.PaginationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +36,15 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import java.util.*;
+
 
 @Service
 @Slf4j
@@ -42,8 +60,12 @@ public class GuestServiceImpl implements GuestService {
 	private final AttributeMapper attributeMapper;
 	private final InstanceMapper instanceMapper;
 	private final ProductService productService;
+
+	private final CategoryRepository categoryRepository;
+
 	private final BuyerRepository buyerRepository;
 	private final PasswordEncoder passwordEncoder;
+
 
 	private ProductDetail productDetailFactory(Product p, List<ProductInstance> pIs, List<Attribute> as) {
 		var productDetail = productInfoMapper.toProductDetail(p);
@@ -101,6 +123,15 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
+	public List<CategoryResponse> getAllCategory() {
+		List<Category> categories = categoryRepository.findAll();
+		List<CategoryResponse> cgres = categories.stream()
+				.map(category -> new CategoryResponse(category.getRichTextName()))
+				.collect(Collectors.toList());
+		return cgres;
+	}
+
+
 	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
 	public MinimalUserProfile register(UserRegister userRegister) {
 		Buyer newBuyer = Buyer.builder()
@@ -139,7 +170,7 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
-	public Page<ProductSummary> searchByKeyword(String keyword, int page, String sort) {
+	public SearchFilterResponse searchByKeyword(String keyword, int page, String sort){
 		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
 		Page<Product> products = productRepository.findByNameContaining(keyword, pageable);
 
@@ -152,10 +183,28 @@ public class GuestServiceImpl implements GuestService {
 			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice).reversed());
 		}
 
-		return PaginationUtils.convertListToPage(productSummaries, pageable);
+		List<String> ratings = List.of("0-1", "1-2", "2-3", "3-4", "4-5");
+		List<String> categories = this.getCategoriesForFilter(productsList);
+		List<String> locations = this.getLocationsForFilter(productsList);
+		FilterResponse filterResponse = FilterResponse.builder()
+				.categories(categories)
+				.locations(locations)
+				.ratings(ratings)
+				.build();
+		FilterValueResponse filterValueResponse = FilterValueResponse.builder()
+				.categories(new ArrayList<>())
+				.locations(new ArrayList<>())
+				.ratings(new ArrayList<>())
+				.build();
+		Page<ProductSummary> productSummaryPage = PaginationUtils.convertListToPage(productSummaries, pageable);
+		return SearchFilterResponse.builder()
+				.productSummaryPage(productSummaryPage)
+				.available(filterResponse)
+				.filter(filterValueResponse)
+				.build();
 	}
 
-	public Page<ProductSummary> filterProducts(String keyword, int page, String sort, FilterProductRequest request) {
+	public SearchFilterResponse filterProducts(String keyword, int page, String sort, FilterProductRequest request) {
 		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
 		Specification<Product> spec = Specification.where(ProductSpecification.hasCategories(request.getCategories()))
 				.and(ProductSpecification.hasLocation(request.getLocations()))
@@ -175,7 +224,39 @@ public class GuestServiceImpl implements GuestService {
 			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice).reversed());
 		}
 		PaginationUtils.convertListToPage(productSummaries, pageable);
-
-		return PaginationUtils.convertListToPage(productSummaries, pageable);
+		List<String> ratings = List.of("0-1", "1-2", "2-3", "3-4", "4-5");
+		List<String> categories = this.getCategoriesForFilter(productsList);
+		List<String> locations = this.getLocationsForFilter(productsList);
+		FilterResponse a = FilterResponse.builder().build();
+		FilterResponse filterResponse = FilterResponse.builder()
+				.categories(categories)
+				.locations(locations)
+				.ratings(ratings)
+				.build();
+		FilterValueResponse filterValueResponse = FilterValueResponse.builder()
+				.categories(request.getCategories())
+				.locations(request.getLocations())
+				.ratings(request.getRatings())
+				.build();
+		Page<ProductSummary> productSummaryPage = PaginationUtils.convertListToPage(productSummaries, pageable);
+		return SearchFilterResponse.builder()
+				.productSummaryPage(productSummaryPage)
+				.available(filterResponse)
+				.filter(filterValueResponse)
+				.build();
+	}
+	private List<String> getCategoriesForFilter(List<Product> productsList){
+		return productsList.stream()
+				.map(product -> product.getCategory().getRichTextName())
+				.distinct()
+				.sorted()
+				.toList();
+	}
+	private List<String> getLocationsForFilter(List<Product> productsList){
+		return productsList.stream()
+				.map(product -> product.getSeller().getAddress().getProvince())
+				.distinct()
+				.sorted()
+				.toList();
 	}
 }

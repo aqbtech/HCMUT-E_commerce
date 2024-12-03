@@ -3,17 +3,25 @@ import { assets } from '../../assets/assets';
 import { Link, NavLink } from 'react-router-dom';
 import { ShopContext } from '../../context/ShopContext';
 import Cookies from 'js-cookie';
+import { logOut } from '../../fetchAPI/fetchAccount';
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
-  const { search, setSearch, curState, setCurState, setAccount } = useContext(ShopContext);
+  const { search, setSearch, curState, setCurState, setAccount, navigate, totalQuantityInCart } = useContext(ShopContext);
 
   const onSubmitHandler = async () => {
-    setCurState('UnLogin');
-    Cookies.remove('username');
-    Cookies.remove('token');
-    setAccount(null);
-    window.location.reload();
+    try {
+      await logOut();
+      setCurState('UnLogin');
+      Cookies.remove('username');
+      Cookies.remove('token');
+      setAccount(null);
+      console.log("logOut success");
+    } catch (err) {
+      console.log(err);
+    }
+    
+    navigate(-1);
   };
 
   // Xử lý tìm kiếm khi nhấn Enter
@@ -92,7 +100,12 @@ const Navbar = () => {
           {/* Icon giỏ hàng */}
           {curState === 'Login' && (
             <Link to="/cart" className="relative">
-              <img src={assets.hinh5} className="w-5 cursor-pointer" alt="Cart" />
+              <img src={assets.hinh5} className="w-5 min-w-5 cursor-pointer" alt="Cart" />
+              <span
+                 className="absolute left-3 bottom-[-5px] w-4 text-center leading-4 bg-red-500 text-white aspect-square rounded-full text-xs"
+              >
+                {totalQuantityInCart}
+              </span>
             </Link>
           )}
 

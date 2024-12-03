@@ -27,7 +27,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     Page<Order> findApprovedOrderBySeller(@Param("seller") Seller seller,Pageable pageable);
 
     @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)
-    @Query("select o from Order o where o.seller = :seller and o.status = 'CANCEL'")
+    @Query("select o from Order o where o.seller = :seller and o.status = 'CANCELLED'")
     Page<Order> findCancelOrderBySeller(@Param("seller") Seller seller,Pageable pageable);
 
     @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)

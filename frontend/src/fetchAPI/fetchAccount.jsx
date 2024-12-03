@@ -3,13 +3,12 @@ import Cookies from 'js-cookie'
 
 //--------------------------Mới---------------------------
 export const register = async (body) => {
-  return await axiosPublic.post('/user', body);
-
+  const response = await  axiosPublic.post('/register', body);
+  return response.data.result;
 }
 
 export const SignIn = async (body)  => {
   return await axiosPublic.post('/auth/token', body);
-    
 }
 
 export const resetPassword = async (body) => {
@@ -17,17 +16,39 @@ export const resetPassword = async (body) => {
 
 }
  
-
-export const getInfo = async (username) => {
-  return await axiosClient2.get(`/user/info/${username}`);
- 
-}
-
-export const updateAccount = async (body) => {
-  return await axiosClient2.patch(`/user/info/${Cookies.get('username')}`, body);
-}
-
 export const changePass = async (body) => {
   return await axiosClient2.post(`/user/change`, body);
 }
 
+export const logOut = async() => {
+  const token = Cookies.get('token')
+  const body = {
+    "token" : token
+  }
+  return await axiosClient2.post(`/auth/logout`, body);
+}
+
+export const getMininalProfile = async() => {
+  const response = await axiosClient2.get(`/minimal-profile`);
+  return response.data.result;
+} 
+
+export const getProfile = async () => {
+  const response = await axiosClient2.get(`/buyer/get_information`);
+  return response.data.result;
+} 
+
+export const updateProfile = async (body) => {
+  const response = await axiosClient2.put(`/buyer//update_information`, body)
+  return response.data.result;
+}
+
+export const isRegistSeller = async () => {
+  const response = await axiosClient2.get();
+  return response.data.result;
+}
+
+export const registSeller = async (body) => {
+  const response =  await axiosClient2.post(``, body);
+  return response.data.result;
+}
