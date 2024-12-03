@@ -97,7 +97,7 @@ public class GuestServiceImpl implements GuestService {
 		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
 		Page<Product> products = productRepository.findAll(pageable);
 		List<Product> productsList = products.getContent();
-		return PaginationUtils.convertListToPage(productSummaryMapper.toProductSummaries(productsList), pageable);
+		return PaginationUtils.convertListToPage(productSummaryMapper.toProductSummaries(productsList), pageable,(int) products.getTotalElements());
 	}
 
 	@Override
