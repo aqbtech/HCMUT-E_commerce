@@ -15,4 +15,5 @@ public class GetOrderResponse {
         private List<Product_of_GetOrderResponse> listProduct;
         private DeliveryAddress_of_GetOrderResponse deliveryAddress;
         private String method;
+        private Double shipping_fee;
 }
