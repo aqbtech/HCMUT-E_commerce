@@ -7,6 +7,11 @@ export const getCategories = async () =>{
   return res.data
 }
 
+export const getCateShop = async (shopId) =>{
+  const res = await axiosClient(`/categories?shopId=${shopId}`);
+  console.log("danh mục là shop là:",res);
+  return res.data
+}
 
 //------------
 export const getAllCategories = async () => {
@@ -16,7 +21,20 @@ export const getAllCategories = async () => {
     return res.data
   })
   .catch((err)=>{
-    console.log(`Loi khi lấy danh mục:`, err);
+    console.log(`Lỗi khi lấy danh mục:`, err);
+    throw err;
+  })
+}
+
+
+export const getCategoriesForShop = async (shopId) => {
+  await axiosClient2.get(`/categories?shopId=${shopId}`)
+  .then((res)=> {
+    console.log(`Lấy thành công danh mục của shop`, res);
+    return res.data
+  })
+  .catch((err)=>{
+    console.log(`Lỗi khi lấy danh mục:`, err);
     throw err;
   })
 }
@@ -26,4 +44,5 @@ export const getAllCategory = async () => {
   console.log(response);
   return response.data.result;
 };
+
 

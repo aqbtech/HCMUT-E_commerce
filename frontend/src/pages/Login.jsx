@@ -3,14 +3,14 @@ import { useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext'
 import {Link} from 'react-router-dom'
 import { toast } from 'react-toastify';
-import { SignIn } from '../fetchAPI/fetchAccount';
+import { getMininalProfile, SignIn } from '../fetchAPI/fetchAccount';
 import Cookies from 'js-cookie'
 import ErrorMessage  from '/src/components/errorMessage';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const Login = () => {
-  const {navigate, systemError, setSystemError} = useContext(ShopContext);
+  const {navigate, systemError, setSystemError, setTotalQuantityInCart} = useContext(ShopContext);
   const location = useLocation();
   const [username, setUsername] = useState('');
   const [pass, setPass] = useState('');
@@ -18,41 +18,70 @@ const Login = () => {
 
   const from = location.state?.from ||  location.state ||"/";
 
+  const validateForm = () => {
+    const usernameRegex = /^[a-zA-Z0-9_]{3,}$/; // Tài khoản chỉ chứa chữ, số và dấu gạch dưới, ít nhất 3 ký tự
+    if (!username.trim() || !usernameRegex.test(username)) {
+      toast.error("Tài khoản không hợp lệ! Phải chứa ít nhất 3 ký tự chữ, số hoặc _.");
+      return false;
+    }
+    if (pass.length < 3) {
+      toast.error("Mật khẩu phải có ít nhất 3 ký tự!");
+      return false;
+    }
+    return true;
+  };
+  
+
+
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    if(isLoading === true) return; //lúc đang call api thì không gọi nhiều lần!
-
-    if (!username || !pass) {
-      toast.error("Bạn còn sót thông tin nè!");
-      return;
-    }
-    setIsLoading(true); //lúc đang call api
- 
-    const body = { 
-      "username":username, 
-      "password":pass
+    if (isLoading) return;
+  
+    // Validate form trước khi tiếp tục
+    if (!validateForm()) return;
+  
+    setIsLoading(true); // Bắt đầu loading
+  
+    const body = {
+      username: username.trim(),
+      password: pass,
     };
-    
-    await SignIn(body)
-    .then((response) => {
-      toast.success('Đăng nhập thành công!');
+  
+    try {
+      const response = await SignIn(body);
       const token = response.data.result.token;
-      const role = response.data.result.role;
-      token && Cookies.set('token', token) //set token cho cookies
-      Cookies.set('username', username); //set username cho cookies
-      role && Cookies.set("role", role) //set role cho phiên đăng nhập này
+      if (token) Cookies.set('token', token);
+  
+      Cookies.set('username', username);
+  
+      const res = await getMininalProfile();
+    
+      const role = res.role;
+      const totalQuantityInCart = res.totalQuantityInCart;
+      setTotalQuantityInCart(totalQuantityInCart)
+      Cookies.set('role', role);
+
+  
+      toast.success("Đăng nhập thành công!");
+  
+      // Điều hướng dựa trên vai trò
+      if (role === "ADMIN") navigate('/admin');
+      else if (role === "SELLER") navigate('/shop');
       navigate(from, { replace: true });
-    })
-    .catch((error) => { 
-      if(error.status === 401) toast.error("Thông tin đăng nhập sai rồi!");
-      else if(error.status === 404) toast.error("Tài khoản không hợp lệ");
-      else setSystemError(error.response?.data?.message || error.response?.data?.error || "Mất kết nối máy chủ");
-      throw(error)
-    })
-    .finally(() => {
-      setIsLoading(false); //đã gọi xong
-    })
+  
+    } catch (error) {
+      if (error.status === 401) {
+        toast.error("Thông tin đăng nhập sai rồi!");
+      } else {
+        console.log(error);
+        setSystemError(error.response?.data?.message || error.response?.data?.error || "Mất kết nối máy chủ");
+      }
+    } finally {
+      setIsLoading(false); // Hoàn tất loading
+    }
   };
+  
+    
   if (systemError) {
     return <ErrorMessage  message={systemError} />;
   }
@@ -71,8 +100,18 @@ const Login = () => {
             <Link to='/regist'><p className='cursor-pointer hover:text-black hover:underline'>Đăng kí</p></Link>
           }
         </div>
-        <button onClick={(event) => onSubmitHandler(event, username, pass)} type='submit' className='bg-black text-white font-light px-8 py-2 mt-4 '>{isLoading ? <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />
-          : 'Đăng Nhập'}</button>
+        <button
+          disabled={!username || !pass || isLoading}
+          onClick={(event) => onSubmitHandler(event)}
+          type="submit"
+          className={`bg-black text-white font-light px-8 py-2 mt-4 ${!username || !pass || isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          {isLoading ? (
+            <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />
+          ) : (
+            'Đăng Nhập'
+          )}
+        </button>
       </form>
 
     </div>

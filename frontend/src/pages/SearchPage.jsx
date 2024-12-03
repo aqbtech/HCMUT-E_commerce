@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
-import { fetchProductsWithFilters } from "../fetchAPI/fetchProduct";
+import { fetchProductsWithFilters, getProductForSearch } from "../fetchAPI/fetchProduct";
 import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 
@@ -26,14 +26,14 @@ const SearchPage = () => {
 
   const listSorting = [
     { name: "Liên quan nhất", value: "" },
-    { name: "Giá thấp đến cao", value: "price,asc" },
-    { name: "Giá cao đến thấp", value: "price,desc" },
+    { name: "Giá thấp đến cao", value: "asc" },
+    { name: "Giá cao đến thấp", value: "desc" },
   ];
 
   const fetchProducts = async () => {
     try {
-      console.log("Filet:", filters, isFilter)
-      const response = await fetchProductsWithFilters(keyword, page, sort, filters, isFilter);
+      console.log("Filter:", filters, isFilter)
+      const response = await getProductForSearch(keyword, page, sort, filters, isFilter);
       setListProduct(response?.content || []);
       setAvailableFilters(response?.filters?.available || {});
       setTotalPages(response?.page?.totalPages || 0);
@@ -43,9 +43,8 @@ const SearchPage = () => {
     }
   };
 
-
   useEffect(() => {
-    if(keyword.length === 0) {
+    if(!keyword) {
       setErrorMessage("Không tìm thấy sản phẩm")
     } 
     fetchProducts();
@@ -161,7 +160,7 @@ const SearchPage = () => {
           <select
             onChange={handleSortChange}
             value={sort}
-            className="border-2 border-gray-300 text-sm px-2"
+            className="border-2 border-gray-300 text-sm px-2 rounded-lg"
           >
             {listSorting.map((option) => (
               <option key={option.value} value={option.value}>

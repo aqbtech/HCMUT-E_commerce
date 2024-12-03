@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate, useLocation  } from "react-router-dom";
 import Cookies from 'js-cookie'
+import { getMininalProfile } from "../fetchAPI/fetchAccount";
 
 
 export const ShopContext = createContext();
@@ -11,6 +12,7 @@ const ShopContextProvider = (props) => {
     const location = useLocation(); 
     
     const [account, setAccount] = useState(Cookies.get('username') || null);
+    const [totalQuantityInCart, setTotalQuantityInCart] = useState(0);
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false)
     const [curState, setCurState]  = useState('UnLogin')
@@ -26,6 +28,22 @@ const ShopContextProvider = (props) => {
     useEffect(() => {
         setSystemError(""); 
       }, [location.pathname]);
+
+          // Fetch cart data khi đăng nhập
+    useEffect(() => {
+        if (curState === 'Login') {
+            const fetchCart = async () => {
+                try {
+                    const response = await getMininalProfile();
+                    setTotalQuantityInCart(response.totalQuantityInCart || 0); // Cập nhật số lượng giỏ hàng từ API
+                } catch (error) {
+                    console.error("Lỗi tải giỏ hàng:", error);
+                }
+            };
+            fetchCart();
+        }
+    }, [curState]); // Fetch khi trạng thái đăng nhập thay đổi
+
 
 
     const formatCurrency = (amount) => {
@@ -52,6 +70,8 @@ const ShopContextProvider = (props) => {
     }
 
 
+
+
     const value = {
         products, setProducts,
         search, setSearch, showSearch, setShowSearch,
@@ -59,6 +79,7 @@ const ShopContextProvider = (props) => {
         curState, setCurState,
         account, setAccount,
         systemError, setSystemError,
+        setTotalQuantityInCart, totalQuantityInCart,
         formatCurrency, totalAmount, totalQuantity
     }
 

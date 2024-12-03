@@ -3,14 +3,15 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import { toast } from 'react-toastify';
-import { getMyCart, updateQuantity, fetchCart, deleteFromCart } from '../fetchAPI/fetchCart';
+import { updateQuantity, fetchCart, deleteFromCart } from '../fetchAPI/fetchCart';
 import ErrorMessage from '/src/components/errorMessage';
 import Cookies from 'js-cookie'
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Link } from 'react-router-dom';
+import { getMininalProfile } from '../fetchAPI/fetchAccount';
 
 const Cart = () => {
-  const { systemError, setSystemError, formatCurrency, navigate, curState } = useContext(ShopContext);
+  const { systemError, setSystemError, formatCurrency, navigate, setTotalQuantityInCart } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [total, setTotal] = useState(0);
@@ -36,8 +37,8 @@ const Cart = () => {
           );
           return [...prevData, ...newData];
         });
-      }
-      setHasMore(cartData.length + res.content.length < res.totalElements);
+      } 
+      setHasMore(currentPage + 1 < res.page.totalPages);
     } catch (err) {
       console.error('Error fetching cart items:', err);
       setSystemError(err.response?.data?.message || err.response?.data?.error || 'Mất kết nối máy chủ');
@@ -45,7 +46,7 @@ const Cart = () => {
       setLoading(false); // Kết thúc loading (dù thành công hay thất bại)
       
     }
-  };
+  }; 
   
 
   useEffect(() => {
@@ -56,8 +57,8 @@ const Cart = () => {
     getCart();
   }, [currentPage]);
 
-    const loadMoreItems = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+  const loadMoreItems = () => {
+  if(hasMore) setCurrentPage((prevPage) => prevPage + 1);
   };
 
   // Cập nhật tổng số tiền
@@ -80,6 +81,8 @@ const Cart = () => {
           item.productInstanceId === productInstanceId ? { ...item, quantity } : item
         )
       );
+      const response = await getMininalProfile()
+      setTotalQuantityInCart(response.totalQuantityInCart)
     } catch (err) {
       const errorCode = err.response?.data?.code; // Lấy mã lỗi từ phản hồi API
       if (err.response?.status === 400 && errorCode === 2002) {
@@ -91,18 +94,22 @@ const Cart = () => {
     }
   };
 
-  const handleRemoveItem = (productInstanceId) => {
-    deleteFromCart(productInstanceId )
-      .then(() => {
-        setCartData((prev) =>
-          prev.filter((item) => item.productInstanceId !== productInstanceId)
-        );
-        toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
-      })
-      .catch((err) => {
-        console.error('Lỗi xóa sản phẩm:', err); // Debug lỗi API
+  const handleRemoveItem = async (productInstanceId) => {
+    try {
+      await deleteFromCart(productInstanceId );
+      setCartData((prev) =>
+        prev.filter((item) => item.productInstanceId !== productInstanceId)
+      );
+      const response = await getMininalProfile()
+      setTotalQuantityInCart(response.totalQuantityInCart)
+      console.log(response, "123");
+      toast.success('Đã xóa sản phẩm khỏi giỏ hàng!');
+    } catch(err) {
+      console.error('Lỗi xóa sản phẩm:', err); // Debug lỗi API
         toast.error('Không thể xóa sản phẩm khỏi giỏ hàng!');
-      });
+    }
+
+  
   };
   
 
@@ -237,13 +244,13 @@ const Cart = () => {
             <p>Chưa có sản phẩm nào trong giỏ hàng của bạn. Hãy thêm sản phẩm để tiếp tục mua sắm.</p>
           </div>
       )}
-
+ 
       {
         hasMore ? <div className="flex justify-center gap-4 mt-8">
         <button
           onClick={loadMoreItems}
           disabled={!hasMore}
-          className="border px-4 py-2 font-medium hover:bg-gray-300 disabled:opacity-50"
+          className="border-2 border-gray-300  px-4 py-2 font-medium hover:bg-gray-300"
         >
           Xem thêm
         </button>
