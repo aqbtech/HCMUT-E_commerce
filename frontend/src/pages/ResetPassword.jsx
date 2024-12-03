@@ -3,10 +3,9 @@ import { ShopContext } from "../context/ShopContext";
 import { Link } from "react-router-dom";
 import { resetPassword } from "../fetchAPI/fetchAccount";
 import { toast } from "react-toastify";
-import ErrorMessage from "/src/components/errorMessage";
 
 const ResetPassword = () => {
-  const { navigate, systemError, setSystemError } = useContext(ShopContext);
+  const { navigate } = useContext(ShopContext);
 
   const [username, setUsername] = useState("");
   const [pass, setPass] = useState("");
@@ -64,25 +63,14 @@ const ResetPassword = () => {
         toast.error("Thông tin không đúng!");
       } else if (error.status === 404) {
         toast.error("Tài khoản không tồn tại!");
-      } else {
-        setSystemError(
-          error.response?.data?.message ||
-            error.response?.data?.error ||
-            "Mất kết nối máy chủ"
-        );
-      }
+      } 
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Hiển thị lỗi hệ thống nếu có
-  if (systemError) {
-    return <ErrorMessage message={systemError} />;
-  }
-
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen border-t pt-16">
       <form
         onSubmit={onSubmitHandler}
         className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800"

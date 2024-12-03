@@ -3,13 +3,12 @@ import { ShopContext } from '../context/ShopContext';
 import { Link } from 'react-router-dom';
 import { register } from '../fetchAPI/fetchAccount';
 import { toast } from 'react-toastify';
-import ErrorMessage from '/src/components/errorMessage';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import Cookies from 'js-cookie'
+
 
 
 const Regist = () => {
-  const { navigate, systemError, setSystemError } = useContext(ShopContext);
+  const { navigate } = useContext(ShopContext);
 
   const [id, setId] = useState('');
   const [pass, setPass] = useState('');
@@ -86,18 +85,13 @@ const Regist = () => {
     } catch (error) {
       console.error('Lỗi đăng ký:', error);
       if (error.status === 401) toast.error('Thông tin hiện đã tồn tại!');
-      else setSystemError(error.response?.data?.message || error.response?.data?.error || 'Mất kết nối máy chủ');
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (systemError) {
-    return <ErrorMessage message={systemError} />;
-  }
-
   return (
-    <div className='min-h-screen'>
+    <div className='min-h-screen border-t pt-16'>
       <form onSubmit={onSubmitHandler} className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800">
         <div className="inline-flex items-center gap-2 mb-2 mt-10">
           <p className="prata-regular text-3xl">Đăng ký</p>

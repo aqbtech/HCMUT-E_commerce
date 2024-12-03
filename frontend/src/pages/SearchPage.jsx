@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
-import { fetchProductsWithFilters, getProductForSearch } from "../fetchAPI/fetchProduct";
+import { getProductForSearch } from "../fetchAPI/fetchProduct";
 import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 
@@ -22,7 +22,6 @@ const SearchPage = () => {
     rating: [],
   });
   const [totalPages, setTotalPages] = useState(0);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const listSorting = [
     { name: "Liên quan nhất", value: "" },
@@ -38,15 +37,12 @@ const SearchPage = () => {
       setAvailableFilters(response?.filters?.available || {});
       setTotalPages(response?.page?.totalPages || 0);
     } catch (err) {
-      console.error("Error fetching products:", err);
-      setErrorMessage("Đã xảy ra lỗi khi tải sản phẩm.");
+      console.error("Lỗi khi search sản phẩm:", err);
     }
   };
 
   useEffect(() => {
-    if(!keyword) {
-      setErrorMessage("Không tìm thấy sản phẩm")
-    } 
+
     fetchProducts();
   }, [filters, page, sort]);
 
@@ -80,16 +76,16 @@ const SearchPage = () => {
     setPage(newPage);
   };
 
-  if (errorMessage) {
+  if (listProduct?.length === 0) {
     return (
       <div className="col-span-full flex flex-col items-center justify-center text-gray-500 min-h-screen space-y-6">
         <div className="flex flex-col items-center">
-          <img src={assets.notFound} alt="Không tìm thấy sản phẩm" className="w-24 h-24" />
-          <p className="text-lg font-medium mt-4">{errorMessage}</p>
+          <img src={assets.people} alt="Không tìm thấy sản phẩm" className="w-24 h-24" />
+          <p className="text-lg font-medium mt-4">Không tìm thấy sản phẩm</p>
         </div>
         <button
           onClick={() => navigate(`/`)}
-          className="px-6 py-3 text-grey text-sm rounded-md shadow-md hover:bg-black transition"
+           className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         >
           Quay về trang chủ
         </button>

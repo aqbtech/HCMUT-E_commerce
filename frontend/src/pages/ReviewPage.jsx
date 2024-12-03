@@ -12,7 +12,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const ReviewPage = () => {
-  const { systemError, setSystemError, formatCurrency, navigate } =
+  const { formatCurrency, navigate } =
     useContext(ShopContext);
 
   const [reviewLoading, setReviewLoading] = useState(false)
@@ -29,7 +29,7 @@ const ReviewPage = () => {
       const response = await getReviewableProdcuts();
       setReviewableProducts(response);
     } catch (err) {
-      setSystemError(err.response?.data?.message || "Lỗi tải sản phẩm");
+      console.log("Lỗi khi lấy đánh giá", err)
     } finally {
       setLoading(false);
     }
@@ -96,7 +96,7 @@ const ReviewPage = () => {
         <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
     </div>)
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen">
+    <div className="container mx-auto px-4 py-8 min-h-screen border-t pt-16">
       <Title text1="ĐÁNH" text2="GIÁ" />
 
       {reviewableProducts?.length === 0 ? (

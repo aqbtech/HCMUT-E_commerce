@@ -4,7 +4,6 @@ import Title from "../components/Title";
 import {
   cancelOrder,
   getListOrders,
-  getAllOrders
 } from "../fetchAPI/fetchOrders"; 
 import { toast } from "react-toastify";
 import ErrorMessage from "/src/components/errorMessage";
@@ -14,9 +13,6 @@ import { Link } from "react-router-dom";
 
 const Orders = () => {
   const {
-    systemError,
-    setSystemError,
-    totalAmount,
     totalQuantity,
     formatCurrency,
     navigate,
@@ -47,11 +43,7 @@ const Orders = () => {
       }
       setHasMore(currentPage + 1 < res.page.totalPages);
     } catch (err) {
-      setSystemError(
-        err.response?.data?.message ||
-          err.response?.data?.error ||
-          "Mất kết nối máy chủ"
-      );
+        toast.error("Có lỗi khi lấy đơn hàng!");
     } finally {
       setLoading(false);
     }
@@ -91,10 +83,6 @@ const Orders = () => {
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
-
-  if (systemError) {
-    return <ErrorMessage message={systemError} />;
-  }
 
   return loading ? (
     <div className="flex justify-center items-center py-[500px]">

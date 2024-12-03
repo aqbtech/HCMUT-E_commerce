@@ -198,7 +198,7 @@ const MyProfile = () => {
 
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen border-t pt-16">
             {/* Sidebar tab */}
             <div className="w-1/4 p-4">
                 <h2 className="text-xl font-bold mb-4">Tài Khoản Của Tôi</h2>

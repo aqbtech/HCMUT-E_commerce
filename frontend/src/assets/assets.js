@@ -38,8 +38,12 @@ import zalo from './Logo-ZaloPay-Square.webp';
 import momo from './Logo-MoMo-Circle.webp';
 import notFound from './notFound.png';
 import store from './store.png'
+import hinhnen from './a0af16eb-c581-493f-89ef-b6a9b856629b.webp'
+import people from './people.png'
 
 export const assets = {
+    people,
+    hinhnen,
     store,
     notFound,
     zalo,

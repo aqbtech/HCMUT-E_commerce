@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate, useLocation  } from "react-router-dom";
-import Cookies from 'js-cookie'
 import { getMininalProfile } from "../fetchAPI/fetchAccount";
 import { useCookies } from 'react-cookie';
 
@@ -19,7 +18,6 @@ const ShopContextProvider = (props) => {
     const [totalQuantityInCart, setTotalQuantityInCart] = useState(0);
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false)
-    const [products, setProducts] = useState([]);
     const [systemError, setSystemError] = useState('');
     
     /*----------------------------Thông tin tài khoản------------------------------------*/
@@ -48,8 +46,6 @@ const ShopContextProvider = (props) => {
         }
     }, [curState]); // Fetch khi trạng thái đăng nhập thay đổi
 
-
-
     const formatCurrency = (amount) => {
         return amount.toLocaleString('vi-VN', {
           style: 'currency',
@@ -76,10 +72,10 @@ const ShopContextProvider = (props) => {
 
 
 
+
     const value = {
-        products, setProducts,
         search, setSearch, showSearch, setShowSearch,
-        navigate,
+        navigate, location,
         curState, setCurState,
         account, setAccount,
         systemError, setSystemError,
