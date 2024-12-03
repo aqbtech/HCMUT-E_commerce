@@ -18,4 +18,6 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
 	Page<Category> findAll(Pageable pageable);
 	@EntityGraph(value = "category-detail", type = EntityGraph.EntityGraphType.LOAD)
 	Page<Category> findAllByParentCategoryIsNull(Pageable pageable);
+
+	Category findByRichTextName(String richTextName);
 }

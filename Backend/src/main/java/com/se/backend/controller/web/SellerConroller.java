@@ -13,6 +13,7 @@ import com.se.backend.service.ProductManagementServiceImpl;
 import com.se.backend.dto.request.UpdateShopInformationRequest;
 import com.se.backend.dto.response.*;
 
+import com.se.backend.service.SellerService;
 import com.se.backend.service.business.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

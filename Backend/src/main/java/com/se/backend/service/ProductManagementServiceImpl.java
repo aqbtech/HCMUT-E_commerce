@@ -53,7 +53,7 @@ public class ProductManagementServiceImpl implements IProductManagementSerivce {
         Seller seller = sellerRepository.findByUsername(addProductToShopRequest.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
 
-        Category category = categoryRepository.findByName(addProductToShopRequest.getCategory());
+        Category category = categoryRepository.findByRichTextName(addProductToShopRequest.getCategory());
 
         List<Admin> admins = adminRepository.findAll();
 
@@ -183,8 +183,8 @@ public class ProductManagementServiceImpl implements IProductManagementSerivce {
             productRepository.save(updatedProduct);
         }
 
-        if(!updatedProduct.getCategory().getName().equals(updateProductRequest.getCategory())){
-            updatedProduct.setCategory(categoryRepository.findByName(updateProductRequest.getCategory()));
+        if(!updatedProduct.getCategory().getRichTextName().equals(updateProductRequest.getCategory())){
+            updatedProduct.setCategory(categoryRepository.findByRichTextName(updateProductRequest.getCategory()));
             productRepository.save(updatedProduct);
         }
 
@@ -258,7 +258,7 @@ public class ProductManagementServiceImpl implements IProductManagementSerivce {
                 .productId(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())
-                .category(product.getCategory().getName())
+                .category(product.getCategory().getRichTextName())
                 .build();
 
 

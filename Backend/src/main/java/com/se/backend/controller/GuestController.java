@@ -56,10 +56,12 @@ public class GuestController {
 	}
 
 	@GetMapping("/category")
-	public ResponseAPITemplate<List<CategoryResponse>> getAllCategory(){
+	public ResponseAPITemplate<List<CategoryResponse>> getAllCategory() {
 		List<CategoryResponse> res = guestService.getAllCategory();
 		return ResponseAPITemplate.<List<CategoryResponse>>builder()
-
+				.result(res)
+				.build();
+	}
 	@PostMapping("/register")
 	public ResponseAPITemplate<?> register(@Valid @RequestBody UserRegister userRegister, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
