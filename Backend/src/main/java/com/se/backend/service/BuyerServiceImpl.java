@@ -38,16 +38,16 @@ public class BuyerServiceImpl implements BuyerService {
         if (request.getFirstName() != null) {
             buyer.setFirstName(request.getFirstName());
         }
-        else if (request.getLastName() != null) {
+        if (request.getLastName() != null) {
             buyer.setLastName(request.getLastName());
         }
-        else if (request.getEmail() != null) {
+        if (request.getEmail() != null) {
             buyer.setEmail(request.getEmail());
         }
-        else if (request.getPhone() != null) {
+        if (request.getPhone() != null) {
             buyer.setPhone(request.getPhone());
         }
-        else if (request.getDOB() != null) {
+        if (request.getDOB() != null) {
             buyer.setDob(request.getDOB());
         }
         try {
