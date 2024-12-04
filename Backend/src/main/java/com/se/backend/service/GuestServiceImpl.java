@@ -310,4 +310,37 @@ public class GuestServiceImpl implements GuestService {
 		return response;
 	}
 
+	@Override
+	public ShopProductForGuestResponse shopFilterProducts(String seller, int page, String sort, String category){
+		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
+		Specification<Product> spec = Specification.where(ProductSpecification.hasCategories(Collections.singletonList(category)));
+		Seller sellerObj = sellerRepository.findByUsername(seller)
+				.orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
+		// Nếu có keyword, thêm điều kiện tìm kiếm
+//		if (seller != null && !seller.trim().isEmpty()) {
+//			spec = spec.and((root, query, criteriaBuilder) ->
+//					criteriaBuilder.like(root.get("seller").get("username"), "%" + seller + "%"));
+//		}
+
+		List<Product> productsList = productRepository.findBySeller(sellerObj);
+		if(!category.equals("")){
+			productsList = productsList.stream().filter(product -> product
+					.getCategory()
+					.getRichTextName().equals(category)).toList();
+		}
+		List<ProductSummary> productSummaries = productSummaryMapper.toProductSummaries(productsList);
+		if ("asc".equalsIgnoreCase(sort)) {
+			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice));
+		} else if ("desc".equalsIgnoreCase(sort)) {
+			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice).reversed());
+		}
+		PaginationUtils.convertListToPage(productSummaries, pageable);
+		List<String> categories = this.getCategoriesForFilter(productsList);
+        Page<ProductSummary> productSummaryPage = PaginationUtils.convertListToPage(productSummaries, pageable);
+		return ShopProductForGuestResponse.builder()
+				.productSummaryPage(productSummaryPage)
+				.categories(categories)
+				.categoryValue(category)
+				.build();
+	};
 }

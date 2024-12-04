@@ -16,7 +16,7 @@ public class ProductSpecification {
             if (categoryNames == null || categoryNames.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return root.get("category").get("name").in(categoryNames);//Danh mục
+            return root.get("category").get("richTextName").in(categoryNames);//Danh mục
         };
     }
 

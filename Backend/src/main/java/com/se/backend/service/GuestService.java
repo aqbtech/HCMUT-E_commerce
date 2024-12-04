@@ -25,4 +25,5 @@ public interface GuestService {
 	ShopInfoForGuestResponse getShopInformation(String buyername, String sellername);
 	SearchFilterResponse searchByKeyword(String keyword, int page, String sort);
 	SearchFilterResponse filterProducts(String keyword, int page, String sort, FilterProductRequest request);
+	ShopProductForGuestResponse shopFilterProducts(String sellerName, int page, String sort, String category);
 }
