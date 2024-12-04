@@ -138,7 +138,7 @@ const MyProfile = () => {
             await updateAddress(updatedAddress);
             setAddresses((prevAddresses) =>
                 prevAddresses.map(address => 
-                    address.id === updatedAddress.id ? updatedAddress : address
+                    address.id === updatedAddress.Id ? updatedAddress : address
                 )
             );
             toast.success("Cập nhật địa chỉ thành công!");

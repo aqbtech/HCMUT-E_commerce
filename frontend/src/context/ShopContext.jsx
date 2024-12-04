@@ -18,7 +18,6 @@ const ShopContextProvider = (props) => {
     const [totalQuantityInCart, setTotalQuantityInCart] = useState(0);
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false)
-    const [systemError, setSystemError] = useState('');
     
     /*----------------------------Thông tin tài khoản------------------------------------*/
     useEffect(() => {
@@ -26,10 +25,6 @@ const ShopContextProvider = (props) => {
         setCurState(cookies.username ? 'Login' : 'UnLogin');
         setRole(cookies.role);
     }, [cookies.username, cookies.role]);
-
-    useEffect(() => {
-        setSystemError(""); 
-      }, [location.pathname]);
 
           // Fetch cart data khi đăng nhập
     useEffect(() => {
@@ -78,7 +73,6 @@ const ShopContextProvider = (props) => {
         navigate, location,
         curState, setCurState,
         account, setAccount,
-        systemError, setSystemError,
         setTotalQuantityInCart, totalQuantityInCart,
         role, setRole,
         formatCurrency, totalAmount, totalQuantity

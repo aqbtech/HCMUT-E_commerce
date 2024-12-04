@@ -28,7 +28,7 @@ const Home = () => {
         setHasMore(page + 1 < response.page.totalPages);
       }
     } catch(err) {
-      toast.success("lỗi khi lấy sản phẩm home_page")
+      toast.error("lỗi khi lấy sản phẩm home_page")
     }
   };
 

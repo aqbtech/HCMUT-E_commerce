@@ -12,7 +12,7 @@ import { getMininalProfile } from "../fetchAPI/fetchAccount";
 const Product = () => {
   const { productId } = useParams();
   const { navigate, curState, formatCurrency, setTotalQuantityInCart} = useContext(ShopContext);
-  const [productData, setProductData] = useState(null);
+  const [productData, setProductData] = useState({});
   const [image, setImage] = useState('');
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [quantity, setQuantity] = useState(1);

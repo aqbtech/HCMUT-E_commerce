@@ -94,7 +94,7 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
             province,
             district,
             ward,
-            detail: detailAddress,
+            detailAddress,
         };
 
         onSave(updatedAddress); // Truyền dữ liệu lên component cha
