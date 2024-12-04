@@ -33,3 +33,6 @@ build/
 .vscode/
 /Backend/out/production/resources/application.yaml
 /Backend/database.sql
+/Backend/e-commerce-img-service-key-dev.json
+/Backend/spring-mvc-aa495-firebase-adminsdk-o2ir0-4e2b4c8dfb.json
+/Backend/src/main/resources/spring-mvc-aa495-firebase-adminsdk-o2ir0-4e2b4c8dfb.json

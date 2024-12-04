@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.graalvm.collections.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +29,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Map;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -71,9 +71,9 @@ public class AuthenticationService implements AuthenticationProvider {
 		}
 		var token = generateToken(user.getFirst()[0].toString(), user.getFirst()[2].toString());
 		return AuthenticationResponse.builder()
-				.token(token.getLeft())
+				.token(token.get("token"))
 				.authenticatedToken(true)
-				.role(token.getRight())
+				.role(token.get("role"))
 				.build();
 	}
 
@@ -109,13 +109,13 @@ public class AuthenticationService implements AuthenticationProvider {
 			throw new WebServerException(ErrorCode.USER_NOT_FOUND);
 		var token = generateToken(username, signedJWT.getJWTClaimsSet().getClaim("authorities").toString());
 		return AuthenticationResponse.builder()
-				.token(token.getLeft())
+				.token(token.get("token"))
 				.authenticatedToken(true)
-				.role(token.getRight())
+				.role(token.get("role"))
 				.build();
 	}
 
-	private Pair<String, String> generateToken(String username, String... authorities) {
+	private Map<String, String> generateToken(String username, String... authorities) {
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS512).build();
 		String scope = buildScope(authorities);
 		JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
@@ -133,7 +133,7 @@ public class AuthenticationService implements AuthenticationProvider {
 
 		try {
 			jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-			return Pair.create(jwsObject.serialize(), scope);
+			return Map.of("token", jwsObject.serialize(), "role", scope);
 		} catch (JOSEException e) {
 			log.error("Error signing token", e);
 			throw new RuntimeException(e);
