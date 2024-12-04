@@ -29,6 +29,8 @@ public class ProductDetail {
 	@JsonProperty("listInstants")
 	private List<Instant> instants;
 	// add minPrice, maxPrice, price, discount, discountPercent, discountPrice
+	// list img for product
+	private List<String> imagesPublicLink;
 	@Getter
 	@Setter
 	@AllArgsConstructor

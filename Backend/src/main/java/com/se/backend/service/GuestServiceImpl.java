@@ -23,6 +23,7 @@ import com.se.backend.repository.*;
 
 import com.se.backend.service.searchService.ProductSpecification;
 
+import com.se.backend.service.storage.FileService;
 import com.se.backend.utils.PaginationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,7 @@ public class GuestServiceImpl implements GuestService {
 
 	private final BuyerRepository buyerRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final FileService fileService;
 
 
 	private ProductDetail productDetailFactory(Product p, List<ProductInstance> pIs, List<Attribute> as) {
@@ -77,6 +79,8 @@ public class GuestServiceImpl implements GuestService {
 		productDetail.setMaxPrice(productService.maxPriceOf(p.getId()));
 		// rating
 		productDetail.setRating(reviewService.ratingCalculator(p.getId()));
+		// list img
+		productDetail.setImagesPublicLink(fileService.listFiles(p.getId()));
 		// instants list
 		List<Instant> instants = instanceMapper.toInstants(pIs);
 		// for each instant add all attributes in as and value is it own value

@@ -3,6 +3,7 @@ package com.se.backend.service.storage;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
 import com.google.common.collect.ImmutableMap;
 import com.google.firebase.cloud.StorageClient;
 import com.se.backend.entity.FileInfo;
@@ -13,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -44,20 +47,10 @@ public class FileDAO {
 		}
 	}
 
-	private Blob initBucketStorage(FileInfo fileInfo) {
-		String fullPath = (fileInfo.getFolder() == null || fileInfo.getFolder().isEmpty()) ? fileInfo.getFileName() : fileInfo.getFolder() + "/" + fileInfo.getFileName();
-		Bucket bucket = StorageClient.getInstance().bucket();
-		Blob blob = bucket.get(fullPath);
-		if (blob == null) {
-			throw new RuntimeException("File not found: " + fullPath);
-		}
-		return blob;
-	}
-
 	public ResponseEntity<String> downloadFile(FileInfo fileInfo) {
 		try {
 			// Lấy Blob từ Google Cloud Storage
-			Blob blob = initBucketStorage(fileInfo);
+			Blob blob = getFileFromBucket(fileInfo);
 			if (!blob.exists()) {
 				throw new RuntimeException("File not found: " + fileInfo.getFileName());
 			}
@@ -84,7 +77,25 @@ public class FileDAO {
 			throw new RuntimeException("Error downloading and generating URL for file", e);
 		}
 	}
+	public List<String> downloadFiles(String folder) {
+		Bucket bucket = StorageClient.getInstance().bucket();
+		Iterable<Blob> blobs = bucket.list(Storage.BlobListOption.prefix(folder)).iterateAll();
+		List<String> fileLinks = new ArrayList<>();
 
+		for (Blob blob : blobs) {
+			// Generate public URL for each file
+			String token = Objects.requireNonNull(blob.getMetadata()).get("firebaseStorageDownloadTokens");
+			String fileUrl = String.format(
+					"https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media&token=%s",
+					bucket.getName(),
+					blob.getName().replace("/", "%2F"), // Encode the file path for URL
+					token
+			);
+			fileLinks.add(fileUrl);
+		}
+
+		return fileLinks;
+	}
 	public void deleteFile(FileInfo fileInfo) {
 		Blob blob = getFileFromBucket(fileInfo);
 		try {
