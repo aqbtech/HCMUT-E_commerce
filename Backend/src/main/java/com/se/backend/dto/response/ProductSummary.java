@@ -8,5 +8,5 @@ public class ProductSummary {
 	private String name;
 	private Double rating;
 	private Double minPrice;
-	private String img;
+	private String firstImage;
 }

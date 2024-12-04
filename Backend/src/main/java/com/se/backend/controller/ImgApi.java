@@ -27,4 +27,8 @@ public class ImgApi {
 		FileInfo fileInfo = new FileInfo(productId, fileName);
 		return fileService.downloadFile(fileInfo);
 	}
+	@GetMapping("/folder")
+	public ResponseEntity<?> listFiles(@RequestParam("folder") String folder) {
+		return ResponseEntity.ok(fileService.listFiles(folder));
+	}
 }

@@ -31,7 +31,7 @@ public class FileService implements IFileService {
 	}
 
 	@Override
-	public List<FileInfo> listFiles(String folder) {
-		return null;
+	public List<String> listFiles(String folder) {
+		return fileDAO.downloadFiles(folder);
 	}
 }

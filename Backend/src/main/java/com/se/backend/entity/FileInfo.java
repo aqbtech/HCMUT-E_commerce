@@ -21,6 +21,11 @@ public class FileInfo {
 	// -- mapping relationships --
 	// mapping product_imgs
 	@ManyToOne
-	@JoinColumn(name = "product_id", referencedColumnName = "id")
+	@JoinColumn(name = "product_id", referencedColumnName = "root_product_id")
 	private Product product;
+
+	public FileInfo(String folder, String fileName) {
+		this.folder = folder;
+		this.fileName = fileName;
+	}
 }

@@ -11,5 +11,5 @@ public interface IFileService {
 
 	ResponseEntity<String> downloadFile(FileInfo fileInfo);
 	void deleteFile(FileInfo fileInfo);
-	List<FileInfo> listFiles(String folder);
+	List<String> listFiles(String folder);
 }
