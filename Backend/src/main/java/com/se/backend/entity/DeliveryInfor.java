@@ -12,7 +12,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@SoftDelete
 @Table(name = "delivery_infor")
 public class DeliveryInfor {
 	@Id
@@ -20,7 +19,7 @@ public class DeliveryInfor {
 	private Long id;
 	private String phoneNumber;
 	private String recipientName;
-
+	private boolean deleted = Boolean.FALSE;
 	// -- mapping relationships --
 	// mapping address
 	@OneToOne(optional = false, fetch = FetchType.EAGER)

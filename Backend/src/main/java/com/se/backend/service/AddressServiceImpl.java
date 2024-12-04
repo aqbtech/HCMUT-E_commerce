@@ -28,7 +28,10 @@ public class AddressServiceImpl implements AddressService {
 	public List<UserDeliveryInfo> getUserDeliveryInfo(String username) {
 		List<DeliveryInfor> deliveryInfor = deliveryInfoRepository.findByUserId(username)
 										.orElseThrow(() -> new WebServerException(ErrorCode.DELIVERY_INFOR_NOT_EXIST));
-		return deliveryMapper.toUserDeliveryInfo(deliveryInfor);
+		List<DeliveryInfor> response = deliveryInfor
+				.stream()
+				.filter(deliveryInfo -> !deliveryInfo.isDeleted()).toList();
+		return deliveryMapper.toUserDeliveryInfo(response);
 	}
 
 	@Override
@@ -36,7 +39,7 @@ public class AddressServiceImpl implements AddressService {
 		Buyer buyer = buyerRepository.findByUsername(username)
 				.orElseThrow(()->new WebServerException(ErrorCode.USER_NOT_FOUND));
 		Address address = Address.builder()
-				.specificAddress(addressRequest.getDetail())
+				.specificAddress(addressRequest.getDetailAddress())
 				.commune(addressRequest.getWard())
 				.district(addressRequest.getDistrict())
 				.province(addressRequest.getProvince())
@@ -66,8 +69,8 @@ public class AddressServiceImpl implements AddressService {
 		DeliveryInfor deliveryInfor = deliveryInfoRepository.findById(updateAddressRequest.getId())
 				.orElseThrow(() -> new WebServerException(ErrorCode.ADDRESS_NOT_FOUND));
 		Address address = deliveryInfor.getAddress();
-		if (updateAddressRequest.getDetail() != null) {
-			address.setSpecificAddress(updateAddressRequest.getDetail());
+		if (updateAddressRequest.getDetailAddress() != null) {
+			address.setSpecificAddress(updateAddressRequest.getDetailAddress());
 		}
 		if (updateAddressRequest.getWard() != null) {
 			address.setCommune(updateAddressRequest.getWard());
@@ -104,7 +107,8 @@ public class AddressServiceImpl implements AddressService {
 		DeliveryInfor deliveryInfor = deliveryInfoRepository.findById(addressId)
 				.orElseThrow(() -> new WebServerException(ErrorCode.ADDRESS_NOT_FOUND));
 		try{
-			deliveryInfoRepository.delete(deliveryInfor);
+			deliveryInfor.setDeleted(Boolean.TRUE);
+			deliveryInfoRepository.save(deliveryInfor);
 		}
 		catch (WebServerException e){
 			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
