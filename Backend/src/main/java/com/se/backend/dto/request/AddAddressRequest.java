@@ -11,5 +11,5 @@ public class AddAddressRequest {
     private String province;
     private String district;
     private String ward;
-    private String detail;
+    private String detailAddress;
 }
