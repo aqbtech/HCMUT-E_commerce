@@ -1,6 +1,7 @@
 package com.se.backend.service.storage;
 
 
+import com.se.backend.entity.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
