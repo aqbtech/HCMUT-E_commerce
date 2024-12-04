@@ -2,7 +2,7 @@ import {useContext, useEffect, useState } from 'react';
 import {
     approveOrderForSeller,
     cancelOrderForSeller,
-    getListApprovedOrders, getListCancelledOrders,
+    getListApprovedOrders, getListCancelledOrders, getListCompletedOrders, getListShippingOrders,
     getListWaitingOrders,
 } from "../../fetchAPI/fetchOrders.jsx";
 import {ShopContext} from "../../context/ShopContext.jsx";
@@ -39,12 +39,12 @@ const OrderManagement = () => {
                 case "APPROVED":
                     res = await getListApprovedOrders(username, currentPage, limit);
                     break;
-                // case "SHIPPING":
-                //     res = await getListShippingOrders(username, currentPage, limit);
-                //     break;
-                // case "COMPLETED":
-                //     res = await getListCompletedOrders(username, currentPage, limit);
-                //     break;
+                case "SHIPPING":
+                    res = await getListShippingOrders(username, currentPage, limit);
+                    break;
+                case "COMPLETED":
+                    res = await getListCompletedOrders(username, currentPage, limit);
+                    break;
                 case "CANCELLED":
                     res = await getListCancelledOrders(username, currentPage, limit);
                     break;

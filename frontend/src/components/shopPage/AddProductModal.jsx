@@ -220,10 +220,12 @@ const AddProductModal = ({isOpen, onClose}) => {
 
 
         for(let i = 0; i < formData.productInstances.length; i++){
-            for(let j = 0; j < formData.productInstances[i].attributeValues.length; j++){
-                if(formData.productInstances[i].attributeValues[j] === "") {
-                    toast.error("Vui lòng nhập chọn giá trị thuộc tính cho sản phẩm")
-                    return;
+            if(formData.productInstances.length !== 1) {
+                for(let j = 0; j < formData.productInstances[i].attributeValues.length; j++){
+                    if(formData.productInstances[i].attributeValues[j] === "") {
+                        toast.error("Vui lòng nhập chọn giá trị thuộc tính cho sản phẩm")
+                        return;
+                    }
                 }
             }
             if(formData.productInstances[i].price === "" ){

@@ -55,6 +55,19 @@ export const getListCancelledOrders = async (username, page, limmit) => {
 };
 
 
+export const getListShippingOrders = async (username, page, limmit) => {
+  const response = await axiosClient2.get(`/seller/shipping_order/${username}?page=${page}&limit=${limmit}`)
+  console.log("Lay don hang thanh cong:", response);
+  return response.data.result;
+};
+
+
+export const getListCompletedOrders = async (username, page, limmit) => {
+  const response = await axiosClient2.get(`/seller/completed_order/${username}?page=${page}&limit=${limmit}`)
+  console.log("Lay don hang thanh cong:", response);
+  return response.data.result;
+};
+
   export const cancelOrder = async (body) => {
     const response = axiosClient2.put(`/buyer/delete_order`, body);
   }

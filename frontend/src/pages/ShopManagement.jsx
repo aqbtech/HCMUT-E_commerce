@@ -7,7 +7,7 @@ const ShopManagement = () => {
     const [activeTab, setActiveTab] = useState('product'); // Default tab: ProductManagement
 
     return (
-        <div className="flex">
+        <div className="flex min-h-screen">
             {/* Sidebar */}
             <div className="w-1/4 text-black p-4">
                 <h2 className="text-xl font-bold mb-6">Shop Management</h2>
