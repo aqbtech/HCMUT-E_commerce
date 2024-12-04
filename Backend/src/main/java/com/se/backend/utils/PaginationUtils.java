@@ -21,4 +21,17 @@ public class PaginationUtils {
 		}
 		return new PageImpl<>(pageItems, PageRequest.of(currentPage, pageSize), list.size());
 	}
+	public static <T> Page<T> convertListToPage(List<T> list, Pageable pageable, int total) {
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		List<T> pageItems;
+		if (list.size() < startItem) {
+			pageItems = List.of();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, list.size());
+			pageItems = list.subList(startItem, toIndex);
+		}
+		return new PageImpl<>(pageItems, PageRequest.of(currentPage, pageSize), total);
+	}
 }

@@ -32,8 +32,8 @@ const Category = ({ data, onCategorySelect}) => {
           </div>
         {data.map((item) => (
           <div
-            key={item.categoryName}
-            onClick={() => handleCategoryClick(item.categoryName)}
+            key={item.name}
+            onClick={() => handleCategoryClick(item.name)}
             className="flex flex-col items-center cursor-pointer"
           >
             <div className="bg-gray-200 h-20 w-20 flex items-center justify-center rounded-full mb-2">
@@ -41,7 +41,7 @@ const Category = ({ data, onCategorySelect}) => {
                 <img src={assets.logo} alt="" />
               </span>
             </div>
-            <p className="text-sm">{item.categoryName}</p>
+            <p className="text-sm">{item.name}</p>
           </div>
         ))}
       </div>

@@ -22,6 +22,33 @@ import java.util.List;
 				)
 		}
 )
+@NamedEntityGraph(name = "order", attributeNodes = {
+		@NamedAttributeNode(value = "orderProductInstances", subgraph = "productInstance"),
+		@NamedAttributeNode(value = "paymentOrder", subgraph = "paymentOrder"),
+		@NamedAttributeNode("seller")},
+		subgraphs = {
+				@NamedSubgraph(
+						name = "paymentOrder",
+						attributeNodes = @NamedAttributeNode(value = "deliveryInfor")
+
+				),
+				@NamedSubgraph(
+						name = "productInstance",
+						attributeNodes = @NamedAttributeNode(value = "productInstance", subgraph = "buildProduct")
+
+				),
+				@NamedSubgraph(
+						name = "buildProduct",
+						attributeNodes = {
+								@NamedAttributeNode(value = "buildProduct"),
+								@NamedAttributeNode("review")
+						}
+				)
+}
+)
+
+
+
 @Getter
 @Setter
 @Builder

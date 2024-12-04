@@ -18,7 +18,7 @@ const Content = () => {
             </div>
         </div>
         {/*hero right side */}
-        <img className='w-full sm:w-1/2' src={assets.hinh9} alt="" />
+        <img className='w-full sm:w-1/2' src={assets.hinhnen} alt="" />
     </div>
   )
 }

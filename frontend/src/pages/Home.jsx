@@ -1,17 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Content from '../components/homePage/Content';
 import LatestProduct from '../components/homePage/LatestProduct';
-import BestSeller from '../components/homePage/BestSeller';
 import OurPolicy from '../components/homePage/OurPolicy';
 import Category from '../components/homePage/Category';
-import { getAllProducts, getProduct, getProductOfCategory} from '../fetchAPI/fetchProduct';
-import { getCategories } from '../fetchAPI/fetchCategory';
-import SearchBar from '../components/global/SearchBar';
-import { ShopContext } from '../context/ShopContext';
-import ErrorMessage from '/src/components/errorMessage';
+import {  getProduct, getProductOfCategory} from '../fetchAPI/fetchProduct';
+import { getAllCategories } from '../fetchAPI/fetchCategory';
+import { toast } from 'react-toastify';
 
 const Home = () => { 
-  const { systemError, setSystemError } = useContext(ShopContext);
   const [listProduct, setListProduct] = useState([]);
   const [listCategories, setListCategories] = useState([]);
   const [category, setCategory] = useState("");
@@ -20,7 +16,7 @@ const Home = () => {
 
   
   // Hàm load sản phẩm phân trang
-  const loadProducts = async (page = 0) => {
+  const loadProducts = async (page) => {
     try {
       if (category.length === 0) {
         const response = await getProduct(page);
@@ -32,21 +28,27 @@ const Home = () => {
         setHasMore(page + 1 < response.page.totalPages);
       }
     } catch(err) {
-      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
+      toast.success("lỗi khi lấy sản phẩm home_page")
     }
   };
 
-  // Load sản phẩm khi trang thay đổi
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getAllCategories();
+        setListCategories(response);
+      } catch (err) {
+        toast.error("Lỗi khi lấy danh mục sản phẩm");
+      }
+    };
+  
+    fetchCategories();
+  }, []);
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
     loadProducts(page); 
   }, [page, category]);
-
-  // Load danh mục khi trang được mở
-  useEffect(() => {
-    getCategories()
-      .then((res) => setListCategories(res))
-      .catch((err) => setSystemError(err.response?.data?.message || "Lỗi khi tải danh mục"));
-  }, []);
 
   // Hàm xử lý khi chọn danh mục
   const handleCategorySelect = (newCategory) => {
@@ -65,14 +67,11 @@ const Home = () => {
     setPage((prev) => prev - 1)}
   };
 
-  if (systemError) {
-    return <ErrorMessage message={systemError} />;
-  }
   return (
     <div>
       <Content />
       <Category 
-        data={listCategories} 
+        data={listCategories || []} 
         onCategorySelect={handleCategorySelect} 
       />
       <LatestProduct data={listProduct} />

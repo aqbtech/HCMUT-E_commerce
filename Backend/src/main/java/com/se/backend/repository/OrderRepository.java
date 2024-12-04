@@ -35,6 +35,19 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     Page<Order> findWaitingOrderBySeller(@Param("seller") Seller seller,Pageable pageable);
 
     @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)
+    @Query("select o from Order o where o.seller = :seller and o.status = 'SHIPPING'")
+    Page<Order> findShippingOrderBySeller(@Param("seller") Seller seller,Pageable pageable);
+
+    @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)
+    @Query("select o from Order o where o.seller = :seller and o.status = 'COMPLETED'")
+    Page<Order> findCompletedOrderBySeller(@Param("seller") Seller seller,Pageable pageable);
+
+    @EntityGraph(value = "order-Product-Instance", type = EntityGraph.EntityGraphType.LOAD)
     Optional<Order> findByOrderId(String orderId);
+
+    @EntityGraph(value = "order", type = EntityGraph.EntityGraphType.LOAD)
+    List<Order> findOrdersByPaymentOrderDeliveryInforBuyer(Buyer buyer);
+
+
 
 }

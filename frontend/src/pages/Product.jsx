@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
-import { getProductsById, getReviewById, getDetailProduct } from "../fetchAPI/fetchProduct";
+import { getProductsById, getReviewById } from "../fetchAPI/fetchProduct";
 import { toast } from "react-toastify";
 import { addToCart } from "../fetchAPI/fetchCart";
 import ErrorMessage  from '/src/components/errorMessage'; 
@@ -11,7 +11,7 @@ import { getMininalProfile } from "../fetchAPI/fetchAccount";
 
 const Product = () => {
   const { productId } = useParams();
-  const { navigate, curState, systemError, setSystemError, formatCurrency, setTotalQuantityInCart} = useContext(ShopContext);
+  const { navigate, curState, formatCurrency, setTotalQuantityInCart} = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
   const [selectedAttributes, setSelectedAttributes] = useState({});
@@ -28,11 +28,10 @@ const Product = () => {
     setIsLoading(true);
     try { 
       const response = await getProductsById(productId);
-      if(!response) setSystemError("Not_Found")
       setProductData(response);
       setImage(response?.images?.[0] || '');
     } catch (err) {
-      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
+      toast.error("Lỗi khi lấy chi tiết sản phẩm")
     }
     setIsLoading(false);
   };
@@ -42,11 +41,11 @@ const Product = () => {
     try {
       const response = await getReviewById(productId, pageReview);
       if(response) {
-        setReview(response.content);
+        setReview(response.content || []);
         setHasMore(review.length + response.content.length < response.totalElements);
       }
     } catch (err) {
-      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
+      toast.error("Lỗi khi lấy đánh giá")
     }
     setIsReviewLoading(false);
   }; 
@@ -160,9 +159,7 @@ const Product = () => {
     setIsAddLoading(false);
   };
 
-  if (systemError) {
-    return <ErrorMessage  message={systemError} />;
-  }
+
   return !isLoading ? (
     <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
@@ -267,7 +264,7 @@ const Product = () => {
             <div className="flex items-center mb-2">
               <span className="text-blue-500 text-2xl mr-2">🏪</span> {/* Biểu tượng Unicode cho cửa hàng */}
               <Link 
-                to={`/shop/${productData.seller.sellerId}`} 
+                to={`/shopView/${productData.seller.sellerId}`} 
                 className="text-xl font-bold text-blue-600 hover:underline"
               >
                 {productData.seller.shopName}

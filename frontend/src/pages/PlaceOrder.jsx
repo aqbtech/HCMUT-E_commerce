@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { createOrder } from "../fetchAPI/fetchOrders";
 import AddressModal from "../components/profilePage/AddressModal";
 import { createAddress } from "../fetchAPI/fetchAddress";
-import ErrorMessage from "/src/components/errorMessage";
 import Cookies from "js-cookie";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
@@ -18,7 +17,7 @@ const PlaceOrder = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listProductToPlace, setListProductToPlace] = useState([]);
-  const { navigate, curState, systemError, setSystemError, formatCurrency } = useContext(ShopContext);
+  const { navigate, curState, formatCurrency } = useContext(ShopContext);
 
   // Lấy danh sách địa chỉ từ API
   useEffect(() => {
@@ -32,11 +31,6 @@ const PlaceOrder = () => {
         const res = await getAddress();
         setAddresses(res); // Đảm bảo `res` được truyền đúng vào `setAddresses`
       } catch (err) {
-        setSystemError(
-          err.response?.data?.message ||
-            err.response?.data?.error ||
-            "Mất kết nối máy chủ"
-        );
         console.log("Lỗi khi tải địa chỉ:", err);
       }
     };
@@ -55,7 +49,8 @@ const PlaceOrder = () => {
   const handleSaveAddress = async (newAddress) => {
     try {
       const savedAddress = await createAddress(newAddress);
-      setAddresses([...addresses, savedAddress]); // Thêm địa chỉ mới vào danh sách
+      const addressData = await getAddress()
+      setAddresses(addressData);
       setSelectedAddressId(savedAddress.id); // Chọn địa chỉ mới làm mặc định
       setIsModalOpen(false); // Đóng modal
       toast.success("Đã lưu địa chỉ mới thành công");
@@ -127,9 +122,7 @@ const PlaceOrder = () => {
         console.log("lỗi khi đặt đơn hàng:", err);
       });
   };
-  if (systemError) {
-    return <ErrorMessage message={systemError} />;
-  }
+
   return (
     <div className="flex flex-col gap-4 pt-5 border-t">
       {/* Phần địa chỉ */}

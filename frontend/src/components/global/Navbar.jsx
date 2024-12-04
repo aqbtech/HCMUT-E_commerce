@@ -7,7 +7,8 @@ import { logOut } from '../../fetchAPI/fetchAccount';
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
-  const { search, setSearch, curState, setCurState, setAccount, navigate, totalQuantityInCart } = useContext(ShopContext);
+  const { search, setSearch, curState, setCurState, setAccount, navigate, totalQuantityInCart, role, location } = useContext(ShopContext);
+  const pagesWithoutSearch = ['/Login', '/reset', '/regist', '/admin', '/shop'];
 
   const onSubmitHandler = async () => {
     try {
@@ -15,22 +16,21 @@ const Navbar = () => {
       setCurState('UnLogin');
       Cookies.remove('username');
       Cookies.remove('token');
+      Cookies.remove("role")
       setAccount(null);
-      console.log("logOut success");
+      console.log('logOut success');
     } catch (err) {
       console.log(err);
     }
-    
-    navigate(-1);
+    window.location.reload();
   };
 
-  // Xử lý tìm kiếm khi nhấn Enter
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && search.trim()) {
       window.location.href = `/search?keyword=${encodeURIComponent(search)}`;
     }
   };
-  
+
   return (
     <div className="flex flex-col">
       {/* Thanh điều hướng chính */}
@@ -40,25 +40,26 @@ const Navbar = () => {
           <img src={assets.logo} className="w-[48px]" alt="Logo" />
           <p className="Name_brand">ATOM</p>
         </Link>
-        {/* Thanh tìm kiếm */}
-        <div className="flex-1 mx-4">
-          <div className="relative">
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={handleKeyDown}
-              type="text"
-              placeholder="Search please!!!"
-              className="w-full px-4 py-2 rounded-full outline-none text-gray-800"
-            />
-            <button
-              onClick={() => search.trim() && (window.location.href = `/search?query=${encodeURIComponent(search)}`)}
-              className="absolute top-0 right-0 px-4 py-2 bg-white text-orange-500 rounded-full"
-            >
-              <img className="w-4" src={assets.hinh7} alt="" />
-            </button>
+        {!pagesWithoutSearch.some((path) => location.pathname.includes(path)) && ( // Kiểm tra nếu trang hiện tại nằm trong danh sách
+          <div className="flex-1 mx-4">
+            <div className="relative">
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={handleKeyDown}
+                type="text"
+                placeholder="Search please!!!"
+                className="w-full px-4 py-2 rounded-full outline-none text-gray-800"
+              />
+              <button
+                onClick={() => search.trim() && (window.location.href = `/search?query=${encodeURIComponent(search)}`)}
+                className="absolute top-0 right-0 px-4 py-2 bg-white text-orange-500 rounded-full"
+              >
+                <img className="w-4" src={assets.hinh7} alt="" />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
         {/* Phần chức năng bên phải */}
         <div className="flex items-center gap-6">
           {/* Icon người dùng */}
@@ -67,31 +68,43 @@ const Navbar = () => {
             <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
               <div className="flex flex-col gap-2 w-40 py-3 px-5 bg-slate-100 text-gray-500 rounded">
                 {curState === 'UnLogin' ? (
-                  <div>
+                  <>
                     <Link to="/Login">
                       <p className="cursor-pointer hover:text-black">Đăng nhập</p>
                     </Link>
                     <Link to="/Regist">
-                      <p className="cursor-pointer hover:text-black">Đăng kí</p>
+                      <p className="cursor-pointer hover:text-black">Đăng ký</p>
                     </Link>
-                  </div>
+                  </>
                 ) : (
-                  <div>
-                    <Link to="/myProfile">
-                      <p className="cursor-pointer hover:text-black">Hồ sơ</p>
-                    </Link>
-                    <Link to="/orders">
-                      <p className="cursor-pointer hover:text-black">Đơn hàng</p>
-                    </Link>
-                    <Link to="/review">
-                    <p className="cursor-pointer hover:text-black">Đánh giá</p>
-                    </Link>
-                    <Link to="/">
-                      <p onClick={() => onSubmitHandler()} className="cursor-pointer hover:text-black">
-                        Đăng xuất
-                      </p>
-                    </Link>
-                  </div>
+                  <>
+                    {(role === 'SELLER' || role === "BUYER") && (
+                      <>
+                        <Link to="/myProfile">
+                          <p className="cursor-pointer hover:text-black">Hồ sơ</p>
+                        </Link>
+                        <Link to="/review">
+                          <p className="cursor-pointer hover:text-black">Đánh giá</p>
+                        </Link>
+                        <Link to="/orders">
+                          <p className="cursor-pointer hover:text-black">Đơn hàng</p>
+                        </Link>
+                        {role === 'SELLER' && (
+                          <Link to="/shop">
+                            <p className="cursor-pointer hover:text-black">Quản lý cửa hàng</p>
+                          </Link>
+                        )}
+                      </>
+                    )}
+                    {role === 'ADMIN' && (
+                      <Link to="/admin">
+                        <p className="cursor-pointer hover:text-black">Trang quản lý</p>
+                      </Link>
+                    )}
+                    <p onClick={() => onSubmitHandler()} className="cursor-pointer hover:text-black">
+                      Đăng xuất
+                    </p>
+                  </>
                 )}
               </div>
             </div>
@@ -99,14 +112,15 @@ const Navbar = () => {
 
           {/* Icon giỏ hàng */}
           {curState === 'Login' && (
-            <Link to="/cart" className="relative">
-              <img src={assets.hinh5} className="w-5 min-w-5 cursor-pointer" alt="Cart" />
-              <span
-                 className="absolute left-3 bottom-[-5px] w-4 text-center leading-4 bg-red-500 text-white aspect-square rounded-full text-xs"
-              >
-                {totalQuantityInCart}
-              </span>
-            </Link>
+           <Link to="/cart" className="relative">
+            <img src={assets.hinh5} className="w-5 min-w-5 cursor-pointer" alt="Cart" />
+            <span
+              className="absolute left-3 bottom-[-5px] min-w-[20px] h-[20px] flex items-center justify-center bg-red-500 text-white rounded-full text-xs leading-none"
+              style={{ padding: '2px 4px' }}
+            >
+              {totalQuantityInCart}
+            </span>
+          </Link>
           )}
 
           {/* Menu icon cho thiết bị nhỏ */}
@@ -119,7 +133,6 @@ const Navbar = () => {
         </div>
       </div>
 
-
       {/* Sidebar menu cho màn hình nhỏ */}
       <div
         className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all ${
@@ -127,7 +140,6 @@ const Navbar = () => {
         } sm:hidden`}
       >
         <div className="flex flex-col text-gray-600">
-          {/* Hiện nút back khi menu mở */}
           {visible && (
             <>
               <div onClick={() => setVisible(false)} className="flex items-center gap-4 p-3 cursor-pointer">

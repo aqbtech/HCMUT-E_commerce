@@ -3,7 +3,9 @@ package com.se.backend.controller.web;
 import com.se.backend.dto.request.*;
 import com.se.backend.dto.response.*;
 import com.se.backend.service.BuyerService;
+import com.se.backend.service.ReviewService;
 import com.se.backend.service.business.OrderService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,6 +28,8 @@ public class BuyerController {
     private final OrderService orderService;
     @Autowired
     private final BuyerService buyerService;
+    @Autowired
+    private final ReviewService reviewService;
 
     @GetMapping("/get_information")
     public ResponseAPITemplate<BuyerInformationResopnse> getInfo(@AuthenticationPrincipal Jwt jwt){
@@ -110,5 +114,75 @@ public class BuyerController {
                 .build();
     }
 
-    //Payment
+    @PostMapping("/review")
+    public ResponseAPITemplate<ReviewResponse> reviewProduct(@AuthenticationPrincipal Jwt jwt, @RequestBody ReviewRequest reviewRequest) {
+        String buyerUsername = jwt.getSubject();
+        ReviewResponse response = reviewService.reviewProduct(buyerUsername, reviewRequest);
+        return ResponseAPITemplate.<ReviewResponse>builder()
+                .message(response.getMsg())
+                .build();
+    }
+
+    @GetMapping("/review")
+    public ResponseAPITemplate<ReviewProductInstanceResponse> getAllProductInstanceToReview(@AuthenticationPrincipal Jwt jwt) {
+        String username = jwt.getSubject();
+        ReviewProductInstanceResponse response = reviewService.getAllProductInstanceToReview(username);
+        return ResponseAPITemplate.<ReviewProductInstanceResponse>builder()
+                .result(response)
+                .build();
+    }
+
+
+    @GetMapping("/shipping_order/{username}")
+    public ResponseAPITemplate<Page<GetOrderResponse>> getShippingOrder(
+            @PathVariable("username") String username,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit) {
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(10));
+        Page<GetOrderResponse> response = orderService.getShippingOrder(username, pageable);
+        if (response == null || response.isEmpty()) {
+            return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
+                    .message("does not have any order")
+                    .result(response)
+                    .build();
+        }
+        return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
+                .result(response)
+                .build();
+    }
+
+    @PostMapping("/follow")
+    public ResponseAPITemplate<FollowResponse> followSeller(@AuthenticationPrincipal Jwt jwt, @RequestParam String sellerUsername) {
+        FollowResponse response = buyerService.followSeller(jwt.getSubject(), sellerUsername);
+        return  ResponseAPITemplate.<FollowResponse>builder()
+                .message(response.getMsg())
+                .build();
+    }
+
+    @DeleteMapping("/unfollow")
+    public ResponseAPITemplate<FollowResponse> unFollowSeller(@AuthenticationPrincipal Jwt jwt, @RequestParam String sellerUsername) {
+        FollowResponse response = buyerService.unFollowSeller(jwt.getSubject(), sellerUsername);
+        return  ResponseAPITemplate.<FollowResponse>builder()
+                .message(response.getMsg())
+                .build();
+    }
+
+    @PostMapping("/add-paymentInfo")
+    public ResponseAPITemplate<PaymentInfoResponse> addPaymentInfo(@AuthenticationPrincipal Jwt jwt, @RequestBody AddPaymentInfoRequest addPaymentInfoRequest){
+        PaymentInfoResponse response = buyerService.addPaymentInfo(jwt.getSubject(), addPaymentInfoRequest);
+        return ResponseAPITemplate.<PaymentInfoResponse>builder()
+                .message(response.getMsg())
+                .build();
+    }
+
+    @DeleteMapping("/delete-paymentInfo")
+    public ResponseAPITemplate<PaymentInfoResponse> deletePaymentInfo(@AuthenticationPrincipal Jwt jwt, @RequestParam String STK){
+        PaymentInfoResponse response = buyerService.deletePaymentInfo(jwt.getSubject(), STK);
+        return ResponseAPITemplate.<PaymentInfoResponse>builder()
+                .message(response.getMsg())
+                .build();
+    }
+
+
+
 }

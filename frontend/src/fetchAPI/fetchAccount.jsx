@@ -39,7 +39,7 @@ export const getProfile = async () => {
 } 
 
 export const updateProfile = async (body) => {
-  const response = await axiosClient2.put(`/buyer//update_information`, body)
+  const response = await axiosClient2.put(`/buyer/update_information`, body)
   return response.data.result;
 }
 

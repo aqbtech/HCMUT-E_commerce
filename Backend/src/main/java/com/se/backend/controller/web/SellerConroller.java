@@ -131,6 +131,43 @@ public class SellerConroller {
                 .build();
     }
 
+    @GetMapping("/shipping_order/{username}")
+    public ResponseAPITemplate<Page<GetOrderResponse>> getShippingOrder(
+            @PathVariable("username") String username,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit) {
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(10));
+        Page<GetOrderResponse> response = orderService.getShippingOrder(username, pageable);
+        if (response == null || response.isEmpty()) {
+            return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
+                    .message("does not have any order")
+                    .result(response)
+                    .build();
+        }
+        return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
+                .result(response)
+                .build();
+    }
+
+
+    @GetMapping("/completed_order/{username}")
+    public ResponseAPITemplate<Page<GetOrderResponse>> getCompletedOrder(
+            @PathVariable("username") String username,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<Integer> limit) {
+        Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(10));
+        Page<GetOrderResponse> response = orderService.getCompletedOrder(username, pageable);
+        if (response == null || response.isEmpty()) {
+            return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
+                    .message("does not have any order")
+                    .result(response)
+                    .build();
+        }
+        return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
+                .result(response)
+                .build();
+    }
+
 
     @PostMapping("/add")
     public ResponseAPITemplate<AddProductToShopResponse> addProductToShop(@RequestBody AddProductToShopRequest addProductToShopRequest) {

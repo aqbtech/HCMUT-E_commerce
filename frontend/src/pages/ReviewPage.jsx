@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import {
-  getReviewableProdcuts,
   submitProductReview,
+  getReviewableProducts
 } from "../fetchAPI/fetchOrders";
 import { FaStar } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const ReviewPage = () => {
-  const { systemError, setSystemError, formatCurrency, navigate } =
+  const { formatCurrency, navigate } =
     useContext(ShopContext);
 
   const [reviewLoading, setReviewLoading] = useState(false)
@@ -26,10 +26,11 @@ const ReviewPage = () => {
   const fetchReviewableProducts = async () => {
     setLoading(true);
     try {
-      const response = await getReviewableProdcuts();
-      setReviewableProducts(response);
+      const response = await getReviewableProducts();
+      setReviewableProducts(response.orderReivewList); 
     } catch (err) {
-      setSystemError(err.response?.data?.message || "Lỗi tải sản phẩm");
+      console.log("Lỗi khi lấy đánh giá", err);
+      setReviewableProducts([]);
     } finally {
       setLoading(false);
     }
@@ -52,11 +53,12 @@ const ReviewPage = () => {
     }
 
     const body ={
-        productId: selectedProduct.instantId,
+        productInstanceId: selectedProduct.productInstanceId,
         orderId: selectedProduct.orderId,
         rating : rating,
         comment: reviewText,
      };
+     console.log(body, "123");
     if(reviewLoading) return;  
     setReviewLoading(true);
     try {
@@ -91,12 +93,15 @@ const ReviewPage = () => {
   };
 
 
-  if(loading) return 
-    (<div className="flex justify-center items-center py-[500px]">
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-[500px]">
         <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
-    </div>)
+      </div>
+    );
+  }
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 min-h-screen border-t pt-16">
       <Title text1="ĐÁNH" text2="GIÁ" />
 
       {reviewableProducts?.length === 0 ? (
@@ -107,57 +112,54 @@ const ReviewPage = () => {
         <div className="space-y-6">
           {reviewableProducts.map((product) => (
             <div
-              key={product.reviewId}
-              className="bg-white shadow-md rounded-lg p-6 flex justify-between items-center"
+              key={product.orderId}
+              className="bg-white shadow-md rounded-lg p-6 flex items-center justify-between"
             >
-              {/* Thông tin sản phẩm */}
+              {/* Hình ảnh sản phẩm */}
               <div className="flex items-center">
                 <img
-                    src={product.productImage}
-                    alt={product.productName}
-                    className="w-24 h-24 object-cover rounded mr-4"
+                  src={product.productImage || "/placeholder-image.png"} // Thêm hình ảnh dự phòng nếu không có ảnh
+                  alt={product.productName}
+                  className="w-24 h-24 object-cover rounded mr-4"
                 />
                 <div>
-                    <h3 className="font-semibold text-lg">{product.productName}</h3>
-                    <p className="text-gray-600">Từ đơn hàng: {product.orderId}</p>
-                    <p className="text-gray-600">Ngày mua: {product.orderDate}</p>
-
-                    {/* Thuộc tính sản phẩm */}
-                    {product.ListAtt && (
-                    <ul className="mt-2 text-gray-600 text-sm">
-                        {product.ListAtt.map((attr, index) => (
-                        <li key={index}>
-                            {attr.name}: {attr.value}
-                        </li>
-                        ))}
-                    </ul>
-                    )}
+                  <h3 className="font-semibold text-lg mb-2">{product.productName}</h3>
+                  <p className="text-gray-600 text-sm mb-1">
+                    Đơn hàng: <span className="font-medium">{product.orderId}</span>
+                  </p>
+                  <p className="text-gray-600 text-sm mb-1">
+                    Giá: <span className="text-blue-500 font-bold">{formatCurrency(product.price)}</span>
+                  </p>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Thuộc tính:{" "}
+                    {product.value.map((attr, index) => (
+                      <span
+                        key={index}
+                        className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded mr-1"
+                      >
+                        {attr}
+                      </span>
+                    ))}
+                  </p>
                 </div>
               </div>
 
-                
               {/* Phần đánh giá hoặc nút */}
               <div className="flex items-center gap-4">
-                {product.isReviewed ? (
+                {product.review ? (
                   <div className="text-center">
                     <div className="flex justify-center mb-2">
                       {[...Array(5)].map((_, index) => (
                         <FaStar
                           key={index}
-                          color={
-                            index < product.reviewInfo.rating
-                              ? "#ffc107"
-                              : "#e4e5e9"
-                          }
+                          color={index < product.reviewInfo.rating ? "#ffc107" : "#e4e5e9"}
                         />
                       ))}
                     </div>
-                    <p className="text-gray-600 text-sm">
-                      {product.reviewInfo.content}
+                    <p className="text-gray-600 text-sm mb-1">
+                      "{product.reviewInfo.comment || "Không có nhận xét"}"
                     </p>
-                    <p className="text-gray-500 text-xs">
-                      Đã đánh giá ngày {product.reviewInfo.reviewDate}
-                    </p>
+                    <p className="text-gray-500 text-xs">Đã đánh giá</p>
                   </div>
                 ) : (
                   <button
@@ -189,7 +191,6 @@ const ReviewPage = () => {
                 />
               ))}
             </div>
-
             <textarea
               placeholder="Nhận xét của bạn (tùy chọn)"
               className="w-full border rounded p-2 mb-4"
@@ -197,7 +198,6 @@ const ReviewPage = () => {
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
             />
-
             <div className="flex justify-between">
               <button
                 onClick={() => setSelectedProduct(null)}
@@ -209,13 +209,15 @@ const ReviewPage = () => {
                 onClick={handleSubmitReview}
                 className="bg-blue-500 text-white px-4 py-2 rounded"
               >
-                {!reviewLoading ? "Gửi đánh giá" : <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />}
+                {!reviewLoading ? "Gửi đánh giá" : <AiOutlineLoading3Quarters className="animate-spin text-white" />}
               </button>
             </div>
           </div>
         </div>
       )}
     </div>
+
+
   );
 };
 

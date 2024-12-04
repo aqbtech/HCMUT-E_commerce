@@ -5,7 +5,7 @@ import Cookies from 'js-cookie'
 
 export const getInfoShopView = async (shopId) =>{
     try {
-        const res = await axiosClient(`/shopInfo?id=${shopId}`);
+        const res = await axiosClient.get(`/shopInfo?id=${shopId}`);
         console.log(`Lấy thành công thông tin shop:`, res);
         return res.data;
     } catch(err) {
@@ -18,17 +18,8 @@ export const getInfoShopView = async (shopId) =>{
 
 
 export const getInfo = async (shopId) => {
-    const token = Cookies.get('token')
-    const username = Cookies.get('username')
-    let body = {};
-    if(token && username) {
-        body = {
-            "token" : token,
-            "username" : "username"
-        }
-    }
     try {
-        const res = await axiosPublic(`/shopInfo?id=${shopId}`, body);
+        const res = await axiosClient2.get(`/seller/shop_information?username=${shopId}`);
         console.log(`Lay shop thành công!`, res);
         return res.data.result;
     } catch(err) {
@@ -39,7 +30,7 @@ export const getInfo = async (shopId) => {
  
 export const follow = async (shopId) => {
     try {
-        const res = await axiosClient2(`/follow?id=${shopId}`);
+        const res = await axiosClient2.post(`/buyer/follow?sellerUsername=${shopId}`);
         console.log(`Theo dõi shop thành công!`, res);
         return res.data.result;
     } catch(err) {
@@ -50,11 +41,22 @@ export const follow = async (shopId) => {
 
 export const unfollow = async (shopId) => {
     try {
-        const res = await axiosClient2(`/follow?id=${shopId}`);
+        const res = await axiosClient2.delete(`/buyer/unfollow?sellerUsername=${shopId}`);
         console.log(`Hủy theo dõi shop thành công!`, res);
         return res.data.result;
     } catch(err) {
         console.log(`Hủy theo dõi shop thất bại!`, err);
+        throw err;
+    }
+}
+
+export const updateInfo = async (shopId, body) => {
+    try {
+        const res = await axiosClient2.put(`/seller/update_information?username=${shopId}`, body);
+        console.log(`Sửa thông tin shop thành công!`, res);
+        return res.data.result;
+    } catch(err) {
+        console.log(`Sửa thông tin shop thất bại!`, err);
         throw err;
     }
 }

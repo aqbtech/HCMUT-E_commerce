@@ -15,6 +15,7 @@ const AddProductModal = ({isOpen, onClose}) => {
             { attributeValues: [""], price: "", quantityInStock: "" },
         ],
     });
+    const [images, setImages] = useState([]);
     const [categories, setCategories] = useState([]);  // Lưu danh sách categories
 
 
@@ -163,6 +164,62 @@ const AddProductModal = ({isOpen, onClose}) => {
         console.log(formData);
     };
 
+    const handleImageUpload = async (files) => {
+        const newImages = Array.from(files);
+        const resizedImages = [];
+    
+        for (let file of newImages) {
+            // Resize từng ảnh trước khi thêm vào state
+            const resizedImage = await resizeImage(file, 390, 450);
+            resizedImages.push(resizedImage);
+        }
+    
+        // Thêm ảnh đã resize vào mảng ảnh cũ
+        setImages((prev) => [...prev, ...resizedImages]);
+    };
+            
+    const resizeImage = (file, width, height) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          const reader = new FileReader();
+    
+          reader.onloadend = () => {
+            img.src = reader.result;
+          };
+    
+          img.onload = () => {
+            // Tạo canvas để resize ảnh
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+    
+            // Thiết lập kích thước của canvas theo kích thước mới
+            canvas.width = width;
+            canvas.height = height;
+    
+            // Vẽ ảnh vào canvas với kích thước mới
+            ctx.drawImage(img, 0, 0, width, height);
+    
+            // Lấy dữ liệu ảnh đã resize và trả về dưới dạng base64
+            canvas.toBlob((blob) => {
+              const resizedFile = new File([blob], file.name, { type: file.type });
+              resolve(resizedFile);
+            });
+          };
+    
+          img.onerror = (error) => {
+            reject(error);
+          };
+    
+          reader.readAsDataURL(file);
+        });
+      };
+
+    const removeImage = (index) => {
+    const updatedImages = [...images];
+    updatedImages.splice(index, 1);
+    setImages(updatedImages);
+    };
+
     const handleCreateProduct = async () => {
         if(!formData.name.trim()){
             toast.error("Vui lòng nhâp tên sản phẩm")
@@ -220,10 +277,12 @@ const AddProductModal = ({isOpen, onClose}) => {
 
 
         for(let i = 0; i < formData.productInstances.length; i++){
-            for(let j = 0; j < formData.productInstances[i].attributeValues.length; j++){
-                if(formData.productInstances[i].attributeValues[j] === "") {
-                    toast.error("Vui lòng nhập chọn giá trị thuộc tính cho sản phẩm")
-                    return;
+            if(formData.productInstances.length !== 1) {
+                for(let j = 0; j < formData.productInstances[i].attributeValues.length; j++){
+                    if(formData.productInstances[i].attributeValues[j] === "") {
+                        toast.error("Vui lòng nhập chọn giá trị thuộc tính cho sản phẩm")
+                        return;
+                    }
                 }
             }
             if(formData.productInstances[i].price === "" ){
@@ -299,6 +358,35 @@ const AddProductModal = ({isOpen, onClose}) => {
                             />
                         </div>
 
+                        {/* IMG */}
+                        <div className="mt-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Hình ảnh</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-800"
+                                onChange={(e) => handleImageUpload(e.target.files)}
+                            />
+                            <div className="mt-4 flex gap-4 flex-wrap">
+                                {images.map((image, index) => (
+                                    <div key={index} className="relative w-32 h-32">
+                                    <img
+                                        src={URL.createObjectURL(image)}
+                                        alt={`Preview ${index}`}
+                                        className="w-full h-full object-cover rounded-md shadow-md"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute top-1 right-1 text-red-500 text-lg bg-white rounded-full"
+                                        onClick={() => removeImage(index)}
+                                    >
+                                        &times;
+                                    </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
 
                         {/* Category */}
                         <div>

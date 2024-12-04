@@ -82,3 +82,42 @@ axiosClient2.interceptors.response.use(
         return Promise.reject(err);
     }
 );
+
+axiosClient2.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response) {
+            const status = error.response.status;
+            if(status === 403) {
+                window.location.href = '/Error_403';
+            } else if(status === 404) {
+              // window.location.href = '/Error_404';
+            } else if(status === 500) {
+                alert('Lỗi hệ thống. Vui lòng thử lại sau.');
+            } 
+        } else if (error.message === 'Network Error') {
+            alert('Không có kết nối mạng. Vui lòng kiểm tra Internet.');
+        } 
+        return Promise.reject(error);
+    }
+);
+
+axiosPublic.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response) {
+            const status = error.response.status;
+            if(status === 404) {
+                window.location.href = '/Error_404';
+            } else if(status === 500) {
+                alert('Lỗi hệ thống. Vui lòng thử lại sau.');
+            }
+        }  else if (error.message === 'Network Error') {
+            alert('Không có kết nối mạng. Vui lòng kiểm tra Internet.');
+        } 
+        return Promise.reject(error);
+    }
+);
+
+
+
