@@ -1,5 +1,6 @@
 package com.se.backend.service.storage;
 
+import com.se.backend.entity.FileInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 

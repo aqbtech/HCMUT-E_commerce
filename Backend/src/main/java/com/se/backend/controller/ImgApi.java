@@ -1,10 +1,9 @@
 package com.se.backend.controller;
 
 import com.se.backend.dto.response.ResponseAPITemplate;
-import com.se.backend.service.storage.FileInfo;
+import com.se.backend.entity.FileInfo;
 import com.se.backend.service.storage.FileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

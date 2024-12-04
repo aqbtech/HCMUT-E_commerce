@@ -9,6 +9,7 @@ import java.util.List;
 @NamedEntityGraphs({
 		@NamedEntityGraph(name = "product-detail", attributeNodes = {
 				@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-productInstance"),
+				@NamedAttributeNode("productImgs"),
 				@NamedAttributeNode("seller")},
 				subgraphs = {
 						@NamedSubgraph(
@@ -21,6 +22,7 @@ import java.util.List;
 				@NamedAttributeNode("name"),
 				@NamedAttributeNode("description"),
 				@NamedAttributeNode("category"),
+				@NamedAttributeNode("productImgs"),
 				@NamedAttributeNode(value = "seller", subgraph = "location")
 			},
 				subgraphs = {
@@ -93,4 +95,7 @@ public class Product {
 			joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "root_product_id"),
 			inverseJoinColumns = @JoinColumn(name = "admin_id", referencedColumnName = "username"))
 	private List<Admin> admins;
+	// mapping img
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+	private List<FileInfo> productImgs;
 }
