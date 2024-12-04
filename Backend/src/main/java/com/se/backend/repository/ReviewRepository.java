@@ -1,8 +1,6 @@
 package com.se.backend.repository;
 
-import com.se.backend.entity.Product;
-import com.se.backend.entity.Review;
-import com.se.backend.entity.ReviewId;
+import com.se.backend.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +12,6 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, ReviewId> {
 	@Query("SELECT r FROM Review r JOIN r.productInstance pi JOIN pi.buildProduct bp WHERE bp.product = :product")
 	List<Review> findReviewByProductId(@Param("product") Product product);
+
+	Review findReviewByPaymentOrderAndProductInstance(PaymentOrder paymentOrder, ProductInstance productInstance);
 }
