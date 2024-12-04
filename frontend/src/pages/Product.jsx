@@ -264,7 +264,7 @@ const Product = () => {
             <div className="flex items-center mb-2">
               <span className="text-blue-500 text-2xl mr-2">🏪</span> {/* Biểu tượng Unicode cho cửa hàng */}
               <Link 
-                to={`/shop/${productData.seller.sellerId}`} 
+                to={`/shopView/${productData.seller.sellerId}`} 
                 className="text-xl font-bold text-blue-600 hover:underline"
               >
                 {productData.seller.shopName}

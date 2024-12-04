@@ -20,13 +20,18 @@ const ShopView = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [sortOption, setSortOption] = useState("relevance");
+  const [sort, setSort] = useState("");
   const [hasMore, setHasMore] = useState(true);
+  const listSorting = [
+    { name: "Liên quan nhất", value: "" },
+    { name: "Giá thấp đến cao", value: "asc" },
+    { name: "Giá cao đến thấp", value: "desc" },
+  ];
 
   const fetchInfo = async () => {
     setIsLoading(true);
     try {
-      const response = await getInfoShopView(shopId);
+      const response = await getInfo(shopId);
       setShopInfo(response);
     } catch (err) {
       setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
@@ -37,7 +42,7 @@ const ShopView = () => {
   const fetchProduct = async () => {
     setIsLoading(true);
     try {
-      const response = await getProductForShopView(shopId, page, sortOption, categories );
+      const response = await getProductForShopView(shopId, page, sort, categories);
       const products = response.content;
       setListProduct((prev) => (page === 0 ? products : [...prev, ...products]));
       setHasMore(page + 1 < response.page.totalPages);
@@ -68,10 +73,10 @@ const ShopView = () => {
 
   useEffect(() => {
     fetchProduct();
-  }, [page, shopId, sortOption, selectedCategory]);
+  }, [page, shopId, sort, selectedCategory]);
 
   const handleSortChange = (e) => {
-    setSortOption(e.target.value);
+    setSort(e.target.value);
     setPage(0);
   };
 
@@ -80,7 +85,7 @@ const ShopView = () => {
     setPage(0); // Reset lại trang về 0
   };
 
-  const handleFollow = async (shopId) => {
+  const handleFollow = async () => {
     if (!Cookies.get("username")) {
       const currentTab = location.search; // Lấy query parameter hiện tại (vd: ?tab=profile)
       return navigate("/Login", { state: { from: location.pathname + currentTab } });
@@ -150,7 +155,7 @@ const ShopView = () => {
           <div>
             <h1 className="text-2xl font-semibold text-gray-800">{shopInfo?.shopName}</h1>
             <p className="text-sm text-gray-500">{shopInfo?.status}</p>
-            <p className="text-sm text-gray-500 mt-1">{shopInfo?.location}</p>
+            <p className="text-sm text-gray-500 mt-1">{shopInfo?.address.province}</p>
           </div>
         </div>
 
@@ -189,14 +194,16 @@ const ShopView = () => {
 
         {/* Sort Price */}
         <select
-          className="border px-3 py-2 rounded-lg"
-          value={sortOption}
-          onChange={handleSortChange}
-        >
-          <option value="relevance">Liên quan nhất</option>
-          <option value="asc">Giá thấp đến cao</option>
-          <option value="desc">Giá cao đến thấp</option>
-        </select>
+            onChange={handleSortChange}
+            value={sort}
+            className="border-2 border-gray-300 text-sm px-2 rounded-lg"
+          >
+            {listSorting.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.name}
+              </option>
+            ))}
+          </select>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

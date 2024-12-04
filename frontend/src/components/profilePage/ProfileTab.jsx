@@ -10,7 +10,7 @@ const ProfileTab = ({ account, onSave }) => {
     const [gender, setGender] = useState(account.sex || "Nam");
     const [birthday, setBirthday] = useState(account.dob);
 
-    return ( 
+    return (  
         <div>
             <h2 className="text-2xl font-bold mb-2">Hồ Sơ Của Tôi</h2>
             <p className="text-gray-500 mb-4">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
