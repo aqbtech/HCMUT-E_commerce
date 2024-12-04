@@ -91,7 +91,7 @@ axiosClient2.interceptors.response.use(
             if(status === 403) {
                 window.location.href = '/Error_403';
             } else if(status === 404) {
-                window.location.href = '/Error_404';
+              // window.location.href = '/Error_404';
             } else if(status === 500) {
                 alert('Lỗi hệ thống. Vui lòng thử lại sau.');
             } 
