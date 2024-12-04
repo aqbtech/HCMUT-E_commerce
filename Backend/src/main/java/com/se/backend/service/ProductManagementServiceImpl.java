@@ -4,16 +4,15 @@ import com.se.backend.dto.request.AddProductToShopRequest;
 import com.se.backend.dto.request.UpdateProductRequest;
 import com.se.backend.dto.response.*;
 import com.se.backend.entity.*;
+import com.se.backend.exception.ErrorCode;
+import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.ProductSummaryForSellerMapper;
 import com.se.backend.repository.*;
 import com.se.backend.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -164,6 +163,7 @@ public class ProductManagementServiceImpl implements IProductManagementSerivce {
             buildProductRepository.save(buildProduct);
         }
         return AddProductToShopResponse.builder()
+                .productId(product.getId())
                 .msg("Product is added successfully!")
                 .build();
     }
@@ -223,10 +223,11 @@ public class ProductManagementServiceImpl implements IProductManagementSerivce {
     @Override
     public Page<ProductSummaryResponseForSeller> getAllProduct(String username, int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
-        List<Product> products = productRepository.findBySeller_Username(username);
-        Page<Product> prds = PaginationUtils.convertListToPage(products, pageable);
-        List<Product> productsList = prds.getContent();
-        return PaginationUtils.convertListToPage(productSummaryForSellerMapper.toProductSummariesForSeller(productsList), pageable);
+        Seller seller = sellerRepository.findByUsername(username)
+                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
+        Page<Product> products = productRepository.findProductBySeller(seller, pageable);
+        List<Product> productsList = products.getContent();
+        return PaginationUtils.convertListToPage(productSummaryForSellerMapper.toProductSummariesForSeller(productsList), pageable, (int)products.getTotalElements());
     }
 
     @Override

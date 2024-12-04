@@ -173,7 +173,7 @@ public class SellerConroller {
     public ResponseAPITemplate<AddProductToShopResponse> addProductToShop(@RequestBody AddProductToShopRequest addProductToShopRequest) {
         AddProductToShopResponse response = productManagementSerivce.addProductToShop(addProductToShopRequest);
         return ResponseAPITemplate.<AddProductToShopResponse>builder()
-                .message(response.getMsg())
+                .result(response)
                 .build();
     }
 

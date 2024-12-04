@@ -33,12 +33,11 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 
 	@EntityGraph(value = "product", type = EntityGraph.EntityGraphType.LOAD)
 	Product findBasicProductById(String productId);
-	List<Product> findBySeller_Username(String username);
 
 	@EntityGraph(value = "product-summary", type = EntityGraph.EntityGraphType.LOAD)
 	Page<Product> findByNameContaining(String keyword, Pageable pageable);
 	@EntityGraph(value = "product-summary", type = EntityGraph.EntityGraphType.LOAD)
 	List<Product> findAll(Specification<Product> spec);
 	List<Product> findBySeller(Seller seller);
-
+	Page<Product> findProductBySeller(Seller seller, Pageable pageable);
 }
