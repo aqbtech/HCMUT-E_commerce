@@ -12,6 +12,8 @@ const ProductManagement = () => {
     const [loading, setLoading] = useState(false); // Trạng thái loading khi gọi API
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
+
+
     const loadProducts = async () => {
         try {
             const response = await getProductOfSeller(page);
@@ -21,6 +23,11 @@ const ProductManagement = () => {
             throw err;
         }
     };
+
+    const handleModalClose = async () => {
+       loadProducts();
+       setIsModalOpen(false);
+    }
 
     useEffect(() => {
         loadProducts(page);
@@ -63,7 +70,7 @@ const ProductManagement = () => {
 
             <AddProductModal
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={() => handleModalClose()}
             />
         </div>
     );

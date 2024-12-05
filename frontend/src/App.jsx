@@ -29,6 +29,7 @@ import NotFound from "../src/components/NotFound";
 import ReviewPage from './pages/ReviewPage';
 import RegistSeller from './pages/RegistSeller.jsx';
 import FakeAPI from './pages/FakeAPI.jsx';
+import Payment from './pages/Payment.jsx';
 
 
 
@@ -114,6 +115,18 @@ const App = () => {
                 userRole={role}
               >
                 <ReviewPage/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/payment'
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+                allowedRoles={['BUYER']}
+                userRole={role}
+              >
+                <Payment/>
               </ProtectedRoute>
             }
           />

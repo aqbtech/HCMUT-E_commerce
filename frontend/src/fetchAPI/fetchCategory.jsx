@@ -47,9 +47,9 @@ export const getCategoriesForAdmin = async (page) => {
 
 export const createCategory =  async (body) => {
   try {
-    const response = await axiosClient2.get(`/api/admin/category/add-category`, body)
+    const response = await axiosClient2.post(`/api/admin/category/add-category`, body)
     console.log("tạo cate thành công!",response);
-    return response.data.result;
+    return response.data;
   } catch(err) {
     console.log("tạo all root category thất bại", err);
   }
@@ -59,7 +59,7 @@ export const updateCategory =  async (body, id) => {
   try {
     const response = await axiosClient2.put(`/api/admin/category/update-category?id=${id}`, body)
     console.log("sửa cate thành công!",response);
-    return response.data.result;
+    return response.data;
   } catch(err) {
     console.log("sửa all root category thất bại", err);
   }
@@ -67,9 +67,9 @@ export const updateCategory =  async (body, id) => {
 
 export const deleteCategory =  async (id) => {
   try {
-    const response = await axiosClient2.delete(`/api/admin/category/delete-category${id}`)
+    const response = await axiosClient2.delete(`/api/admin/category/delete-category?id=${id}`)
     console.log("xóa cate thành công!",response);
-    return response.data.result;
+    return response.data;
   } catch(err) {
     console.log("xóa all root category thất bại", err);
   }

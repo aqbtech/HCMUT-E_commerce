@@ -248,17 +248,6 @@ const PlaceOrder = () => {
               <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN" />
               <div className="flex gap-3 flex-col mt-4">
                 <div
-                  onClick={() => setMethod("zalo")}
-                  className="flex items-center gap-3 border p-2 cursor-pointer"
-                >
-                  <p
-                    className={`w-4 h-4 border rounded-full ${
-                      method === "zalo" ? "bg-green-400" : ""
-                    }`}
-                  ></p>
-                  <img className="h-5 mx-4" src={assets.zalo} alt="" /> zaloPay
-                </div>
-                <div
                   onClick={() => setMethod("momo")}
                   className="flex items-center gap-3 border p-2 cursor-pointer"
                 >

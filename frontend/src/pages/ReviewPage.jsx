@@ -61,19 +61,17 @@ const ReviewPage = () => {
 
       // Cập nhật danh sách sản phẩm
       const updatedProducts = reviewableProducts.map((product) =>
-        product.reviewId === selectedProduct.reviewId
+        product.orderId === selectedProduct.orderId
           ? {
               ...product,
               isReviewed: true,
               reviewInfo: {
                 rating,
-                content: reviewText,
-                reviewDate: new Date().toISOString().split("T")[0],
+                comment: reviewText,
               },
             }
           : product
       );
-
       setReviewableProducts(updatedProducts);
       setSelectedProduct(null);
       setRating(0);
