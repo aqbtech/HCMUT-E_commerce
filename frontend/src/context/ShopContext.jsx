@@ -28,7 +28,7 @@ const ShopContextProvider = (props) => {
 
           // Fetch cart data khi đăng nhập
     useEffect(() => {
-        if (curState === 'Login') {
+        if (curState === 'Login' && role === "BUYER") {
             const fetchCart = async () => {
                 try {
                     const response = await getMininalProfile();

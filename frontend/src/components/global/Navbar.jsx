@@ -7,8 +7,8 @@ import { logOut } from '../../fetchAPI/fetchAccount';
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
-  const { search, setSearch, curState, setCurState, setAccount, navigate, totalQuantityInCart, role, location } = useContext(ShopContext);
-  const pagesWithoutSearch = ['/Login', '/reset', '/regist', '/admin', '/shop'];
+  const { search, setSearch, curState, setCurState, setAccount, totalQuantityInCart, role, location } = useContext(ShopContext);
+  const pagesWithoutSearch = ['/Login', '/reset', '/regist', '/admin', '/shop', '/RegistSeller', '/FakeAPI'];
 
   const onSubmitHandler = async () => {
     try {
@@ -66,7 +66,7 @@ const Navbar = () => {
           <div className="group relative">
             <img src={assets.user} className="w-5 cursor-pointer" alt="User" />
             <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
-              <div className="flex flex-col gap-2 w-40 py-3 px-5 bg-slate-100 text-gray-500 rounded">
+              <div className="flex flex-col gap-2 w-44 py-3 px-5 bg-slate-100 text-gray-500 rounded">
                 {curState === 'UnLogin' ? (
                   <>
                     <Link to="/Login">
@@ -75,10 +75,13 @@ const Navbar = () => {
                     <Link to="/Regist">
                       <p className="cursor-pointer hover:text-black">Đăng ký</p>
                     </Link>
+                    <Link to="/RegistSeller">
+                      <p className="cursor-pointer hover:text-black">Đăng ký cửa hàng</p>
+                    </Link>
                   </>
                 ) : (
                   <>
-                    {(role === 'SELLER' || role === "BUYER") && (
+                    {role === "BUYER" && (
                       <>
                         <Link to="/myProfile">
                           <p className="cursor-pointer hover:text-black">Hồ sơ</p>
@@ -89,17 +92,22 @@ const Navbar = () => {
                         <Link to="/orders">
                           <p className="cursor-pointer hover:text-black">Đơn hàng</p>
                         </Link>
-                        {role === 'SELLER' && (
-                          <Link to="/shop">
-                            <p className="cursor-pointer hover:text-black">Quản lý cửa hàng</p>
-                          </Link>
-                        )}
                       </>
                     )}
-                    {role === 'ADMIN' && (
-                      <Link to="/admin">
-                        <p className="cursor-pointer hover:text-black">Trang quản lý</p>
+                    {role === 'SELLER' && (
+                      <Link to="/shop">
+                        <p className="cursor-pointer hover:text-black">Cửa hàng</p>
                       </Link>
+                    )}
+                    {role === 'ADMIN' && (
+                      <>
+                        <Link to="/admin">
+                          <p className="cursor-pointer hover:text-black">Trang quản lý</p>
+                        </Link>
+                        <Link to="/FakeAPI">
+                          <p className="cursor-pointer hover:text-black">API đơn hàng</p>
+                        </Link>
+                      </>
                     )}
                     <p onClick={() => onSubmitHandler()} className="cursor-pointer hover:text-black">
                       Đăng xuất
@@ -111,7 +119,7 @@ const Navbar = () => {
           </div>
 
           {/* Icon giỏ hàng */}
-          {curState === 'Login' && (
+          {curState === 'Login' && role == "BUYER"  &&(
            <Link to="/cart" className="relative">
             <img src={assets.hinh5} className="w-5 min-w-5 cursor-pointer" alt="Cart" />
             <span

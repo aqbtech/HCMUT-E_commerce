@@ -1,6 +1,10 @@
 import { Routes, Route } from 'react-router-dom'
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import { useContext } from 'react';
+import { ShopContext } from './context/ShopContext.jsx';
+import ProtectedRoute from './components/ProtectedRoute .jsx';
+
 
 import Home from './pages/Home'
 import Search from './pages/SearchPage'
@@ -23,10 +27,18 @@ import ShopManagement from "./pages/ShopManagement.jsx";
 import Error_403 from "./components/Error403.jsx"
 import NotFound from "../src/components/NotFound";
 import ReviewPage from './pages/ReviewPage';
+import RegistSeller from './pages/RegistSeller.jsx';
+import FakeAPI from './pages/FakeAPI.jsx';
+
 
 
 const App = () => {
+  const { role, curState } = useContext(ShopContext); 
+  const isAuthenticated = curState === 'Login';
+
   return (
+   
+
     <div className='bg-[#FDF0E7]'>
       <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
         <ToastContainer/>
@@ -37,19 +49,112 @@ const App = () => {
           <Route path = '/about' element={<About />}></Route>
           <Route path='/contact' element={<Contact />}></Route>
           <Route path='/product/:productId' element={<Product />}></Route>
-          <Route path='/cart' element={<Cart />}></Route>
-          <Route path='/login' element={<Login />}></Route>
-          <Route path='/place-order' element={<PlaceOrder />}></Route>
-          <Route path='/orders' element={<Order />}></Route>
+          <Route path='/RegistSeller' element={<RegistSeller/>}></Route>
+          <Route path='/Error_403'  element={<Error_403/>}></Route>
           <Route path='/test' element={<Test />}></Route>
-          <Route path='/admin' element={<Admin />}></Route>
+          <Route path='/login' element={<Login />}></Route>
           <Route path='/regist' element={<Regist />}></Route>
           <Route path='/shopView/:shopId' element={<ShopView />}></Route>
-          <Route path='/myProfile' element={<MyProfile />}></Route>
-           <Route path='/shop' element={<ShopManagement/>}></Route>
           <Route path='/reset' element={<ResetPassword/>}></Route>
-          <Route path='/review' element={<ReviewPage/>}></Route>
-          <Route path='/Error_403'  element={<Error_403/>}></Route>
+
+          <Route
+            path='/cart'
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+                allowedRoles={['BUYER']}
+                userRole={role}
+              >
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/orders'
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+                allowedRoles={['BUYER']}
+                userRole={role}
+              >
+                <Order />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/myProfile'
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+                allowedRoles={['BUYER']}
+                userRole={role}
+              >
+                <MyProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/place-order'
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+                allowedRoles={['BUYER']}
+                userRole={role}
+              >
+                <PlaceOrder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/review'
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+                allowedRoles={['BUYER']}
+                userRole={role}
+              >
+                <ReviewPage/>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path='/admin'
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+                allowedRoles={['ADMIN']}
+                userRole={role}
+              >
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/FakeAPI'
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+                allowedRoles={['ADMIN']}
+                userRole={role}
+              >
+                <FakeAPI/>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/shop'
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+                allowedRoles={['SELLER']}
+                userRole={role}
+              >
+                <ShopManagement/>
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer/>

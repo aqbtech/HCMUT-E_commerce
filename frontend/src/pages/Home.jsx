@@ -12,7 +12,7 @@ const Home = () => {
   const [listCategories, setListCategories] = useState([]);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
 
   
   // Hàm load sản phẩm phân trang

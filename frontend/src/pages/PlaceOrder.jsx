@@ -17,15 +17,10 @@ const PlaceOrder = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listProductToPlace, setListProductToPlace] = useState([]);
-  const { navigate, curState, formatCurrency } = useContext(ShopContext);
+  const { navigate, formatCurrency } = useContext(ShopContext);
 
   // Lấy danh sách địa chỉ từ API
   useEffect(() => {
-    if (!Cookies.get("username")) {
-      console.log(curState);
-      navigate(`/Login`);
-      return;
-    }
     const loadAddresses = async () => {
       try {
         const res = await getAddress();

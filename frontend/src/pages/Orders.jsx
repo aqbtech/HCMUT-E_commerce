@@ -15,8 +15,6 @@ const Orders = () => {
   const {
     totalQuantity,
     formatCurrency,
-    navigate,
-    curState,
   } = useContext(ShopContext);
   const [loading, setLoading] = useState(false);
   const [userOrders, setUserOrders] = useState([]);
@@ -51,11 +49,6 @@ const Orders = () => {
 
   // Gọi lại getOrders khi currentPage thay đổi
   useEffect(() => {
-    if (!Cookies.get("username")) {
-      console.log(curState);
-      navigate(`/Login`);
-      return;
-    }
     getOrders();
   }, [currentPage]);
 

@@ -7,12 +7,11 @@ import {
 } from "../fetchAPI/fetchOrders";
 import { FaStar } from "react-icons/fa";
 import { toast } from "react-toastify";
-import Cookies from "js-cookie";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const ReviewPage = () => {
-  const { formatCurrency, navigate } =
+  const { formatCurrency } =
     useContext(ShopContext);
 
   const [reviewLoading, setReviewLoading] = useState(false)
@@ -37,11 +36,6 @@ const ReviewPage = () => {
   };
 
   useEffect(() => {
-    if (!Cookies.get("username")) {
-        navigate(`/Login`);
-        return;
-      }
-
     fetchReviewableProducts();
   }, []);
 
