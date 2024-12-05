@@ -1,12 +1,14 @@
 package com.se.backend.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.se.backend.dto.request.FilterProductRequest;
 import com.se.backend.dto.request.UserRegister;
 import com.se.backend.dto.response.*;
 import com.se.backend.service.GuestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class GuestController {
@@ -28,8 +31,6 @@ public class GuestController {
 		var res = guestService.getProductDetail(productId);
 		System.out.println("Product ID: " + productId);
 		return ResponseAPITemplate.<ProductDetail>builder()
-				.code(200)
-				.message("Success")
 				.result(res)
 				.build();
 	}

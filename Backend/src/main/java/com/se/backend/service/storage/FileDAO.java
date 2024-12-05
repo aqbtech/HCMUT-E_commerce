@@ -7,6 +7,7 @@ import com.google.cloud.storage.Storage;
 import com.google.common.collect.ImmutableMap;
 import com.google.firebase.cloud.StorageClient;
 import com.se.backend.entity.FileInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Repository
 public class FileDAO {
 
@@ -72,6 +74,7 @@ public class FileDAO {
 			// Trả về URL công khai
 			return ResponseEntity.ok(publicUrl);
 		} catch (NullPointerException e) {
+			log.error("File not found: {}", fileInfo.getFileName());
 			throw new IllegalArgumentException("File not found: " + fileInfo.getFileName());
 		} catch (Exception e) {
 			throw new RuntimeException("Error downloading and generating URL for file", e);

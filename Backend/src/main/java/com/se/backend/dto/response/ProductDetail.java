@@ -30,6 +30,7 @@ public class ProductDetail {
 	private List<Instant> instants;
 	// add minPrice, maxPrice, price, discount, discountPercent, discountPrice
 	// list img for product
+	@JsonProperty("images")
 	private List<String> imagesPublicLink;
 	@Getter
 	@Setter

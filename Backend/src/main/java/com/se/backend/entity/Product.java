@@ -9,7 +9,6 @@ import java.util.List;
 @NamedEntityGraphs({
 		@NamedEntityGraph(name = "product-detail", attributeNodes = {
 				@NamedAttributeNode(value = "buildProduct", subgraph = "buildProduct-productInstance"),
-				@NamedAttributeNode("productImgs"),
 				@NamedAttributeNode("seller")},
 				subgraphs = {
 						@NamedSubgraph(
@@ -96,6 +95,11 @@ public class Product {
 			inverseJoinColumns = @JoinColumn(name = "admin_id", referencedColumnName = "username"))
 	private List<Admin> admins;
 	// mapping img
-	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<FileInfo> productImgs;
+
+	public void addAdmin(Admin admin) {
+		admins.add(admin);
+		admin.getProducts().add(this);
+	}
 }

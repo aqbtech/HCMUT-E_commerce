@@ -1,5 +1,7 @@
 import {axiosClient, axiosClient2, axiosPublic} from '../fetchAPI/axios';
 import { categories } from '../assets/assets';
+import {comment} from "postcss";
+import Cookies from "js-cookie";
 
 
 
@@ -77,7 +79,8 @@ export const getReviewById = async (productId, page) => {
 export const createProduct = async (body) => {
     try {
         const res = await axiosClient2.post(`/seller/add`, body);
-        console.log(`Lỗi khi tạo sản phẩm`);
+        console.log(`Tạo sản phẩm thành công`, res);
+        return res.data.result;
     } catch (err) {
         console.log(`Lỗi khi tạo sản phẩm`);
     }
@@ -87,11 +90,11 @@ export const getProductForSearch = async (keyword, page, sort, body, isFilter) =
     try {
         if (isFilter) {
             console.log(body);
-            const res = await axiosPublic.post(`/search/filter?keyword=${keyword}&page=${page}&size=12&sort=${sort}`, body);
+            const res = await axiosPublic.post(`/search/filter?keyword=${keyword}&page=${page}&sort=${sort}`, body);
             console.log(`Tìm kiếm sản phẩm thành công với lọc`, res);
             return res.data.result;
         } else {
-            const res = await axiosPublic.get(`/search?keyword=${keyword}&page=${page}&size=12&sort=${sort}`);
+            const res = await axiosPublic.get(`/search?keyword=${keyword}&page=${page}&sort=${sort}`);
             console.log(`Tìm kiếm sản phẩm thành công `, res);
             return res.data.result;
         }
@@ -105,9 +108,9 @@ export const enableProduct = async (productId) => {
     const response = axiosClient2.put(`/seller/enabled-product?productId=${productId}`);
 }
 
-export const getProductOfSeller = async () => {
+export const getProductOfSeller = async (page) => {
     try {
-        const res = await axiosClient2.get(`/seller/all-product`)
+        const res = await axiosClient2.get(`/seller/all-product?page=${page}`)
         console.log(`Lấy thành công list sản phẩm:`, res);
         return res.data.result;
     } catch (err) {
@@ -152,4 +155,23 @@ export const getProductOfCategory = async (category, page) => {
   }
 }
 
-
+export const uploadIMG = async (file, productId) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    console.log("Hài cot", formData);
+    const token = Cookies.get("token");
+    try {
+        const res = await fetch(`http://localhost:8080/upload?productId=${productId}`,{
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                // 'Content-Type': 'multipart/form-data',
+            },
+            body: formData
+        });
+        return res.data;
+    } catch (error) {
+        console.error('Lỗi upload ảnh:', error.response || error.message);
+        throw error;
+    }
+};
