@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 public enum ErrorCode {
 	UNKNOWN_ERROR(5000, "Unknown error", HttpStatus.INTERNAL_SERVER_ERROR),
+	FILE_SERVICE_ERROR(5001, "File service error", HttpStatus.INTERNAL_SERVER_ERROR),
 	INVALID_KEY(1000, "Invalid key", HttpStatus.BAD_REQUEST),
 	UNAUTHENTICATED(1001, "Unauthenticated", HttpStatus.UNAUTHORIZED),
 	UNAUTHORIZED(1002, "You do not have permission", HttpStatus.FORBIDDEN),

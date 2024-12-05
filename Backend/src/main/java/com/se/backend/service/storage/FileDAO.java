@@ -1,5 +1,6 @@
 package com.se.backend.service.storage;
 
+import com.google.cloud.WriteChannel;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
@@ -7,13 +8,17 @@ import com.google.cloud.storage.Storage;
 import com.google.common.collect.ImmutableMap;
 import com.google.firebase.cloud.StorageClient;
 import com.se.backend.entity.FileInfo;
+import com.se.backend.exception.ErrorCode;
+import com.se.backend.exception.WebServerException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +46,22 @@ public class FileDAO {
 					.setMetadata(ImmutableMap.of("firebaseStorageDownloadTokens", token)) // Add the token
 					.build();
 
-			// Upload the file with metadata
-			bucket.create(blobInfo.getName(), file.getInputStream(), blobInfo.getContentType());
+			// Upload the file using WriteChannel
+			try (WriteChannel writer = bucket.getStorage().writer(blobInfo);
+				 InputStream inputStream = file.getInputStream()) {
+				byte[] buffer = new byte[1024];
+				int limit;
+				while ((limit = inputStream.read(buffer)) >= 0) {
+					writer.write(ByteBuffer.wrap(buffer, 0, limit));
+				}
+			}
 
 		} catch (IOException e) {
-			throw new RuntimeException("Error uploading file", e);
+			throw new WebServerException(ErrorCode.FILE_SERVICE_ERROR);
 		}
 	}
+
+
 
 	public ResponseEntity<String> downloadFile(FileInfo fileInfo) {
 		try {
