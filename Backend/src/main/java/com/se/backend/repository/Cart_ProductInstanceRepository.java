@@ -19,6 +19,5 @@ public interface Cart_ProductInstanceRepository extends JpaRepository<Cart_Produ
 	Page<Cart_ProductInstance> findByCart(Cart cart, Pageable pageable);
 	@EntityGraph(value = "cart-product-instance-detail", type = EntityGraph.EntityGraphType.LOAD)
 	List<Cart_ProductInstance> findByCart(Cart cart);
-
 	Optional<Cart_ProductInstance> findByCartAndProductInstance(Cart cart, ProductInstance productInstance);
 }

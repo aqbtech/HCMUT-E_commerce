@@ -9,6 +9,7 @@ import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.ProductSummaryForSellerMapper;
 import com.se.backend.repository.*;
 import com.se.backend.utils.PaginationUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class ProductManagementServiceImpl implements IProductManagementSerivce {
     private final ProductSummaryForSellerMapper productSummaryForSellerMapper;
 
     @Override
+    @Transactional
     public AddProductToShopResponse addProductToShop(AddProductToShopRequest addProductToShopRequest) {
         for(int i = 0 ; i < addProductToShopRequest.getProductInstances().size(); i++ ){
             if(addProductToShopRequest.getProductInstances().get(i).getPrice()<= 0)
@@ -62,8 +64,9 @@ public class ProductManagementServiceImpl implements IProductManagementSerivce {
                 .seller(seller)
                 .category(category)
                 .status("ENABLED")
-                .admins(admins)
+                .admins(new ArrayList<>())
                 .build();
+        product.addAdmin(admins.getFirst()); //list admin
 
         productRepository.save(product);
 

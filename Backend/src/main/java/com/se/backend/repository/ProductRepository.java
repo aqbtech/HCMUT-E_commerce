@@ -40,4 +40,6 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 	List<Product> findAll(Specification<Product> spec);
 	List<Product> findBySeller(Seller seller);
 	Page<Product> findProductBySeller(Seller seller, Pageable pageable);
+	@EntityGraph(value = "product-summary", type = EntityGraph.EntityGraphType.LOAD)
+	Page<Product> findAll(Pageable pageable);
 }

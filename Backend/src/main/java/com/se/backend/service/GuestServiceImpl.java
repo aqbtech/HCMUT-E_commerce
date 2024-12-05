@@ -73,7 +73,11 @@ public class GuestServiceImpl implements GuestService {
 
 	private ProductDetail productDetailFactory(Product p, List<ProductInstance> pIs, List<Attribute> as) {
 		var productDetail = productInfoMapper.toProductDetail(p);
-		productDetail.setAttributes(attributeMapper.toAttributeDetails(as));
+		if (as.getFirst().getName() != null) {
+			productDetail.setAttributes(attributeMapper.toAttributeDetails(as));
+		} else {
+			productDetail.setAttributes(new ArrayList<>());
+		}
 		productDetail.setTotalQuantityInStock(productService.totalQuantityInStock(p.getId()));
 		// min price
 		productDetail.setMinPrice(productService.minPriceOf(p.getId()));
@@ -95,10 +99,22 @@ public class GuestServiceImpl implements GuestService {
 			// add each attribute instance to attributeMapTemplate and set value
 			var attIAs = attributeInsRepository.findAttributeInstancesBy(pIi);
 			Map<String, String> attributeMap = new HashMap<>(attributeMapTemplate);
+			boolean hasNull = false;
 			for (var attIA : attIAs) {
-				attributeMap.put(attIA.getAttribute().getName(), attIA.getValue());
+				String key = attIA.getAttribute().getName();
+				String value = attIA.getValue();
+				if (key != null) {
+					attributeMap.put(key, value);
+				} else {
+					hasNull = true;
+					log.error("Attribute instance has no attribute");
+				}
 			}
-			instants.get(i).setAttributes(attributeMap);
+			if (!hasNull) {
+				instants.get(i).setAttributes(attributeMap);
+			} else {
+				instants.get(i).setAttributes(new HashMap<>()); // or null
+			}
 		}
 		productDetail.setInstants(instants);
 		return productDetail;
