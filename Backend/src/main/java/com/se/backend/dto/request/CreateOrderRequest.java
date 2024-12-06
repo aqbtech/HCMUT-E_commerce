@@ -12,4 +12,5 @@ public class CreateOrderRequest {
     private List<Product_of_OrderRequest> ListProduct;
     private DeliveryAddress_of_CreateOrderRequest deliveryAddress;
     private String method;
+    private Boolean isCart;
 }
