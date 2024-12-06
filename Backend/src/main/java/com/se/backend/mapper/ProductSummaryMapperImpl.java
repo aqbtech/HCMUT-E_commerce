@@ -31,7 +31,7 @@ public class ProductSummaryMapperImpl implements ProductSummaryMapper {
 		}
 		List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(product.getSeller().getUsername());
 		shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
-		List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(product.getCategory().getId());
+		List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(product.getCategory().getRichTextName());
 		categoryPolicy.sort(Comparator.comparing(CategoryPolicy::getSale).reversed());
 		Double shopSale = 0.0;
 		Double cateSale = 0.0;

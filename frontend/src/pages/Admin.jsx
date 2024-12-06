@@ -6,7 +6,8 @@ import ProductManagement from "../components/adminPage/ProductManagement";
 import { ShopContext } from '../context/ShopContext';
 import Cookies  from 'js-cookie';
 import CategoriesManagement from '../components/adminPage/CategoriesManagement';
-import SellerMangement from "../components/adminPage/SellerManagement.jsx";
+import SellerManagement from "../components/adminPage/SellerManagement.jsx";
+import SaleOffManagement from "../components/adminPage/SaleOffManagement.jsx";
 
 const AdminPage = () => {
   const { navigate } = useContext(ShopContext); 
@@ -86,8 +87,9 @@ const AdminPage = () => {
       <div className="w-3/4 p-6 bg-white">
         {activeTab === "Users" && <UserManagement/>}
         {activeTab === "products" && <ProductManagement/>}
+          {activeTab === "saleOff" && <SaleOffManagement/>}
         {activeTab === "categories" && <CategoriesManagement />}
-        {activeTab === "Sellers" && <SellerMangement />}
+        {activeTab === "Sellers" && <SellerManagement />}
       </div>
     </div>
   );

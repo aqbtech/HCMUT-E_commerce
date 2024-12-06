@@ -82,7 +82,7 @@ public class GuestServiceImpl implements GuestService {
 		var productDetail = productInfoMapper.toProductDetail(p);
 		List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(p.getSeller().getUsername());
 		shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
-		List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(p.getCategory().getId());
+		List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(p.getCategory().getRichTextName());
 		categoryPolicy.sort(Comparator.comparing(CategoryPolicy::getSale).reversed());
 		Double shopSale = 0.0;
 		Double cateSale = 0.0;
@@ -166,7 +166,7 @@ public class GuestServiceImpl implements GuestService {
 	@Override
 	public Page<ProductSummary> getHomePage(int page) {
 		// find all product with pageable, sort by name asc
-		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
+		Pageable pageable = PageRequest.of(page, 5, Sort.by("name").ascending());
 		Page<Product> products = productRepository.findAll(pageable);
 		List<Product> productsList = products.getContent();
 		return PaginationUtils.convertListToPage(productSummaryMapper.toProductSummaries(productsList), pageable,(int) products.getTotalElements());
