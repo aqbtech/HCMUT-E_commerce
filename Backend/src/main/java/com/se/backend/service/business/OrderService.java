@@ -271,7 +271,7 @@ public class OrderService  {
             Product_of_GetOrderResponse product = productInOrderMapper.toProductDetail(productInstance);
             Product p = productRepository.findProductById(productInstance.getBuildProduct().getFirst().getId().getProductId());
             String productName = p.getName();
-            FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p);
+            FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p).getFirst();
             String path = fileService.downloadFile(fileInfo).getBody();
             product.setFirstImage(path);
             List<Attr_of_GetOrderResponse> attrOfGetOrderResponseList = new ArrayList<>();

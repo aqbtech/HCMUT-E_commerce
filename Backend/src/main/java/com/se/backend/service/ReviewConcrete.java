@@ -133,7 +133,7 @@ public class ReviewConcrete implements ReviewService {
 		orderReview.setProductName(name);
 		Product p = productRepository.findById(id)
 				.orElseThrow(() -> new WebServerException(ErrorCode.PRODUCT_NOT_FOUND));
-		FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p);
+		FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p).getFirst();
 		String path = fileService.downloadFile(fileInfo).getBody();
 		orderReview.setFirstImage(path);
 		orderReview.setPrice(orderProductInstance.getQuantity() * orderProductInstance.getProductInstance().getPrice());
