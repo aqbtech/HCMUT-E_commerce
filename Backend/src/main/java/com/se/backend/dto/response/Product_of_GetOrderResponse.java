@@ -11,6 +11,7 @@ import java.util.List;
 public class Product_of_GetOrderResponse {
     private String productId;
     private String productName;
+    private Double sale;
     private List<Attr_of_GetOrderResponse> listAtt;
     @JsonProperty("img")
     private String firstImage;

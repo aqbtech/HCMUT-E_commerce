@@ -17,6 +17,7 @@ public class ProductDetail {
 	@JsonProperty("product_name")
 	private String name;
 	private Double rating;
+	private Double sale;
 	private String description;
 	private Double minPrice;
 	private Double maxPrice;

@@ -74,10 +74,33 @@ public class GuestServiceImpl implements GuestService {
 	private final BuyerRepository buyerRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final FileService fileService;
+	private final ShopPolicyRepository shopPolicyRepository;
+	private final CategoryPolicyRepository categoryPolicyRepository;
 
 
 	private ProductDetail productDetailFactory(Product p, List<ProductInstance> pIs, List<Attribute> as) {
 		var productDetail = productInfoMapper.toProductDetail(p);
+		List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(p.getSeller().getUsername());
+		shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
+		List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(p.getCategory().getId());
+		categoryPolicy.sort(Comparator.comparing(CategoryPolicy::getSale).reversed());
+		Double shopSale = 0.0;
+		Double cateSale = 0.0;
+		for (ShopPolicy shop: shopPolicy){
+			if(shop.getCount() > 0){
+				shopSale = shop.getSale();
+				break;
+			}
+		}
+		for (CategoryPolicy cate: categoryPolicy){
+			if(cate.getSale() > cateSale && cate.getCount() > 0 ){
+				cateSale = cate.getSale();
+				break;
+			}
+		}
+		double totalSale = shopSale + cateSale;
+		totalSale = totalSale > 1 ? 1 : totalSale;
+		productDetail.setSale(totalSale);
 		if (as.getFirst().getName() != null) {
 			productDetail.setAttributes(attributeMapper.toAttributeDetails(as));
 		} else {

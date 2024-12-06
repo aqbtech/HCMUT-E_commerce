@@ -9,6 +9,7 @@ public class ProductSummary {
 	private String name;
 	private Double rating;
 	private Double minPrice;
+	private Double sale;
 	@JsonProperty("img")
 	private String firstImage;
 }
