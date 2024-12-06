@@ -213,7 +213,7 @@ const Orders = () => {
                   </p>
                   <p>
                     <strong>Tổng tiền:</strong>{" "}
-                    {formatCurrency(Number(order.price + order.shipping_fee))}
+                    {formatCurrency(Number(order.price))}
                   </p>
                   <p>
                     <strong>Tổng số lượng:</strong> {totalQuantity(order)}

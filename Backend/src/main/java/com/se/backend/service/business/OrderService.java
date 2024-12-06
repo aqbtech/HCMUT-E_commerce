@@ -9,6 +9,7 @@ import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.*;
 import com.se.backend.repository.*;
+import com.se.backend.service.storage.FileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,8 @@ public class OrderService  {
     private final ShopPolicyRepository shopPolicyRepository;
     @Autowired
     private final CategoryPolicyRepository categoryPolicyRepository;
+    private final FileInfoRepo fileInfoRepo;
+    private final FileService fileService;
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         long addressId;
@@ -171,6 +174,11 @@ public class OrderService  {
                     if(shop.getCount() > 0){
                         shopSale = shop.getSale();
                         shop.setCount(shop.getCount() - 1);
+                        try {
+                            shopPolicyRepository.save(shop);
+                        } catch (WebServerException e){
+                            throw e;
+                        }
                         break;
                     }
                 }
@@ -178,6 +186,11 @@ public class OrderService  {
                     if(cate.getSale() > cateSale && cate.getCount() > 0 ){
                         cateSale = cate.getSale();
                         cate.setCount(cate.getCount() - 1);
+                        try {
+                            categoryPolicyRepository.save(cate);
+                        } catch (WebServerException e){
+                            throw e;
+                        }
                         break;
                     }
                 }
@@ -364,7 +377,7 @@ public class OrderService  {
             product_of_getOrderResponseList.get(i).setQuantity(quantityOfProduct.get(i));
         }
         Double shipping_fee = order.getDelieryFee();
-        result.setPrice(String.valueOf(totalPrice));
+        result.setPrice(String.valueOf(totalPrice+ shipping_fee));
         result.setShipping_fee(shipping_fee);
         result.setListProduct(product_of_getOrderResponseList);
         result.setMethod(method);
