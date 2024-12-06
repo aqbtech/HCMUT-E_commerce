@@ -49,7 +49,7 @@ public class CprMapperImpl implements Cart_ProductInstanceMapper {
 		String productName = p.getName();
 		Long quantity = cartProductInstance.getQuantity();
 		Double price = cartProductInstance.getProductInstance().getPrice();
-		FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p);
+		FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p).getFirst();
 		String imgUrl = fileService.downloadFile(fileInfo).getBody();
 		String sellerId = p.getSeller().getUsername();
 		String shopName = p.getSeller().getShopName();

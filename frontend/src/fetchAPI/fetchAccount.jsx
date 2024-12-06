@@ -49,12 +49,12 @@ export const isRegistSeller = async () => {
 }
 
 export const registSeller = async (body) => {
-  const response =  await axiosClient2.post(``, body);
+  const response =  await axiosClient2.post(`/sellerregister`, body);
   return response.data.result;
 }
 
 export const checkStatus = async () => {
   const id = Cookies.get("username");
-  const response = await axiosClient2.get(`?id=${id}`);
+  const response = await axiosClient2.get(`/seller/status_seller?id=${id}`);
   return response.data.result;
 } 
