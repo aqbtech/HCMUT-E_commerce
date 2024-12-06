@@ -151,7 +151,7 @@ const Orders = () => {
                   <div className="flex items-start gap-6 text-sm">
                     <img
                       className="w-16 sm:w-20 object-cover rounded-lg border"
-                      src={product.IMG}
+                      src={product.img}
                       alt={product.productName}
                     />
                     <div>
@@ -160,7 +160,7 @@ const Orders = () => {
                           {product.productName || "Sản phẩm không xác định"}
                         </p>
                       </Link>
-                      
+
                       <div className="flex items-center gap-3 mt-2 text-base">
                         <p className="text-lg font-semibold text-gray-900">
                           {formatCurrency(product.price)}
@@ -209,11 +209,11 @@ const Orders = () => {
                   </h3>
                   <p>
                     <strong>Phí ship:</strong>{" "}
-                    {formatCurrency(10000)}
+                    {formatCurrency(Number(order.shipping_fee))}
                   </p>
                   <p>
                     <strong>Tổng tiền:</strong>{" "}
-                    {formatCurrency(Number(order.price) + 10000)}
+                    {formatCurrency(Number(order.price + order.shipping_fee))}
                   </p>
                   <p>
                     <strong>Tổng số lượng:</strong> {totalQuantity(order)}

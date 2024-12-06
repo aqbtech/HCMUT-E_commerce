@@ -5,9 +5,12 @@ import com.se.backend.dto.response.ReviewDetail;
 import com.se.backend.dto.response.ReviewProductInstanceResponse;
 import com.se.backend.dto.response.ReviewResponse;
 import com.se.backend.entity.*;
+import com.se.backend.exception.ErrorCode;
+import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.OrderReviewMapper;
 import com.se.backend.mapper.ReviewMapper;
 import com.se.backend.repository.*;
+import com.se.backend.service.storage.FileService;
 import com.se.backend.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +39,8 @@ public class ReviewConcrete implements ReviewService {
 	private final OrderReviewMapper orderReviewMapper;
 	private final BuildProductRepository buildProductRepository;
 	private final AttributeInsRepository attributeInsRepository;
+	private final FileInfoRepo fileInfoRepo;
+	private final FileService fileService;
 	@Override
 	public Double ratingCalculator(String productId) {
 		var reviews = reviewRepository.findReviewByProductId(productRepository.findProductSummaryById(productId));
@@ -126,6 +131,11 @@ public class ReviewConcrete implements ReviewService {
 		String name = productRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Product not found")).getName();
 		orderReview.setProductName(name);
+		Product p = productRepository.findById(id)
+				.orElseThrow(() -> new WebServerException(ErrorCode.PRODUCT_NOT_FOUND));
+		FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p);
+		String path = fileService.downloadFile(fileInfo).getBody();
+		orderReview.setFirstImage(path);
 		orderReview.setPrice(orderProductInstance.getQuantity() * orderProductInstance.getProductInstance().getPrice());
 
 		List<AttributeInstance> attributeInstanceList = attributeInsRepository.findAttributeInstancesBy(orderProductInstance.getProductInstance());

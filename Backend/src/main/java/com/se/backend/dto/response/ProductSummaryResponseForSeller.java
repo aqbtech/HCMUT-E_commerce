@@ -1,5 +1,6 @@
 package com.se.backend.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
@@ -8,6 +9,7 @@ public class ProductSummaryResponseForSeller {
     private String name;
     private Double rating;
     private Double minPrice;
-    private String img;
+    @JsonProperty("img")
+    private String firstImage;
     private String status;
 }

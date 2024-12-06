@@ -4,9 +4,12 @@ import com.se.backend.dto.response.CartProduct;
 import com.se.backend.dto.response.UserDeliveryInfo;
 import com.se.backend.entity.Cart_ProductInstance;
 import com.se.backend.entity.DeliveryInfor;
+import com.se.backend.entity.FileInfo;
 import com.se.backend.entity.Product;
 import com.se.backend.repository.AttributeInsRepository;
+import com.se.backend.repository.FileInfoRepo;
 import com.se.backend.service.ProductService;
+import com.se.backend.service.storage.FileService;
 import com.se.backend.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,8 @@ import java.util.List;
 public class CprMapperImpl implements Cart_ProductInstanceMapper {
 	private final ProductService productService;
 	private final AttributeInsRepository attributeInsRepository;
+	private final FileInfoRepo fileInfoRepo;
+	private final FileService fileService;
 
 	@Override
 	public List<CartProduct> toFlashProductList(List<Cart_ProductInstance> cartList) {
@@ -44,7 +49,8 @@ public class CprMapperImpl implements Cart_ProductInstanceMapper {
 		String productName = p.getName();
 		Long quantity = cartProductInstance.getQuantity();
 		Double price = cartProductInstance.getProductInstance().getPrice();
-		String imgUrl = null;
+		FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p);
+		String imgUrl = fileService.downloadFile(fileInfo).getBody();
 		String sellerId = p.getSeller().getUsername();
 		String shopName = p.getSeller().getShopName();
 		List<String> listName = new ArrayList<>();

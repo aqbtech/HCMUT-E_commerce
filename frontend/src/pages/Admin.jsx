@@ -6,6 +6,7 @@ import ProductManagement from "../components/adminPage/ProductManagement";
 import { ShopContext } from '../context/ShopContext';
 import Cookies  from 'js-cookie';
 import CategoriesManagement from '../components/adminPage/CategoriesManagement';
+import SellerMangement from "../components/adminPage/SellerManagement.jsx";
 
 const AdminPage = () => {
   const { navigate } = useContext(ShopContext); 
@@ -40,45 +41,53 @@ const AdminPage = () => {
         <h2 className="text-xl font-bold mb-4">Quản trị viên</h2>
         <ul>
           <li
-            className={`cursor-pointer py-2 ${
-              activeTab === "Users" ? "text-orange-600 font-bold" : ""
-            }`}
-            onClick={() => handleTabChange("Users")}
+              className={`cursor-pointer py-2 ${
+                  activeTab === "Users" ? "text-orange-600 font-bold" : ""
+              }`}
+              onClick={() => handleTabChange("Users")}
           >
             Quản Lý Người Dùng
           </li>
           <li
-            className={`cursor-pointer py-2 ${
-              activeTab === "products" ? "text-orange-600 font-bold" : ""
-            }`}
-            onClick={() => handleTabChange("products")}
+              className={`cursor-pointer py-2 ${
+                  activeTab === "products" ? "text-orange-600 font-bold" : ""
+              }`}
+              onClick={() => handleTabChange("products")}
           >
             Quản Lý Sản Phẩm
           </li>
           <li
-            className={`cursor-pointer py-2 ${
-              activeTab === "saleOff" ? "text-orange-600 font-bold" : ""
-            }`}
-            onClick={() => handleTabChange("saleOff")}
+              className={`cursor-pointer py-2 ${
+                  activeTab === "saleOff" ? "text-orange-600 font-bold" : ""
+              }`}
+              onClick={() => handleTabChange("saleOff")}
           >
-            Quản lý chính sách
+            Quản lý Chính sách
           </li>
           <li
-            className={`cursor-pointer py-2 ${
-              activeTab === "categories" ? "text-orange-600 font-bold" : ""
-            }`}
-            onClick={() => handleTabChange("categories")}
+              className={`cursor-pointer py-2 ${
+                  activeTab === "categories" ? "text-orange-600 font-bold" : ""
+              }`}
+              onClick={() => handleTabChange("categories")}
           >
-            Quản lý danh mục
+            Quản lý Danh mục
+          </li>
+          <li
+              className={`cursor-pointer py-2 ${
+                  activeTab === "Seller" ? "text-orange-600 font-bold" : ""
+              }`}
+              onClick={() => handleTabChange("Sellers")}
+          >Quản lý Người bán
           </li>
         </ul>
       </div>
 
       {/* Main Content */}
       <div className="w-3/4 p-6 bg-white">
-        {activeTab === "Users" && <UserManagement />}
-        {activeTab === "products" && <ProductManagement />}
+        {activeTab === "Users" && <UserManagement/>}
+        {activeTab === "products" && <ProductManagement/>}
         {activeTab === "categories" && <CategoriesManagement />}
+        {activeTab === "Sellers" && <SellerMangement />}
       </div>
     </div>
   );

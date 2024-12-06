@@ -1,5 +1,6 @@
 package com.se.backend.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public class ReviewProductInstanceResponse {
     @NoArgsConstructor
     public static class OrderReview {
         private String productName;
+        @JsonProperty("img")
+        private String firstImage;
         private String orderId;
         private String productInstanceId;
         private double price;

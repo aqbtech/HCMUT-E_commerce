@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Cookies from "js-cookie";
 import {getAllCategory} from "../../fetchAPI/fetchCategory.jsx";
-import {createProduct, updateProduct} from "../../fetchAPI/fetchProduct.jsx";
+import {createProduct, updateProduct, uploadIMG} from "../../fetchAPI/fetchProduct.jsx";
 import {toast} from "react-toastify";
 
 const UpdateProductModal = ({isOpen, onClose, initData, productId}) => {
@@ -184,6 +184,11 @@ const UpdateProductModal = ({isOpen, onClose, initData, productId}) => {
         try {
             console.log(formData);
             await updateProduct(formData);
+            const uploadPromises = images.map((image) =>
+                uploadIMG(image, productId)
+            );
+            await Promise.all(uploadPromises);
+            console.log('Tất cả ảnh đã upload thành công!');
             toast.success("Cập nhật sản phẩm thành công");
             onClose();
             setFormData({
@@ -196,7 +201,7 @@ const UpdateProductModal = ({isOpen, onClose, initData, productId}) => {
                     { attributeValues: [""], price: "", quantityInStock: "" },
                 ],
             })
-
+            setImages([])
         } catch (err){
             toast.error("Lỗi khi tạo sản phẩm")
         }

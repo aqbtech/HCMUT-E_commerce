@@ -11,6 +11,7 @@ public class GetDetailProductResponse {
     private String productId;
     private String name;
     private String description;
+    private List<String> img;
     private String category;
     private List<AttributeRequest> attributes;
     private List<ProductInstanceRequest> productInstances;

@@ -17,8 +17,19 @@ const ProductManagement = () => {
     const loadProducts = async () => {
         try {
             const response = await getProductOfSeller(page);
-            setListProduct(response.content)
-            setHasMore(listProduct.length + response.content.length < response.totalElements);
+            if(page === 0) {
+                setListProduct(response.content)
+                setHasMore(page + 1 < response.page.totalPages);
+            } else {
+                setListProduct((prevData ) => {
+                    const newData = response.content.filter(
+                        (newItem) =>
+                            !prevData.some((prevItem) => prevItem.productId === newItem.productId)
+                    );
+                    return [...prevData, ...newData]
+                });
+            }
+            setHasMore(page + 1 < response.page.totalPages);
         } catch(err) {
             throw err;
         }

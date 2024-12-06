@@ -5,7 +5,7 @@ import {toast} from "react-toastify";
 import product from "../pages/Product.jsx";
 import AddProductModal from "./shopPage/AddProductModal.jsx";
 import UpdateProductModal from "./shopPage/UpdateProductModal.jsx";
-const ProductTestItem = ({img, name, price, rating, status, productId}) => {
+const ProductTestItem = ({image, name, price, rating, status, productId}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { currency } = useContext(ShopContext);
     const [isVisible, setIsVisible] = useState(status === "ENABLED"); // Trạng thái ẩn/hiện sản phẩm, mặc định theo status
@@ -56,7 +56,7 @@ const ProductTestItem = ({img, name, price, rating, status, productId}) => {
             {/* Hình ảnh sản phẩm */}
             <div className="flex-shrink-0">
                 <img
-                    src={img}
+                    src= {image}
                     alt={name}
                     className="w-32 h-32 object-cover rounded-l-lg"
                 />
