@@ -3,9 +3,10 @@ import Content from '../components/homePage/Content';
 import LatestProduct from '../components/homePage/LatestProduct';
 import OurPolicy from '../components/homePage/OurPolicy';
 import Category from '../components/homePage/Category';
-import {  getProduct, getProductOfCategory} from '../fetchAPI/fetchProduct';
+import {  getProduct, getProductForSearch} from '../fetchAPI/fetchProduct';
 import { getAllCategories } from '../fetchAPI/fetchCategory';
 import { toast } from 'react-toastify';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Home = () => { 
   const [listProduct, setListProduct] = useState([]);
@@ -18,18 +19,27 @@ const Home = () => {
   
   // Hàm load sản phẩm phân trang
   const loadProducts = async (page) => {
+    if(loading) return;
+    setLoading(true);
     try {
       if (category.length === 0) {
         const response = await getProduct(page);
         setListProduct(response.content);
         setHasMore(page + 1 < response.page.totalPages);
       } else {
-        const response = await getProductOfCategory(category, page);
-        setListProduct(page === 0 ? response.content : [...listProduct, ...response.content]);
-        setHasMore(page + 1 < response.page.totalPages);
+        const body = {
+          "categories" :  Array.isArray(category) ? category : [category],
+          "locations": [],
+          "ratings": []
+        }
+        const response = await getProductForSearch("", page, "", body, true);
+        setListProduct(response.productSummaryPage.content);
+        setHasMore(page + 1 < response.productSummaryPage.page.totalPages);
       }
     } catch(err) {
       toast.error("lỗi khi lấy sản phẩm home_page")
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,7 +57,6 @@ const Home = () => {
   }, []);
   
   useEffect(() => {
-    window.scrollTo(0, 0);
     loadProducts(page); 
   }, [page, category]);
 
@@ -75,24 +84,35 @@ const Home = () => {
         data={listCategories || []} 
         onCategorySelect={handleCategorySelect} 
       />
-      <LatestProduct data={listProduct} />
-      <div className="flex justify-center gap-4 mt-4">
-        <button
-          onClick={handlePreviousPage}
-          disabled={page === 0}
-          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Trang Trước
-        </button>
-        <p>{page + 1}</p>
-        <button
-          onClick={handleNextPage}
-          disabled={!hasMore}
-          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-        >
-          Trang Tiếp
-        </button>
-      </div>
+      {
+        loading ?
+        <div className="flex justify-center mt-32 h-screen">
+           <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
+         </div>
+        : 
+        <LatestProduct data={listProduct} />
+      }
+      
+      {(
+          <div className="flex justify-center gap-4 mt-4">
+            <button
+              onClick={handlePreviousPage}
+              disabled={page === 0}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+            >
+              Trang Trước
+            </button>
+            <p>{page + 1}</p>
+            <button
+              onClick={handleNextPage}
+              disabled={!hasMore}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+            >
+              Trang Tiếp
+            </button>
+          </div>
+        )}
+      
       <OurPolicy />
     </div>
   );

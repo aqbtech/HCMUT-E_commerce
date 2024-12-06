@@ -5,9 +5,10 @@ import {toast} from "react-toastify";
 import product from "../pages/Product.jsx";
 import AddProductModal from "./shopPage/AddProductModal.jsx";
 import UpdateProductModal from "./shopPage/UpdateProductModal.jsx";
+import { Link } from 'react-router-dom';
 const ProductTestItem = ({image, name, price, rating, status, productId}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { currency } = useContext(ShopContext);
+    const { formatCurrency } = useContext(ShopContext);
     const [isVisible, setIsVisible] = useState(status === "ENABLED"); // Trạng thái ẩn/hiện sản phẩm, mặc định theo status
     const [detailProduct, setDetailProduct] = useState(null);
     useEffect(() => {
@@ -63,9 +64,12 @@ const ProductTestItem = ({image, name, price, rating, status, productId}) => {
             </div>
             {/* Thông tin sản phẩm */}
             <div className="flex flex-col justify-between flex-1 p-5">
-                <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
+                <Link to={`/product/${productId}`}>
+                    <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
+                </Link>
+                
                 <p className="text-gray-600">
-                    Giá: <span className="font-medium text-green-600">{price} {currency}</span>
+                    Giá: <span className="font-medium text-green-600">{formatCurrency(price)}</span>
                 </p>
                 <div className="text-yellow-500 flex items-center">
                     {Array.from({ length: 5 }, (_, index) => (

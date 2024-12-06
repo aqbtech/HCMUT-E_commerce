@@ -1,9 +1,6 @@
 import Title from '../Title';
-import { assets } from '../../assets/assets';
 
-const Category = ({ data, onCategorySelect}) => {
-
-
+const Category = ({ data, onCategorySelect }) => {
   const handleCategoryClick = (categoryId) => {
     onCategorySelect(categoryId);
   };
@@ -17,31 +14,29 @@ const Category = ({ data, onCategorySelect}) => {
         </p>
       </div>
 
-      {/* Hiển thị danh mục */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-y-6">
-         <div
-            onClick={() => handleCategoryClick("Tất cả", "")}
-            className="flex flex-col items-center cursor-pointer"
-          >
-            <div className="bg-gray-200 h-20 w-20 flex items-center justify-center rounded-full mb-2">
-              <span className="text-xl font-semibold">
-                <img src={assets.logo} alt="" />
-              </span>
-            </div>
-            <p className="text-sm">Tất cả</p>
-          </div>
+      {/* Thanh cuộn ngang */}
+      <div
+        className="flex overflow-x-auto space-x-4 py-4 no-scrollbar scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent hover:scrollbar-thumb-gray-600"
+        style={{
+          scrollBehavior: 'smooth',
+        }}
+      >
+        {/* Danh mục Tất cả */}
+        <div
+          className="flex-none w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-center cursor-pointer hover:scale-105 transform transition duration-300"
+          onClick={() => handleCategoryClick('')}
+        >
+          <span className="text-sm font-semibold">Tất cả</span>
+        </div>
+
+        {/* Các danh mục */}
         {data.map((item) => (
           <div
             key={item.name}
             onClick={() => handleCategoryClick(item.name)}
-            className="flex flex-col items-center cursor-pointer"
+            className="flex-none w-32 h-32 bg-gray-200 text-gray-800 rounded-full flex items-center justify-center text-center cursor-pointer hover:bg-gray-300 hover:scale-105 transform transition duration-300"
           >
-            <div className="bg-gray-200 h-20 w-20 flex items-center justify-center rounded-full mb-2">
-              <span className="text-xl font-semibold">
-                <img src={assets.logo} alt="" />
-              </span>
-            </div>
-            <p className="text-sm">{item.name}</p>
+            <span className="text-sm font-medium">{item.name}</span>
           </div>
         ))}
       </div>

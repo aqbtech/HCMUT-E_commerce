@@ -102,7 +102,7 @@ const CategoriesManagement = () => {
                 </button>
             </div>
 
-            <table className="w-full border-collapse border border-gray-200 text-gray-700">
+            <table className="w-full border-collapse border text-gray-700">
                 <thead>
                     <tr className="bg-gray-100">
                         <th className="border border-gray-200 p-3 text-left">ID</th>
@@ -134,7 +134,7 @@ const CategoriesManagement = () => {
                 </tbody>
             </table>
 
-            {(page + 1 < totalPages) && (
+            {(
                 <div className="flex items-center justify-center gap-4 mt-4">
                     <button
                         onClick={() => setPage((prev) => Math.max(prev - 1, 0))}

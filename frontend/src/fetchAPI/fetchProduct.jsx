@@ -130,9 +130,10 @@ export const updateProduct = async (body) => {
 }
 
 export const getProductForShop = async (shopId, page, categories, sort ) => {
+  
   try {
-    const res = await axiosPublic.get(`/product_shop?shopId=${shopId}&category=${categories}&sort=${sort}&page=${page}`); 
-    console.log(`Thành công lấy sản phẩm của shop`);
+    const res = await axiosPublic.get(`/shop_product?shop=${shopId}&category=${categories}&sort=${sort}&page=${page}`); 
+    console.log(`Thành công lấy sản phẩm của shop`, res);
     return res.data.result;
   } catch(err) {
     console.log("Lỗi khi lấy sản phẩm của shop");

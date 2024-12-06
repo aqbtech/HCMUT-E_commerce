@@ -8,14 +8,14 @@ import { logOut } from '../../fetchAPI/fetchAccount';
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const { search, setSearch, curState, setCurState, setAccount, totalQuantityInCart, role, location } = useContext(ShopContext);
-  const pagesWithoutSearch = ['/Login', '/reset', '/Regist', '/admin', '/shop', '/RegistSeller', '/FakeAPI', '/Error_403', '/NotFound'];
+  const pagesWithoutSearch = ['/login', '/reset', '/regist', '/admin', '/shop', '/RegistSeller', '/FakeAPI'];
 
   const onSubmitHandler = async () => {
     try {
       await logOut();
       setCurState('UnLogin');
       Cookies.remove('username');
-      Cookies.remove('token');
+      Cookies.remove('token'); 
       Cookies.remove("role")
       setAccount(null);
       console.log('logOut success');
