@@ -12,7 +12,7 @@ public interface ProductInOrderMapper {
     @Mapping(target = "productId", source = "id")
     @Mapping(target = "productName", ignore = true)
     @Mapping(target = "listAtt", ignore = true)
-    @Mapping(target = "IMG", ignore = true)
+//    @Mapping(target = "IMG", ignore = true)
     @Mapping(target = "price", source = "price")
     @Mapping(target = "quantity", ignore = true)
     Product_of_GetOrderResponse toProductDetail(ProductInstance product);

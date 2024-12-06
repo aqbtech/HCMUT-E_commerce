@@ -202,6 +202,7 @@ public class GuestServiceImpl implements GuestService {
 				.address(address)
 				.followers(0)
 				.status(Boolean.FALSE)
+				.shopName(userRegister.getShopName())
 				.email(userRegister.getEmail())
 				.phone(userRegister.getPhone())
 				.createdDate(LocalDate.now())

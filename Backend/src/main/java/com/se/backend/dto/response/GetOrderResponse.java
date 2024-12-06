@@ -14,6 +14,7 @@ public class GetOrderResponse {
         private String price;
         private List<Product_of_GetOrderResponse> listProduct;
         private DeliveryAddress_of_GetOrderResponse deliveryAddress;
+        private String seller;
         private String method;
         private Double shipping_fee;
 }

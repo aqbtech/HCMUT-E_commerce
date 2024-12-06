@@ -86,6 +86,12 @@ public class BuyerServiceImpl implements BuyerService {
                 .followId(followId)
                 .build();
         followRepository.save(follow);
+        seller.setFollowers(seller.getFollowers() + 1);
+        try {
+            sellerRepository.save(seller);
+        } catch (WebServerException e) {
+            throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+        }
         return FollowResponse.builder()
                 .msg("Follow success")
                 .build();
@@ -93,13 +99,22 @@ public class BuyerServiceImpl implements BuyerService {
 
     @Override
     public FollowResponse unFollowSeller(String buyerUsername, String sellerUsername) {
-
+        Buyer buyer = buyerRepository.findByUsername(buyerUsername)
+                .orElseThrow(() -> new IllegalArgumentException("Buyer not found"));
+        Seller seller = sellerRepository.findByUsername(sellerUsername)
+                .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
         FollowId followId = FollowId.builder()
                 .followeeId(sellerUsername)
                 .followerId(buyerUsername)
                 .build();
 
         followRepository.delete(followRepository.findByFollowIdIs(followId));
+        seller.setFollowers(seller.getFollowers() - 1);
+        try {
+            sellerRepository.save(seller);
+        } catch (WebServerException e) {
+            throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+        }
         return FollowResponse.builder()
                 .msg("Unfollow success")
                 .build();

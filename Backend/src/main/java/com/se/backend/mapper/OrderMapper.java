@@ -16,6 +16,7 @@ public interface OrderMapper {
     @Mapping(target = "orderId", source = "orderId")
     @Mapping(target = "deliveryState", source = "status")
     @Mapping(target = "sellerName", source = "seller.shopName")
+    @Mapping(target = "seller", source = "seller.username")
     @Mapping(target = "price", ignore = true)
     @Mapping(target = "listProduct", ignore = true)
     @Mapping(target = "deliveryAddress", ignore = true)
