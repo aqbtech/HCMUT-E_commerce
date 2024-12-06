@@ -318,6 +318,11 @@ public class OrderService  {
             product.setSale(totalSale);
 
             String productName = p.getName();
+
+            FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p).getFirst();
+            String path = fileService.downloadFile(fileInfo).getBody();
+            product.setFirstImage(path);
+
             List<Attr_of_GetOrderResponse> attrOfGetOrderResponseList = new ArrayList<>();
 //          ------------------------------------------------------------------
             List<Attribute> attributeList = attributeRepository.findByOfProduct(p);

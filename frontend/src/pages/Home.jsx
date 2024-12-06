@@ -20,7 +20,7 @@ const Home = () => {
     try {
       if (category.length === 0) {
         const response = await getProduct(page);
-        setListProduct(page === 0 ? response.content : [...listProduct, ...response.content]);
+        setListProduct(response.content);
         setHasMore(page + 1 < response.page.totalPages);
       } else {
         const response = await getProductOfCategory(category, page);
