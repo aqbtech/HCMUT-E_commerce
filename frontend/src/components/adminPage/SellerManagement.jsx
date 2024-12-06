@@ -82,20 +82,20 @@ const SellerManagement = () => {
       ) : (
         <table className="w-full border border-gray-300">
           <thead>
-            <tr>
-              <th className="p-2 border-b text-left">STT</th>
-              <th className="p-2 border-b text-left">Tên cửa hàng</th>
-              <th className="p-2 border-b text-left">Tên người bán</th>
-              <th className="p-2 border-b text-left">Thao tác</th>
-            </tr>
+          <tr className="bg-gray-100">
+              <th className="border border-gray-200 p-3 text-left">STT</th>
+              <th className="border border-gray-200 p-3 text-left">Tên cửa hàng</th>
+              <th className="border border-gray-200 p-3 text-left">Tên người bán</th>
+              <th className="border border-gray-200 p-3 text-left">Thao tác</th>
+          </tr>
           </thead>
           <tbody>
             {users.length > 0 ? (
               users.map((user, index) => (
                 <tr key={user.id}>
-                  <td className="p-2 border-b">{index + 1 + page * 10}</td>
-                  <td className="p-2 border-b">{user.shopName}</td>
-                  <td className="p-2 border-b">{user.sellerName}</td>
+                  <td className="border border-gray-200 p-3">{index + 1 + page * 10}</td>
+                  <td className="border border-gray-200 p-3">{user.shopName}</td>
+                  <td className="border border-gray-200 p-3">{user.sellerName}</td>
                   <td className="p-2 border-b">
                     <button
                       className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-700"
