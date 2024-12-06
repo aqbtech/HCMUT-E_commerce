@@ -2,10 +2,12 @@ package com.se.backend.service;
 
 import com.se.backend.dto.request.AddPolicyRequest;
 import com.se.backend.dto.request.UpdatePolicyRequest;
+import com.se.backend.dto.response.CategoryResponse;
 import com.se.backend.dto.response.PolicyResponse;
 import com.se.backend.entity.*;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
+import com.se.backend.mapper.CategoryMapper;
 import com.se.backend.mapper.PolicyMapper;
 import com.se.backend.repository.*;
 import jakarta.transaction.Transactional;
@@ -197,7 +199,14 @@ public class PolicyServiceImpl implements PolicyService{
         List<ShopPolicy> shopPolicies = shopPolicyPage.getContent();
         List<PolicyResponse> responses = new ArrayList<>();
         for(ShopPolicy shopPolicy : shopPolicies){
-            responses.add(policyMapper.toPolicyDetail(shopPolicy));
+            List<Seller> sellerList = shopPolicy.getSellers();
+            List<String> target = new ArrayList<>();
+            for(Seller seller : sellerList){
+                target.add(seller.getShopName());
+            }
+            PolicyResponse r1 = policyMapper.toPolicyDetail(shopPolicy);
+            r1.setTarget(target);
+            responses.add(r1);
         }
         return new PageImpl<>(
                 responses,
@@ -212,7 +221,14 @@ public class PolicyServiceImpl implements PolicyService{
         List<CategoryPolicy> categoryPolicies = catetgoryPolicyPage.getContent();
         List<PolicyResponse> responses = new ArrayList<>();
         for(CategoryPolicy catetgoryPolicy : categoryPolicies){
-            responses.add(policyMapper.toPolicyDetail(catetgoryPolicy));
+            List<Category> categoryList = catetgoryPolicy.getCategories();
+            List<String> target = new ArrayList<>();
+            for(Category category : categoryList){
+                target.add(category.getRichTextName());
+            }
+            PolicyResponse r1 = policyMapper.toPolicyDetail(catetgoryPolicy);
+            r1.setTarget(target);
+            responses.add(r1);
         }
         return new PageImpl<>(
                 responses,
