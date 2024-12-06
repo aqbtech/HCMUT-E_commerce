@@ -230,7 +230,8 @@ public class ProductManagementServiceImpl implements IProductManagementSerivce {
                 .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
         Page<Product> products = productRepository.findProductBySeller(seller, pageable);
         List<Product> productsList = products.getContent();
-        return PaginationUtils.convertListToPage(productSummaryForSellerMapper.toProductSummariesForSeller(productsList), pageable, (int)products.getTotalElements());
+        var response = productSummaryForSellerMapper.toProductSummariesForSeller(productsList);
+        return new PageImpl<>(response, pageable, products.getTotalElements());
     }
 
     @Override

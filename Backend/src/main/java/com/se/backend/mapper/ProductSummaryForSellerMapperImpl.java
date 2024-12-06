@@ -26,6 +26,7 @@ public class ProductSummaryForSellerMapperImpl implements ProductSummaryForSelle
         productSummary.setName( product.getName() );
         productSummary.setRating( reviewService.ratingCalculator( product.getId() ) );
         productSummary.setMinPrice( productService.minPriceOf( product.getId() ) );
+        productSummary.setShopName(product.getSeller().getShopName());
         String path = fileService.downloadFile(product.getProductImgs().getFirst()).getBody();
         productSummary.setFirstImage(path);
         productSummary.setStatus(product.getStatus());

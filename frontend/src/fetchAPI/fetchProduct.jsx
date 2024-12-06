@@ -119,6 +119,18 @@ export const getProductOfSeller = async (page) => {
     }
 }
 
+
+export const getProductForAdmin = async (page) => {
+    try {
+        const res = await axiosClient2.get(`/api/admin/product/all-product?page=${page}`)
+        console.log(`Lấy thành công list sản phẩm:`, res);
+        return res.data.result;
+    } catch (err) {
+        console.log(`Lỗi khi lấy list sản phẩm: `, err);
+        throw err;
+    }
+}
+
 export const productDetail = async (productId) => {
     const response = await axiosClient2.get(`/seller/detailed-product?productId=${productId}`);
     return response.data.result;

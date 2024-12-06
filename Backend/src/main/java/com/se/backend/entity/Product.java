@@ -60,6 +60,7 @@ import java.util.List;
 				@NamedAttributeNode("id"),
 				@NamedAttributeNode("name"),
 				@NamedAttributeNode("description"),
+				@NamedAttributeNode("seller"),
 				@NamedAttributeNode("category"),
 				@NamedAttributeNode("productImgs")
 //				@NamedAttributeNode(value = "seller", subgraph = "location")
