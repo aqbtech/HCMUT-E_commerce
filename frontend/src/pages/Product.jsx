@@ -217,7 +217,7 @@ const Product = () => {
           </div>
           <p className="mt-5 text-3xl font-medium">
             {selectedInstant === null ? (
-              `${formatCurrency(productData.minPrice)}`
+              `${formatCurrency(productData.minPrice * (1 - productData.sale))}`
             ) : selectedInstant === "not_found" ? (
               "Sản phẩm đã hết :((("
             ) : (
@@ -229,9 +229,9 @@ const Product = () => {
                 </span>
                 {/* Hiển thị giá sau giảm */}
                 <span className="text-3xl font-medium">
-                  {selectedInstant.sale > 0
+                  {productData.sale > 0
                     ? formatCurrency(
-                        selectedInstant.price * (1 - selectedInstant.sale)
+                        selectedInstant.price * (1 - productData.sale)
                       )
                     : formatCurrency(selectedInstant.price)}
                 </span>

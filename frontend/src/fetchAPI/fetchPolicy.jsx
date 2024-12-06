@@ -26,13 +26,9 @@ export const getCategoryPolicy = async (page) => {
 
 
 export const createPolicy = async (body) => {
-    try {
-        const res = await axiosClient2.post(`/policy/add`, body);
-        console.log(`Tạo chính sách thành công!`, res);
-        return res.data.result;
-    } catch (err) {
-        console.log(`Lỗi khi tạo chính sách!`);
-    }
+    const res = await axiosClient2.post(`/policy/add`, body);
+    console.log(`Tạo chính sách thành công!`, res);
+    return res.data.result;
 }
 
 
@@ -43,13 +39,9 @@ export const updatePolicy = async (body) => {
 
 
 export const deletePolicy =  async (type, policyId) => {
-    try {
-        const response = await axiosClient2.delete(`/policy/delete?type=${type}&policyId=${policyId}`)
-        console.log("Xóa chính sách thành công!",response);
-        return response.data;
-    } catch(err) {
-        console.log("Xóa chính sách không thành công!", err);
-    }
+    const response = await axiosClient2.delete(`/policy/delete?type=${type}&policyId=${policyId}`)
+    console.log("Xóa chính sách thành công!",response);
+    return response.data;
 }
 
 

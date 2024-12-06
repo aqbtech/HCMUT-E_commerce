@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { deleteCategory, getCategoriesForAdmin, updateCategory, createCategory } from "../../fetchAPI/fetchCategory";
 import { toast } from "react-toastify";
+import Title from "../Title";
 
 const CategoriesManagement = () => {
     const [categories, setCategories] = useState([]);
@@ -90,8 +91,10 @@ const CategoriesManagement = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded shadow-lg">
-            <h2 className="text-2xl font-bold mb-6">Danh mục sản phẩm</h2>
+        <div>
+            <h2 className="text-2xl font-bold mb-4">
+                <Title text1="Quản Lý" text2="Người Bán" />
+            </h2>
 
             <div className="mb-4 flex justify-end">
                 <button
@@ -120,13 +123,13 @@ const CategoriesManagement = () => {
                                     onClick={() => openModal("edit", category)}
                                     className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
                                 >
-                                    Edit
+                                    Sửa
                                 </button>
                                 <button
                                     onClick={() => handleDelete(category.id)}
                                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
                                 >
-                                    Delete
+                                    Xóa
                                 </button>
                             </td>
                         </tr>
