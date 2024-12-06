@@ -9,6 +9,7 @@ import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.*;
 import com.se.backend.repository.*;
+import com.se.backend.service.storage.FileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,6 +59,10 @@ public class OrderService  {
     private final AttributeRepository attributeRepository;
     @Autowired
     private final DeliveryDateApiService deliveryDateApiService;
+    @Autowired
+    private final FileService fileService;
+    @Autowired
+    private final FileInfoRepo fileInfoRepo;
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         long addressId;
@@ -265,10 +271,14 @@ public class OrderService  {
             Product_of_GetOrderResponse product = productInOrderMapper.toProductDetail(productInstance);
             Product p = productRepository.findProductById(productInstance.getBuildProduct().getFirst().getId().getProductId());
             String productName = p.getName();
+            FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p);
+            String path = fileService.downloadFile(fileInfo).getBody();
+            product.setFirstImage(path);
             List<Attr_of_GetOrderResponse> attrOfGetOrderResponseList = new ArrayList<>();
 //          ------------------------------------------------------------------
             List<Attribute> attributeList = attributeRepository.findByOfProduct(p);
             List<AttributeInstance> attributeInstanceList = attributeInsRepository.findAttributeInstancesBy(productInstance);
+
 //            AttributeInstance attributeInstance = attributeInsRepository.findById(
 //                    productInstance.getBuildProduct().getId().getAttributeInstanceId())
 //                    .orElseThrow(()-> new WebServerException(ErrorCode.UNKNOWN_ERROR));

@@ -48,6 +48,7 @@ const ReviewPage = () => {
 
     const body ={
         productInstanceId: selectedProduct.productInstanceId,
+        img : selectedProduct.img,
         orderId: selectedProduct.orderId,
         rating : rating,
         comment: reviewText,
@@ -110,7 +111,7 @@ const ReviewPage = () => {
               {/* Hình ảnh sản phẩm */}
               <div className="flex items-center">
                 <img
-                  src={product.productImage || "/placeholder-image.png"} // Thêm hình ảnh dự phòng nếu không có ảnh
+                  src={product.img} // Thêm hình ảnh dự phòng nếu không có ảnh
                   alt={product.productName}
                   className="w-24 h-24 object-cover rounded mr-4"
                 />

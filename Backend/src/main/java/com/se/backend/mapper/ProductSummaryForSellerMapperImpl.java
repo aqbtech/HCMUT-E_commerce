@@ -4,6 +4,7 @@ import com.se.backend.dto.response.ProductSummaryResponseForSeller;
 import com.se.backend.entity.Product;
 import com.se.backend.service.ProductService;
 import com.se.backend.service.ReviewService;
+import com.se.backend.service.storage.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class ProductSummaryForSellerMapperImpl implements ProductSummaryForSellerMapper{
     private final ReviewService reviewService;
     private final ProductService productService;
-
+    private final FileService fileService;
     public ProductSummaryResponseForSeller toProductSummaryForSeller(Product product) {
         if ( product == null ) {
             return null;
@@ -25,7 +26,8 @@ public class ProductSummaryForSellerMapperImpl implements ProductSummaryForSelle
         productSummary.setName( product.getName() );
         productSummary.setRating( reviewService.ratingCalculator( product.getId() ) );
         productSummary.setMinPrice( productService.minPriceOf( product.getId() ) );
-        productSummary.setImg( null );
+        String path = fileService.downloadFile(product.getProductImgs().getFirst()).getBody();
+        productSummary.setFirstImage(path);
         productSummary.setStatus(product.getStatus());
         return productSummary;
     }
