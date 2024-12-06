@@ -8,6 +8,7 @@ public class ProductSummaryResponseForSeller {
     private String productId;
     private String name;
     private Double rating;
+    private String shopName;
     private Double minPrice;
     @JsonProperty("img")
     private String firstImage;

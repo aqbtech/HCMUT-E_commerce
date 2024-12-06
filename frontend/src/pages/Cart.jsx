@@ -130,6 +130,7 @@ const Cart = () => {
           productName: item.productName,
           productId: item.productId,
           listAtt: item.listName,
+          isCart : true,
           instantId: item.productInstanceId,
           quantity: item.quantity,
           price: item.price,
