@@ -26,6 +26,8 @@ import com.se.backend.utils.PaginationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +38,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -178,7 +181,7 @@ public class GuestServiceImpl implements GuestService {
 				.status(Boolean.FALSE)
 				.email(userRegister.getEmail())
 				.phone(userRegister.getPhone())
-				.createdDate(java.time.LocalDate.now())
+				.createdDate(LocalDate.now())
 				.build();
 		BuyerCartId buyerCartId = new BuyerCartId();
 		buyerCartId.setUsername(newSeller.getUsername());
@@ -207,7 +210,7 @@ public class GuestServiceImpl implements GuestService {
 				.email(userRegister.getEmail())
 				.phone(userRegister.getPhone())
 				.dob(userRegister.getDob())
-				.createdDate(java.time.LocalDate.now())
+				.createdDate(LocalDate.now())
 				.build();
 		BuyerCartId buyerCartId = new BuyerCartId();
 		buyerCartId.setUsername(newBuyer.getUsername());
@@ -269,11 +272,34 @@ public class GuestServiceImpl implements GuestService {
 				.build();
 	}
 
+	private List<Product> filterByRating(List<Product> productsList, List<String> ranges){
+		List<Double> left = new ArrayList<>();
+		List<Double> right = new ArrayList<>();
+		for(String range : ranges){
+			String[] bounds = range.split("-");
+			double lowerBound = Double.parseDouble(bounds[0]);
+			double upperBound = Double.parseDouble(bounds[1]);
+			left.add(lowerBound); right.add(upperBound);
+		}
+		List<Product> res = new ArrayList<>();
+		for(Product product: productsList){
+			Double rating = reviewService.ratingCalculator(product.getId());
+			for(int i = 0; i < left.size(); i ++){
+				if(rating >= left.get(i) && rating <= right.get(i)){
+                    res.add(product);
+					break;
+				}
+			}
+		}
+		return res;
+	}
+
+
 	public SearchFilterResponse filterProducts(String keyword, int page, String sort, FilterProductRequest request) {
 		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
 		Specification<Product> spec = Specification.where(ProductSpecification.hasCategories(request.getCategories()))
-				.and(ProductSpecification.hasLocation(request.getLocations()))
-				.and(ProductSpecification.hasRatingIn(request.getRatings()));
+				.and(ProductSpecification.hasLocation(request.getLocations()));
+//				.and(ProductSpecification.hasRatingIn(request.getRatings()));
 
 		// Nếu có keyword, thêm điều kiện tìm kiếm
 		if (keyword != null && !keyword.trim().isEmpty()) {
@@ -282,13 +308,15 @@ public class GuestServiceImpl implements GuestService {
 		}
 
 		List<Product> productsList = productRepository.findAll(spec);
+		if(!request.getRatings().isEmpty()){
+			productsList = this.filterByRating(productsList, request.getRatings());
+		}
 		List<ProductSummary> productSummaries = productSummaryMapper.toProductSummaries(productsList);
 		if ("asc".equalsIgnoreCase(sort)) {
 			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice));
 		} else if ("desc".equalsIgnoreCase(sort)) {
 			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice).reversed());
 		}
-		PaginationUtils.convertListToPage(productSummaries, pageable);
 		List<String> ratings = List.of("0-1", "1-2", "2-3", "3-4", "4-5");
 		List<String> categories = this.getCategoriesForFilter(productsList);
 		List<String> locations = this.getLocationsForFilter(productsList);
@@ -303,7 +331,7 @@ public class GuestServiceImpl implements GuestService {
 				.locations(request.getLocations())
 				.ratings(request.getRatings())
 				.build();
-		Page<ProductSummary> productSummaryPage = PaginationUtils.convertListToPage(productSummaries, pageable);
+		Page<ProductSummary> productSummaryPage = PaginationUtils.convertListToPage(productSummaries, pageable, productsList.size());
 		return SearchFilterResponse.builder()
 				.productSummaryPage(productSummaryPage)
 				.available(filterResponse)
@@ -358,7 +386,7 @@ public class GuestServiceImpl implements GuestService {
 				shopAddressResponse.getCommune(),
 				shopAddressResponse.getDistrict(),
 				shopAddressResponse.getProvince());
-		Boolean isFollowed = false;
+		boolean isFollowed = false;
 		if(!"guest".equals(buyername)){
 			isFollowed = followRepository.existsByBuyerAndSeller(buyername, sellername);
 		}

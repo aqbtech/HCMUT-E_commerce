@@ -1,6 +1,7 @@
 package com.se.backend.service.searchService;
 
 import com.se.backend.entity.*;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
@@ -49,21 +50,27 @@ public class ProductSpecification {
                     try {
                         double lowerBound = Double.parseDouble(bounds[0]);
                         double upperBound = Double.parseDouble(bounds[1]);
+
+                        // Dùng AVG cho rating
+                        Expression<Double> avgRating = criteriaBuilder.avg(reviewContentJoin.get("rating"));
+
                         Predicate ratingPredicate = criteriaBuilder.and(
-                                criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.avg(reviewContentJoin.get("rating")), lowerBound),
-                                criteriaBuilder.lessThanOrEqualTo(criteriaBuilder.avg(reviewContentJoin.get("rating")), upperBound)
+                                criteriaBuilder.greaterThanOrEqualTo(avgRating, lowerBound),
+                                criteriaBuilder.lessThanOrEqualTo(avgRating, upperBound)
                         );
                         predicates.add(ratingPredicate);
                     } catch (NumberFormatException e) {
-                        //catch j giờ tr
+                        // Xử lý lỗi khi không thể chuyển đổi phạm vi thành số
+                        e.printStackTrace();
                     }
                 }
             }
 
-            // Nếu có điều kiện rating, thêm nhóm điều kiện HAVING
-            assert query != null;
-            query.groupBy(root.get("id"));
-            query.having(criteriaBuilder.or(predicates.toArray(new Predicate[0]))); // Thêm điều kiện HAVING cho rating
+            // Nếu có điều kiện rating, thêm điều kiện HAVING vào câu truy vấn
+            if (!predicates.isEmpty()) {
+                query.groupBy(root.get("id"), buildProductJoin.get("id"), productInstanceJoin.get("id"), reviewJoin.get("id"));  // Nhóm theo id của Product và các bảng liên quan
+                query.having(criteriaBuilder.or(predicates.toArray(new Predicate[0])));
+            }
 
             return criteriaBuilder.conjunction(); // Thêm j nữa thì bổ sung :v
         };
