@@ -14,9 +14,9 @@ import java.util.List;
 @Table(name = "payment_order")
 public class PaymentOrder {
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "payment_order_id")
-	private String paymentOrderCode;
+	private Long paymentOrderCode;
 	private String payment_method;
 	// -- Relationships -- //
 	// mapping delivery info

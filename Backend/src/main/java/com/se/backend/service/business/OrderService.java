@@ -9,9 +9,11 @@ import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.*;
 import com.se.backend.repository.*;
+import com.se.backend.service.payment.PaymentService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -57,6 +59,9 @@ public class OrderService  {
     private final AttributeRepository attributeRepository;
     @Autowired
     private final DeliveryDateApiService deliveryDateApiService;
+	@Autowired
+	private PaymentService paymentService;
+
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         long addressId;
@@ -78,9 +83,9 @@ public class OrderService  {
         catch (NullPointerException e){
             throw new WebServerException(ErrorCode.USER_NOT_EXIST);
         }
-        PaymentOrder paymentOrder = new PaymentOrder();
         Buyer buyer = buyerRepository.findByUsername(username)
                 .orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
+        PaymentOrder paymentOrder = new PaymentOrder();
 
         if(!deliveryInfor.getBuyer().equals(buyer)){
             CreateOrderResponse response = CreateOrderResponse.builder().msg("address of buyer does not exist").build();
@@ -90,6 +95,8 @@ public class OrderService  {
         paymentOrder.setDeliveryInfor(deliveryInfor);
         paymentOrder.setOrder(new ArrayList<>());
         paymentOrder.setReview(new ArrayList<>());
+        boolean isCod = createOrderRequest.getMethod().equals("COD");
+        long totalPay = 0;
         paymentOrder.setPayment_method(createOrderRequest.getMethod());
         paymentOrderRepository.save(paymentOrder);
         //----------------------
@@ -132,6 +139,7 @@ public class OrderService  {
         //---------------------------------------------------------------------
 
         //Create Order
+        List<Order_ProductInstance> orderProducts = new ArrayList<>();
         for (Map.Entry<String, List<Order_ProductInstance>> entry : sellerOrderMap.entrySet()){
             Seller seller = sellerRepository.findById(entry.getKey())
                     .orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
@@ -145,8 +153,7 @@ public class OrderService  {
                 throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
             }
 
-            Double totalPrice = 0.0;
-            List<Order_ProductInstance> orderProducts = new ArrayList<>();
+            double totalPrice = 0.0;
 
             for (int i = 0;  i < entry.getValue().size(); i++) {
                 Order_ProductInstance orderProductInstance = entry.getValue().get(i);
@@ -185,11 +192,40 @@ public class OrderService  {
                 throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
             }
             paymentOrder.getOrder().add(order);
+
         }
-        paymentOrderRepository.save(paymentOrder);
-        CreateOrderResponse response = CreateOrderResponse.builder().msg("successful").build();
+        long paymentOrderCode = paymentOrderRepository.save(paymentOrder).getPaymentOrderCode();
+        if (!isCod) {
+            try {
+                String url = paymentService.createPaymentOrder((int) paymentOrderCode, (int) totalPay, "Payment for order", createItem(orderProducts), username);
+                log.info("url {}", url);
+                CreateOrderResponse response = CreateOrderResponse.builder().msg("successful").url(url).build();
+                return response;
+            } catch (Exception e) {
+                log.error("Error while creating payment order", e);
+                CreateOrderResponse response = CreateOrderResponse.builder().msg("Error while creating payment order").build();
+                return response;
+            }
+        }
+        CreateOrderResponse response = CreateOrderResponse.builder()
+                .msg("successful")
+                .payment_method(createOrderRequest.getMethod())
+                .build();
         // Tạo phản hồi OrderResponse
         return response;
+    }
+    private JSONObject[] createItem(List<Order_ProductInstance> orderProductInstances) {
+        JSONObject[] item = new JSONObject[orderProductInstances.size()];
+        for (int i = 0; i < orderProductInstances.size(); i++) {
+            Order_ProductInstance orderProductInstance = orderProductInstances.get(i);
+            ProductInstance productInstance = orderProductInstance.getProductInstance();
+            JSONObject itemObject = new JSONObject();
+            itemObject.put("itemid", productInstance.getId());
+            itemObject.put("itemprice", productInstance.getPrice());
+            itemObject.put("itemquantity", orderProductInstance.getQuantity());
+            item[i] = itemObject;
+        }
+        return item;
     }
     @Transactional
     public String addProductToOrder(String orderId, AddProductRequest addProductRequest) {

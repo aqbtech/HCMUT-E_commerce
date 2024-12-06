@@ -16,7 +16,7 @@ public class ReviewId implements Serializable {
 	private String productInstanceId;
 	private String reviewContentId;
 	private String buyerUsername;
-	private String paymentOrderId;
+	private Long paymentOrderId;
 
 	@Override
 	public boolean equals(Object o) {
