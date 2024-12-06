@@ -74,7 +74,7 @@ const AdminPage = () => {
           </li>
           <li
               className={`cursor-pointer py-2 ${
-                  activeTab === "Seller" ? "text-orange-600 font-bold" : ""
+                  activeTab === "Sellers" ? "text-orange-600 font-bold" : ""
               }`}
               onClick={() => handleTabChange("Sellers")}
           >Quản lý Người bán

@@ -8,7 +8,6 @@ import {
   fetchCart,
   deleteFromCart,
 } from "../fetchAPI/fetchCart";
-import Cookies from "js-cookie";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { getMininalProfile } from "../fetchAPI/fetchAccount";
@@ -198,13 +197,15 @@ const Cart = () => {
                     <div className="flex items-center gap-5 mt-2">
                       <p>{formatCurrency(item.price)}</p>
                       <ul>
-                        {item.listValue.map((att, idx) => (
+                        { item.listValue.map((att, idx) => (
+                          (att && 
                           <li
                             key={`${item.productInstanceId}-${idx}`} // Đảm bảo key duy nhất cho từng thuộc tính
                             className="px-2 sm:px-3 sm:py-1 border bg-slate-50"
                           >
                             {att}
                           </li>
+                          )
                         ))}
                       </ul>
                     </div>

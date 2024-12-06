@@ -5,6 +5,7 @@ import ProductItem from "../components/ProductItem";
 import { getProductForSearch } from "../fetchAPI/fetchProduct";
 import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const SearchPage = () => {
   const { navigate } = useContext(ShopContext);
@@ -22,6 +23,7 @@ const SearchPage = () => {
     ratings: [],
   });
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const listSorting = [
     { name: "Liên quan nhất", value: "" },
@@ -30,12 +32,15 @@ const SearchPage = () => {
   ];
 
   const fetchProducts = async () => {
+    if(loading) return;
+    setLoading(true)
     try {
       console.log("Filter:", filters, isFilter)
       const response = await getProductForSearch(keyword, page, sort, filters, isFilter);
       setListProduct(response?.productSummaryPage.content || []);
       setAvailableFilters(response?.available || {});
       setTotalPages(response?.productSummaryPage.page.totalPages || 0);
+      setLoading(false)
     } catch (err) {
       console.error("Lỗi khi search sản phẩm:", err);
     }
@@ -76,23 +81,11 @@ const SearchPage = () => {
     setPage(newPage);
   };
 
-  if (listProduct?.length === 0) {
-    return (
-      <div className="col-span-full flex flex-col items-center justify-center text-gray-500 min-h-screen space-y-6">
-        <div className="flex flex-col items-center">
-          <img src={assets.people} alt="Không tìm thấy sản phẩm" className="w-24 h-24" />
-          <p className="text-lg font-medium mt-4">Không tìm thấy sản phẩm</p>
-        </div>
-        <button
-          onClick={() => navigate(`/`)}
-           className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        >
-          Quay về trang chủ
-        </button>
-      </div>
-    );
-  }
-
+  if(loading) return (
+    <div className="flex justify-center items-center h-screen">
+      <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
+    </div>
+  )
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t min-h-screen">
       {/* Bộ lọc */}
@@ -165,19 +158,43 @@ const SearchPage = () => {
             ))}
           </select>
         </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
-          {listProduct.map((item) => (
-            <ProductItem
-              key={item.productId}
-              id={item.productId}
-              name={item.name}
-              price={item.minPrice}
-              image={item.img}
-              rating={item.rating}
-            />
-          ))}
-        </div>
+        {
+           !loading ? (
+            listProduct?.length === 0 ? (
+              <div className="col-span-full flex flex-col items-center mt-48 text-gray-500 min-h-screen space-y-6">
+                <div className="flex flex-col items-center">
+                  <img src={assets.people} alt="Không tìm thấy sản phẩm" className="w-24 h-24" />
+                  <p className="text-lg font-medium mt-4">Không tìm thấy sản phẩm</p>
+                </div>
+                <button
+                  onClick={() => navigate(`/`)}
+                  className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                >
+                  Quay về trang chủ
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
+                {listProduct.map((item) => (
+                  <ProductItem
+                    key={item.productId}
+                    id={item.productId}
+                    name={item.name}
+                    price={item.minPrice}
+                    image={item.img}
+                    rating={item.rating}
+                  />
+                ))}
+              </div>
+            )
+          ) : (
+            <div className="flex justify-center items-center h-screen">
+              <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
+            </div>
+          )
+        }
+       
+        
 
         {/* Phân trang */}
         {totalPages > 1 && (

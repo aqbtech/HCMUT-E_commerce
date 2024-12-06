@@ -6,7 +6,6 @@ import {
   getListOrders,
 } from "../fetchAPI/fetchOrders"; 
 import { toast } from "react-toastify";
-import ErrorMessage from "/src/components/errorMessage";
 import Cookies from "js-cookie";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Link } from "react-router-dom";
@@ -172,9 +171,11 @@ const Orders = () => {
                       {/* Hiển thị thuộc tính sản phẩm */}
                       <ul className="pl-4 list-disc text-gray-600">
                         {product.listAtt?.map((att, idx) => (
+                          att.name && (
                           <li key={idx}>
                             {att.name}: {att.value}
                           </li>
+                          )
                         ))}
                       </ul>
                     </div>

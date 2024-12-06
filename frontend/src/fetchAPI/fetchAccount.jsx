@@ -58,3 +58,18 @@ export const checkStatus = async () => {
   const response = await axiosClient2.get(`/seller/status_seller?id=${id}`);
   return response.data.result;
 } 
+
+export const getCandidateSeller = async (page) => {
+  const response = await axiosClient2.get(`/api/admin/seller/get?page=${page}`);
+  return response.data.result;
+}
+
+export const approveSeller = async (id) => {
+  const response = await axiosClient2.post(`/api/admin/seller/approve?sellerName=${id}`);
+  return response.data.result;
+}
+
+export const deleteSeller = async (id) => {
+  const response = await axiosClient2.delete(`/api/admin/seller/delete?sellerName=${id}`);
+  return response.data.result;
+}
