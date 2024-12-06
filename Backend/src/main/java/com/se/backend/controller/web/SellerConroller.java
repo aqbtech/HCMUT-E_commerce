@@ -48,7 +48,13 @@ public class SellerConroller {
                 .result(response)
                 .build();
     }
-
+    @GetMapping("/status_seller")
+    public ResponseAPITemplate<Boolean> statusSeller(@AuthenticationPrincipal Jwt jwt, @RequestParam("id") String sellerId){
+        Boolean res = sellerService.statusSeller(sellerId);
+        return ResponseAPITemplate.<Boolean>builder()
+                .result(res)
+                .build();
+    }
     @PutMapping("/update_information")
     public ResponseAPITemplate<String> updateInfo(
             @RequestParam String username,

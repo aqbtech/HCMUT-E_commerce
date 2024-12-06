@@ -6,4 +6,5 @@ import com.se.backend.dto.response.ShopInformationResponse;
 public interface SellerService {
     ShopInformationResponse getShopInformation(String username);
     String updateShopInformation(String username, UpdateShopInformationRequest request);
+    Boolean statusSeller(String username);
 }

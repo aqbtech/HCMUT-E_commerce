@@ -4,6 +4,7 @@ package com.se.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.se.backend.dto.request.FilterProductRequest;
 import com.se.backend.dto.request.UserRegister;
+import com.se.backend.dto.request.UserSellerRegister;
 import com.se.backend.dto.response.*;
 import com.se.backend.service.GuestService;
 import jakarta.validation.Valid;
@@ -77,6 +78,22 @@ public class GuestController {
 				.result(res)
 				.build();
 	}
+
+	@PostMapping("/sellerregister")
+	public ResponseAPITemplate<?> sellerRegister(@Valid @RequestBody UserSellerRegister userRegister, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResponseAPITemplate.<List<ObjectError>>builder()
+					.code(400)
+					.message("Invalid input")
+					.result(bindingResult.getAllErrors())
+					.build();
+		}
+		MinimalUserProfile res = guestService.sellerRegister(userRegister);
+		return ResponseAPITemplate.<MinimalUserProfile>builder()
+				.result(res)
+				.build();
+	}
+
 	@GetMapping("/search")
 	public ResponseAPITemplate<SearchFilterResponse> searchProduct(
 			@RequestParam(value = "keyword", defaultValue = "") String keyword,

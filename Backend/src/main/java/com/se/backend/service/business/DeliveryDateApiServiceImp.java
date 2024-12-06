@@ -1,9 +1,13 @@
 package com.se.backend.service.business;
 
+import com.se.backend.dto.request.FakeOrderInforRequest;
 import com.se.backend.dto.response.FakeAPIDeliveryResponse;
 import com.se.backend.entity.Delivery;
 import com.se.backend.entity.Order;
+import com.se.backend.exception.ErrorCode;
+import com.se.backend.exception.WebServerException;
 import com.se.backend.repository.DeliveryRepository;
+import com.se.backend.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +22,25 @@ import java.util.UUID;
 public class DeliveryDateApiServiceImp implements DeliveryDateApiService {
     @Autowired
     private DeliveryRepository deliveryRepository;
+    @Autowired
+    private OrderRepository orderRepository;
     private final Random random = new Random();
+    @Override
+    public String fakeInformation(FakeOrderInforRequest request){
+        Order order = orderRepository.findById(request.getOrderId())
+                .orElseThrow(()-> new WebServerException(ErrorCode.ORDER_NOT_FOUND));
+        order.setDeliveryDate(request.getDeliveryDate());
+        order.setExpectedDeliveryDate(request.getExpectedDeliveryDate());
+        order.setDeliveryStatus(request.getStatus());
+        order.setStatus(request.getStatus());
+        try{
+            orderRepository.save(order);
+        }
+        catch (WebServerException e){
+            throw  new WebServerException(ErrorCode.UNKNOWN_ERROR);
+        }
+        return "Successful";
+    }
     @Override
     public FakeAPIDeliveryResponse fakeAPIDelivery(Order order) {
         // Lấy danh sách tất cả Delivery từ database
