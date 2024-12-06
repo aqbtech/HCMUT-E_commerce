@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface PolicyMapper {
-    @Mapping(target = "policyId", source = "policy_id")
+    @Mapping(target = "policyId", source = "policyId")
     @Mapping(target = "apply_date", source = "applyDate")
     @Mapping(target = "policy_description", source = "policyDescription")
     @Mapping(target = "policy_name", source = "policyName")
@@ -20,7 +20,7 @@ public interface PolicyMapper {
     @Mapping(target = "count", source = "count")
     PolicyResponse toPolicyDetail(ShopPolicy policy);
 
-    @Mapping(target = "policyId", source = "policy_id")
+    @Mapping(target = "policyId", source = "policyId")
     @Mapping(target = "apply_date", source = "applyDate")
     @Mapping(target = "policy_description", source = "policyDescription")
     @Mapping(target = "policy_name", source = "policyName")
