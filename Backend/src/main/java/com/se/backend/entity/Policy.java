@@ -23,6 +23,8 @@ public abstract class Policy {
 	private Long policyId;
 	private String policyName;
 	private String policyDescription;
+	private Double sale;
+	private int count;
 	private LocalDate releaseDate;
 	private LocalDate applyDate;
 }

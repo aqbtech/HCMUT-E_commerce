@@ -16,7 +16,7 @@ public class ShopPolicy extends Policy {
 	// -- mapping relationships --
 	// mapping seller
 	@ManyToMany
-	@JoinTable(name = "shop_policy_seller",
+	@JoinTable(name = "shop_policy_seller_not_have_admin",
 			joinColumns = @JoinColumn(name = "policy_id", referencedColumnName = "policy_id"),
 			inverseJoinColumns = @JoinColumn(name = "seller_id", referencedColumnName = "username"))
 	private List<Seller> sellers;
