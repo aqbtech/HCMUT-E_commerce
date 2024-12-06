@@ -25,6 +25,22 @@ public class SellerApi {
     @Autowired
     private final SellerRepository sellerRepository;
 
+    @GetMapping("/getApprovedSeller")
+    public ResponseAPITemplate<List<?>> getApporvedSeller(){
+        List<Seller> sellers = sellerRepository.findAll();
+        List<Seller> sellerList = sellers.stream().filter(seller -> seller.getStatus().equals(Boolean.TRUE)).toList();
+        List<SellerforAdminResponse> fakeres = new ArrayList<>();
+        for(Seller seller : sellerList){
+            fakeres.add(SellerforAdminResponse.builder()
+                    .sellerName(seller.getUsername())
+                    .status(seller.getStatus())
+                    .shopName(seller.getShopName())
+                    .build());
+        }
+        return ResponseAPITemplate.<List<?>>builder().result(fakeres).build();
+    }
+
+
     @GetMapping("/get")
     public ResponseAPITemplate<Page<?>> getSeller(
             @RequestParam(defaultValue = "0") int page,
@@ -32,7 +48,7 @@ public class SellerApi {
     ){
         Pageable pageable = PageRequest.of(page, size);
         Page<Seller> sellers = sellerRepository.findAll(pageable);
-        List<Seller> sellerList = sellers.getContent();
+        List<Seller> sellerList = sellers.getContent().stream().filter(seller -> seller.getStatus().equals(Boolean.FALSE)).toList();
         List<SellerforAdminResponse> fakeres = new ArrayList<>();
         for(Seller seller : sellerList){
             fakeres.add(SellerforAdminResponse.builder()

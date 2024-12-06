@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface CategoryPolicyRepository extends JpaRepository<CategoryPolicy, Long> {
-    @Query("SELECT cp FROM CategoryPolicy cp JOIN cp.categories c WHERE c.id = :categoryId")
-    List<CategoryPolicy> findCategoryId(@Param("categoryId") Long id);
+    @Query("SELECT cp FROM CategoryPolicy cp JOIN cp.categories c WHERE c.richTextName = :categoryId")
+    List<CategoryPolicy> findCategoryId(@Param("categoryId") String id);
 }
