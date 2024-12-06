@@ -134,26 +134,28 @@ const CategoriesManagement = () => {
                 </tbody>
             </table>
 
-            <div className="flex items-center justify-center gap-4 mt-4">
-                <button
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-                    disabled={page === 0}
-                    className={`px-4 py-2 border-2 rounded-lg ${page === 0 ? "border-gray-300 text-gray-400" : "border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"}`}
-                >
-                    Trang trước
-                </button>
-                <p className="text-center text-gray-700 font-medium">
-                    {page + 1} / {totalPages}
-                </p>
-                <button
-                    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
-                    disabled={page === totalPages - 1}
-                    className={`px-4 py-2 border-2 rounded-lg ${page === totalPages - 1 ? "border-gray-300 text-gray-400" : "border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"}`}
-                >
-                    Trang sau
-                </button>
-            </div>
-
+            {(page + 1 < totalPages) && (
+                <div className="flex items-center justify-center gap-4 mt-4">
+                    <button
+                        onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
+                        disabled={page === 0}
+                        className={`px-4 py-2 border-2 rounded-lg ${page === 0 ? "border-gray-300 text-gray-400" : "border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"}`}
+                    >
+                        Trang trước
+                    </button>
+                    <p className="text-center text-gray-700 font-medium">
+                        {page + 1} / {totalPages}
+                    </p>
+                    <button
+                        onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
+                        disabled={page === totalPages - 1}
+                        className={`px-4 py-2 border-2 rounded-lg ${page === totalPages - 1 ? "border-gray-300 text-gray-400" : "border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"}`}
+                    >
+                        Trang sau
+                    </button>
+                </div>
+            )}
+            
 
             {/* Shared Modal */}
             {modalMode && (

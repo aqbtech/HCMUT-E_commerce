@@ -189,12 +189,14 @@ const PlaceOrder = () => {
                       {product.listAtt.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-3">
                           {product.listAtt.map((att, idx) => (
+                            (att &&
                             <div
                               key={idx}
                               className="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-lg border"
                             >
                               <span className="mr-1">{att.value || att}</span>
                             </div>
+                            )
                           ))}
                         </div>
                       )}
