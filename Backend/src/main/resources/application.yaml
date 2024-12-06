@@ -23,3 +23,10 @@ jwt:
 firebase:
     config:
         path: ${FIREBASE_CONFIG_PATH:}
+
+payment:
+    zalo:
+        app-id: ${ZALO_APP_ID:}
+        secret-key: ${ZALO_SECRET_KEY:}
+        public-key: ${ZALO_PUBLIC_KEY:}
+        endpoint: ${ZALO_ENDPOINT:}

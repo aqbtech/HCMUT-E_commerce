@@ -25,7 +25,9 @@ public class Security {
 			"/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
 			"/query_product_detail/**", "/{productId}/reviews", "/home-page", "/register",
 			"/search", "/search/filter", "/category", "/shop_information", "/shop_product",
-			"/sellerregister"
+			"/sellerregister",
+			"/search", "/search/filter", "/category", "/shop_information", "/shop_product",
+			"/create", "/checkout"
 	};
 	private final CustomJwtDecoder customJwtDecoder;
 

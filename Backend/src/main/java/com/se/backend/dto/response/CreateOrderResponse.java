@@ -8,4 +8,6 @@ import lombok.Data;
 @Builder
 public class CreateOrderResponse {
     private String msg;
+    private String payment_method;
+    private String url;
 }

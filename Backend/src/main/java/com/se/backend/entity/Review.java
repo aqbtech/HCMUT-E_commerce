@@ -36,7 +36,6 @@ public class Review {
 	// mapping with PaymentOrder
 	@ManyToOne
 	@MapsId("paymentOrderId")
-	@JoinColumn(name = "payment_order_id", referencedColumnName = "payment_order_id"
-			, columnDefinition = "VARCHAR(64)")
+	@JoinColumn(name = "payment_order_id", referencedColumnName = "payment_order_id")
 	private PaymentOrder paymentOrder;
 }
