@@ -15,6 +15,7 @@ import java.util.List;
 @Table(name = "seller")
 public class Seller extends Business {
 	private String shopName;
+	private Boolean status;
 	private Integer followers;
 
 	// -- mapping relationships --

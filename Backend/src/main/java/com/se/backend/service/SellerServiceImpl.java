@@ -10,11 +10,13 @@ import com.se.backend.repository.AddressRepository;
 import com.se.backend.repository.ProductRepository;
 import com.se.backend.repository.ReviewContentRepository;
 import com.se.backend.repository.SellerRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,16 @@ public class SellerServiceImpl implements SellerService{
     private final ProductRepository productRepository;
     @Autowired
     private final AddressMapper addressMapper;
+    @Override
+    @Transactional
+    public Boolean statusSeller(String username){
+        Optional<Seller> seller = sellerRepository.findByUsername(username);
+        if(seller.isPresent()){
+            Boolean status = seller.get().getStatus();
+            return status ? Boolean.TRUE : Boolean.FALSE;
+        }
+        return Boolean.FALSE;
+    }
     @Override
     public ShopInformationResponse getShopInformation(String username) {
         Seller seller = sellerRepository.findByUsername(username)

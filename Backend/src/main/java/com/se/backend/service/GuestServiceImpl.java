@@ -1,6 +1,7 @@
 package com.se.backend.service;
 
 
+import com.se.backend.dto.request.UserSellerRegister;
 import com.se.backend.dto.response.*;
 import com.se.backend.entity.Attribute;
 import com.se.backend.entity.Category;
@@ -62,6 +63,7 @@ public class GuestServiceImpl implements GuestService {
 	private final ReviewContentRepository reviewContentRepository;
 	private final AddressMapper addressMapper;
 	private final FollowRepository followRepository;
+	private final AddressRepository addressRepository;
 
 
 	private final CategoryRepository categoryRepository;
@@ -153,6 +155,47 @@ public class GuestServiceImpl implements GuestService {
 		return cgres;
 	}
 
+	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
+	public MinimalUserProfile sellerRegister(UserSellerRegister userRegister) {
+		Address address = Address.builder()
+				.province(userRegister.getProvince())
+				.district(userRegister.getDistrict())
+				.commune(userRegister.getWard())
+				.specificAddress(userRegister.getDetailAddress())
+				.build();
+		try{
+			addressRepository.save(address);
+		}
+		catch (WebServerException e){
+			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+		}
+
+		Seller newSeller = Seller.builder()
+				.username(userRegister.getUsername())
+				.password(passwordEncoder.encode(userRegister.getPassword()))
+				.address(address)
+				.followers(0)
+				.status(Boolean.FALSE)
+				.email(userRegister.getEmail())
+				.phone(userRegister.getPhone())
+				.createdDate(java.time.LocalDate.now())
+				.build();
+		BuyerCartId buyerCartId = new BuyerCartId();
+		buyerCartId.setUsername(newSeller.getUsername());
+		buyerCartId.setCartId(UUID.randomUUID().toString());
+		try {
+			sellerRepository.saveAndFlush(newSeller);
+		} catch (DataIntegrityViolationException e) {
+			throw new WebServerException(ErrorCode.USER_EXISTED);
+		} catch (Exception e) {
+			log.error("Error when register new user {}", e.getMessage());
+			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+		}
+		return MinimalUserProfile.builder()
+				.username(newSeller.getUsername())
+				.role(SystemConstant.ROLE_SELLER)
+				.build();
+	}
 
 	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
 	public MinimalUserProfile register(UserRegister userRegister) {

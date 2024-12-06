@@ -1,6 +1,7 @@
 package com.se.backend.service;
 
 
+import com.se.backend.dto.request.UserSellerRegister;
 import com.se.backend.dto.response.*;
 
 import com.se.backend.dto.request.FilterProductRequest;
@@ -21,6 +22,7 @@ public interface GuestService {
 	List<CategoryResponse> getAllCategory();
 
 	MinimalUserProfile register(UserRegister userRegister);
+	MinimalUserProfile sellerRegister(UserSellerRegister userRegister);
 
 	ShopInfoForGuestResponse getShopInformation(String buyername, String sellername);
 	SearchFilterResponse searchByKeyword(String keyword, int page, String sort);
