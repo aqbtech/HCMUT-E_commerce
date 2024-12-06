@@ -15,6 +15,7 @@ public class Product_of_GetOrderResponse {
     private List<Attr_of_GetOrderResponse> listAtt;
     @JsonProperty("img")
     private String firstImage;
+    private String id;
     private long price;
     private long quantity;
 }

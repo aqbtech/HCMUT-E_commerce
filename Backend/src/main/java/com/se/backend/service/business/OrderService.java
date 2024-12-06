@@ -306,7 +306,7 @@ public class OrderService  {
         for(ProductInstance productInstance: productInstanceList){
             Product_of_GetOrderResponse product = productInOrderMapper.toProductDetail(productInstance);
             Product p = productRepository.findProductById(productInstance.getBuildProduct().getFirst().getId().getProductId());
-
+            product.setId(p.getId());
             List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(p.getSeller().getUsername());
             shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
             List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(p.getCategory().getRichTextName());

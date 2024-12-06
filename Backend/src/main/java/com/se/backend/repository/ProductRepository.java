@@ -38,6 +38,7 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 	Page<Product> findByNameContaining(String keyword, Pageable pageable);
 	@EntityGraph(value = "product-summary", type = EntityGraph.EntityGraphType.LOAD)
 	List<Product> findAll(Specification<Product> spec);
+	@EntityGraph(value = "product-summary", type = EntityGraph.EntityGraphType.LOAD)
 	List<Product> findBySeller(Seller seller);
 	@EntityGraph(value = "product-summary-seller", type = EntityGraph.EntityGraphType.LOAD)
 	Page<Product> findProductBySeller(Seller seller, Pageable pageable);
