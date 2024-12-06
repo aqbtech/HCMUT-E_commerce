@@ -56,10 +56,6 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    if (!Cookies.get("username")) {
-      navigate(`/Login`);
-      return;
-    }
     getCart();
   }, [currentPage]);
 

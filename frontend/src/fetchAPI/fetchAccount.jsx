@@ -52,3 +52,9 @@ export const registSeller = async (body) => {
   const response =  await axiosClient2.post(``, body);
   return response.data.result;
 }
+
+export const checkStatus = async () => {
+  const id = Cookies.get("username");
+  const response = await axiosClient2.get(`?id=${id}`);
+  return response.data.result;
+} 

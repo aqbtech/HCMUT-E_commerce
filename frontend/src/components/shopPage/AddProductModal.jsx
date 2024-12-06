@@ -303,6 +303,11 @@ const AddProductModal = ({isOpen, onClose}) => {
                 }
             }
         }
+
+        if(images.length === 0) {
+            return toast.error("Hình ảnh sản phẩm còn đang trống!");
+        }
+
         try {
             const responseProductId = await createProduct(formData);
             const uploadPromises = images.map((image) =>

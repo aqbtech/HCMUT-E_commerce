@@ -5,13 +5,12 @@ import { assets } from "../assets/assets";
 import { getProductsById, getReviewById } from "../fetchAPI/fetchProduct";
 import { toast } from "react-toastify";
 import { addToCart } from "../fetchAPI/fetchCart";
-import ErrorMessage  from '/src/components/errorMessage'; 
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { getMininalProfile } from "../fetchAPI/fetchAccount";
 
 const Product = () => {
   const { productId } = useParams();
-  const { navigate, curState, formatCurrency, setTotalQuantityInCart} = useContext(ShopContext);
+  const { navigate, curState, formatCurrency, setTotalQuantityInCart, role} = useContext(ShopContext);
   const [productData, setProductData] = useState({});
   const [image, setImage] = useState('');
   const [selectedAttributes, setSelectedAttributes] = useState({});
@@ -109,6 +108,7 @@ const Product = () => {
   
   const placeOrder = async (productName, productId, quantity, selectedAttributes, selectedInstant, IMG) => {
     if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
+    if(role !== "BUYER") return toast.error("Bạn thuộc đối tượng không thể mua hàng");
     if (!allAttributesSelected()) return toast.error("Vui lòng chọn tất cả các thuộc tính.");
     if(selectedInstant.quantityInStock < quantity) return toast.error("Sản phẩm hiện không đủ, vui lòng giảm bớt số lượng")
     if(quantity < 1) return toast.error("Số lượng không hợp lệ!")
@@ -135,6 +135,7 @@ const Product = () => {
 
   const handleAddToCart = async (instantId, quantity, selectedInstant) => {
     if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
+    if(role !== "BUYER") return toast.error("Bạn thuộc đối tượng không thể mua hàng");
     if (!allAttributesSelected() && productData.listAtt?.length > 0) {
       return toast.error("Vui lòng chọn tất cả các thuộc tính.");
     }

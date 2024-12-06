@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext'
 import {Link} from 'react-router-dom'
 import { toast } from 'react-toastify';
-import { getMininalProfile, SignIn } from '../fetchAPI/fetchAccount';
+import { SignIn } from '../fetchAPI/fetchAccount';
 import Cookies from 'js-cookie'
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
@@ -48,21 +48,17 @@ const Login = () => {
       const response = await SignIn(body);
       const token = response.data.result.token;
       if (token) Cookies.set('token', token);
-  
+      const role = response.data.result.role;
       Cookies.set('username', username);
-  
-      const res = await getMininalProfile();
-    
-      const role = res.role;
       Cookies.set('role', role);
       setRole(role);
-  
+      console.log(role, role === "ADMIN")
       toast.success("Đăng nhập thành công!");
   
       // Điều hướng dựa trên vai trò
       if (role === "ADMIN") navigate('/admin');
       else if (role === "SELLER") navigate('/shop');
-      navigate(from, { replace: true });
+      else navigate(from, { replace: true });
   
     } catch (error) {
       if (error.status === 401) {
