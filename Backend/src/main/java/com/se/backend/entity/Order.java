@@ -77,6 +77,7 @@ public class Order {
 	private LocalDate deliveryDate;
 	private LocalDate deliveryJoinDate;
 	private String deliveryStatus;
+	private Double delieryFee;
 
 	// mapping seller
 	@ManyToOne

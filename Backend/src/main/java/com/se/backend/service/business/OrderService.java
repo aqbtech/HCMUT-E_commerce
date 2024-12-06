@@ -9,7 +9,6 @@ import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.*;
 import com.se.backend.repository.*;
-import com.se.backend.service.storage.FileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,9 +58,9 @@ public class OrderService  {
     @Autowired
     private final DeliveryDateApiService deliveryDateApiService;
     @Autowired
-    private final FileService fileService;
+    private final ShopPolicyRepository shopPolicyRepository;
     @Autowired
-    private final FileInfoRepo fileInfoRepo;
+    private final CategoryPolicyRepository categoryPolicyRepository;
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         long addressId;
@@ -160,9 +158,34 @@ public class OrderService  {
                 orderProductInstance.setOrder(order);
                 Long quantity = entry.getValue().get(i).getQuantity();
                 ProductInstance productInstance = orderProductInstance.getProductInstance();
-
+                Product product = productInstance.getBuildProduct().get(0).getProduct();
                 orderProducts.add(orderProductInstance);
-                totalPrice += productInstance.getPrice() * quantity;
+                // Handle Sale here
+                List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(product.getSeller().getUsername());
+                shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
+                List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(product.getCategory().getId());
+                categoryPolicy.sort(Comparator.comparing(CategoryPolicy::getSale).reversed());
+                Double shopSale = 0.0;
+                Double cateSale = 0.0;
+                for (ShopPolicy shop: shopPolicy){
+                    if(shop.getCount() > 0){
+                        shopSale = shop.getSale();
+                        shop.setCount(shop.getCount() - 1);
+                        break;
+                    }
+                }
+                for (CategoryPolicy cate: categoryPolicy){
+                    if(cate.getSale() > cateSale && cate.getCount() > 0 ){
+                        cateSale = cate.getSale();
+                        cate.setCount(cate.getCount() - 1);
+                        break;
+                    }
+                }
+                double totalSale = shopSale + cateSale;
+                totalSale = totalSale > 1 ? 1 : totalSale;
+
+                //-----------------
+                totalPrice += productInstance.getPrice() * quantity * (1 - totalSale);
 
             }
             order.setOrderProductInstances(orderProducts);
@@ -175,8 +198,9 @@ public class OrderService  {
             order.setDeliveryJoinDate(deliveryResponse.getDeliveryJoinDate());
             order.setExpectedDeliveryDate(deliveryResponse.getExpectedDeliveryDate());
             order.setDeliveryStatus(deliveryResponse.getDeliveryStatus());
-            int shipping_fee = deliveryResponse.getFee();
-            order.setTotalPrice(totalPrice + shipping_fee);
+            Double shipping_fee = (double) deliveryResponse.getFee();
+            order.setTotalPrice(totalPrice);
+            order.setDelieryFee(shipping_fee);
 //            order.setDelivery(deliveryInfor);
             try {
                 orderRepository.save(order);
@@ -255,7 +279,6 @@ public class OrderService  {
     private GetOrderResponse OrderResponseHandler(Order order, List<ProductInstance> productInstanceList){
         GetOrderResponse result = orderMapper.OrderToResponse(order);
         Double totalPrice = order.getTotalPrice();
-        Double productPrice = 0.0;
 
         DeliveryInfor deliveryInfor = order.getPaymentOrder().getDeliveryInfor();
         result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
@@ -270,15 +293,40 @@ public class OrderService  {
         for(ProductInstance productInstance: productInstanceList){
             Product_of_GetOrderResponse product = productInOrderMapper.toProductDetail(productInstance);
             Product p = productRepository.findProductById(productInstance.getBuildProduct().getFirst().getId().getProductId());
+
+            List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(p.getSeller().getUsername());
+            shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
+            List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(p.getCategory().getId());
+            categoryPolicy.sort(Comparator.comparing(CategoryPolicy::getSale).reversed());
+            Double shopSale = 0.0;
+            Double cateSale = 0.0;
+            for (ShopPolicy shop: shopPolicy){
+                if(shop.getCount() > 0){
+                    shopSale = shop.getSale();
+                    break;
+                }
+            }
+            for (CategoryPolicy cate: categoryPolicy){
+                if(cate.getSale() > cateSale && cate.getCount() > 0 ){
+                    cateSale = cate.getSale();
+                    break;
+                }
+            }
+            double totalSale = shopSale + cateSale;
+            totalSale = totalSale > 1 ? 1 : totalSale;
+
+            product.setSale(totalSale);
+
             String productName = p.getName();
+
             FileInfo fileInfo = fileInfoRepo.findFileInfoByProduct(p).getFirst();
             String path = fileService.downloadFile(fileInfo).getBody();
             product.setFirstImage(path);
+
             List<Attr_of_GetOrderResponse> attrOfGetOrderResponseList = new ArrayList<>();
 //          ------------------------------------------------------------------
             List<Attribute> attributeList = attributeRepository.findByOfProduct(p);
             List<AttributeInstance> attributeInstanceList = attributeInsRepository.findAttributeInstancesBy(productInstance);
-
 //            AttributeInstance attributeInstance = attributeInsRepository.findById(
 //                    productInstance.getBuildProduct().getId().getAttributeInstanceId())
 //                    .orElseThrow(()-> new WebServerException(ErrorCode.UNKNOWN_ERROR));
@@ -314,9 +362,8 @@ public class OrderService  {
         
         for(int i = 0; i < quantityOfProduct.size(); i++){
             product_of_getOrderResponseList.get(i).setQuantity(quantityOfProduct.get(i));
-            productPrice = (double) (product_of_getOrderResponseList.get(i).getPrice() * quantityOfProduct.get(i));
         }
-        Double shipping_fee = totalPrice - productPrice;
+        Double shipping_fee = order.getDelieryFee();
         result.setPrice(String.valueOf(totalPrice));
         result.setShipping_fee(shipping_fee);
         result.setListProduct(product_of_getOrderResponseList);
