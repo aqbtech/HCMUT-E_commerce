@@ -10,9 +10,10 @@ import { getMininalProfile } from "../fetchAPI/fetchAccount";
 
 const Product = () => {
   const { productId } = useParams();
-  const { navigate, curState, formatCurrency, setTotalQuantityInCart, role} = useContext(ShopContext);
+  const { navigate, curState, formatCurrency, setTotalQuantityInCart, role } =
+    useContext(ShopContext);
   const [productData, setProductData] = useState({});
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState("");
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [pageReview, setPageReview] = useState(0);
@@ -25,12 +26,12 @@ const Product = () => {
 
   const fetchProduct = async () => {
     setIsLoading(true);
-    try { 
+    try {
       const response = await getProductsById(productId);
       setProductData(response);
-      setImage(response?.images?.[0] || '');
+      setImage(response?.images?.[0] || "");
     } catch (err) {
-      toast.error("Lỗi khi lấy chi tiết sản phẩm")
+      toast.error("Lỗi khi lấy chi tiết sản phẩm");
     }
     setIsLoading(false);
   };
@@ -39,22 +40,27 @@ const Product = () => {
     setIsReviewLoading(true);
     try {
       const response = await getReviewById(productId, pageReview);
-      if(response) {
+      if (response) {
         setReview(response.content || []);
-        setHasMore(review.length + response.content.length < response.totalElements);
+        setHasMore(
+          review.length + response.content.length < response.totalElements
+        );
       }
     } catch (err) {
-      toast.error("Lỗi khi lấy đánh giá")
+      toast.error("Lỗi khi lấy đánh giá");
     }
     setIsReviewLoading(false);
-  }; 
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  useEffect(() => { fetchProduct() }, [productId]);
-  useEffect(() => { fetchReview() }, [pageReview, productId]);
-
+  useEffect(() => {
+    fetchProduct();
+  }, [productId]);
+  useEffect(() => {
+    fetchReview();
+  }, [pageReview, productId]);
 
   const handleNextPage = () => {
     setPageReview((prev) => prev + 1);
@@ -65,7 +71,6 @@ const Product = () => {
       setPageReview((prev) => prev - 1);
     }
   };
-
 
   const allAttributesSelected = (attributes = selectedAttributes) => {
     if (!productData?.listAtt || productData.listAtt.length === 0) return true;
@@ -78,7 +83,7 @@ const Product = () => {
   };
 
   const updateSelectedInstant = (attributes = selectedAttributes) => {
-    if(productData?.listAtt?.length === 0) {
+    if (productData?.listAtt?.length === 0) {
       setSelectedInstant(productData?.listInstants?.[0]);
       return;
     }
@@ -88,78 +93,98 @@ const Product = () => {
     }
     // Tìm instant phù hợp khi đã chọn đủ thuộc tính
     const matchingInstant = productData?.listInstants?.find((instant) =>
-      Object.entries(instant.attributes).every(([key, value]) => attributes[key] === value)
+      Object.entries(instant.attributes).every(
+        ([key, value]) => attributes[key] === value
+      )
     );
     setSelectedInstant(matchingInstant || "not_found"); // Không tìm thấy sẽ đặt là "not_found"
   };
-    
+
   const handleAttributeSelection = (attributeName, value) => {
     setSelectedAttributes((prev) => {
-      const newAttributes = { ...prev, [attributeName]: prev[attributeName] === value ? null : value };
+      const newAttributes = {
+        ...prev,
+        [attributeName]: prev[attributeName] === value ? null : value,
+      };
       updateSelectedInstant(newAttributes); // Gọi hàm để cập nhật selectedInstant
       return newAttributes;
     });
   };
-  
+
   useEffect(() => {
-      updateSelectedInstant();
+    updateSelectedInstant();
   }, [selectedAttributes, productData?.listInstants]);
 
-  
-  const placeOrder = async (productName, productId, quantity, selectedAttributes, selectedInstant, IMG) => {
-    if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
-    if(role !== "BUYER") return toast.error("Bạn thuộc đối tượng không thể mua hàng");
-    if (!allAttributesSelected()) return toast.error("Vui lòng chọn tất cả các thuộc tính.");
-    if(selectedInstant.quantityInStock < quantity) return toast.error("Sản phẩm hiện không đủ, vui lòng giảm bớt số lượng")
-    if(quantity < 1) return toast.error("Số lượng không hợp lệ!")
-    const ListAtt = Object.entries(selectedAttributes).map(([attName, value]) => ({
-      "name" : attName,
-      value,
-    }));
-  
+  const placeOrder = async (
+    productName,
+    productId,
+    quantity,
+    selectedAttributes,
+    selectedInstant,
+    IMG
+  ) => {
+    if (curState !== "Login")
+      return navigate("/Login", { state: { from: location.pathname } });
+    if (role !== "BUYER")
+      return toast.error("Bạn thuộc đối tượng không thể mua hàng");
+    if (!allAttributesSelected())
+      return toast.error("Vui lòng chọn tất cả các thuộc tính.");
+    if (selectedInstant.quantityInStock < quantity)
+      return toast.error("Sản phẩm hiện không đủ, vui lòng giảm bớt số lượng");
+    if (quantity < 1) return toast.error("Số lượng không hợp lệ!");
+    const ListAtt = Object.entries(selectedAttributes).map(
+      ([attName, value]) => ({
+        name: attName,
+        value,
+      })
+    );
+
     const body = {
-      "IMG" : IMG,
-      "productName": productName,
-      "productId": productId,
-      "listAtt": ListAtt,
-      "instantId": selectedInstant.instantId,
-      "quantity": quantity,
-      "price": selectedInstant.price
+      IMG: IMG,
+      productName: productName,
+      productId: productId,
+      listAtt: ListAtt,
+      instantId: selectedInstant.instantId,
+      quantity: quantity,
+      price: selectedInstant.price,
     };
 
     // Ghi đè trực tiếp `ListProductToPlace` trong localStorage với `body`
-    localStorage.setItem('ListProductToPlace', JSON.stringify([body]));
+    localStorage.setItem("ListProductToPlace", JSON.stringify([body]));
     // Điều hướng đến trang đặt hàng
-    navigate('/place-Order');
+    navigate("/place-Order");
   };
 
   const handleAddToCart = async (instantId, quantity, selectedInstant) => {
-    if (curState !== "Login") return navigate("/Login", { state: { from: location.pathname } });
-    if(role !== "BUYER") return toast.error("Bạn thuộc đối tượng không thể mua hàng");
+    if (curState !== "Login")
+      return navigate("/Login", { state: { from: location.pathname } });
+    if (role !== "BUYER")
+      return toast.error("Bạn thuộc đối tượng không thể mua hàng");
     if (!allAttributesSelected() && productData.listAtt?.length > 0) {
       return toast.error("Vui lòng chọn tất cả các thuộc tính.");
     }
     if (quantity < 1) return toast.error("Số lượng không hợp lệ!");
     if (selectedInstant.quantityInStock < quantity) {
       setQuantity(selectedInstant.quantityInStock); // Điều chỉnh số lượng
-      return toast.error("Số lượng vượt quá hàng tồn kho, đã điều chỉnh về giá trị tối đa.");
+      return toast.error(
+        "Số lượng vượt quá hàng tồn kho, đã điều chỉnh về giá trị tối đa."
+      );
     }
     if (isAddLoading) return;
     setIsAddLoading(true);
-  
+
     try {
-      await addToCart(instantId, quantity)
-      const response = await getMininalProfile()
-      setTotalQuantityInCart(response.totalQuantityInCart)
+      await addToCart(instantId, quantity);
+      const response = await getMininalProfile();
+      setTotalQuantityInCart(response.totalQuantityInCart);
       toast.success("Thêm vào giỏ hàng thành công!");
-    } catch(err) {
+    } catch (err) {
       toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng.");
       console.log(err);
     }
-   
+
     setIsAddLoading(false);
   };
-
 
   return !isLoading ? (
     <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
@@ -181,31 +206,59 @@ const Product = () => {
           </div>
         </div>
         <div className="flex-1">
-          <h1 className="font-medium text-2xl mt-2">{productData.product_name}</h1>
+          <h1 className="font-medium text-2xl mt-2">
+            {productData.product_name}
+          </h1>
           <div className="flex items-center gap-1 mt-2">
-            <span className="text-yellow-500 font-medium text-lg">{productData.rating}</span>
+            <span className="text-yellow-500 font-medium text-lg">
+              {productData.rating}
+            </span>
             <img src={assets.star_icon} alt="Star" className="w-4 h-4" />
           </div>
           <p className="mt-5 text-3xl font-medium">
-            {selectedInstant === null
-              ? `${formatCurrency(productData.minPrice)}`
-              : selectedInstant === "not_found"
-              ? "Sản phẩm đã hết :((("
-              : `${formatCurrency(selectedInstant.price)}`}
-            </p>
+            {selectedInstant === null ? (
+              `${formatCurrency(productData.minPrice)}`
+            ) : selectedInstant === "not_found" ? (
+              "Sản phẩm đã hết :((("
+            ) : (
+              <>
+                {/* Kiểm tra nếu có giảm giá */}
+                <span className="text-lg text-red-600 line-through mr-2">
+                  {selectedInstant.sale > 0 &&
+                    formatCurrency(selectedInstant.price)}
+                </span>
+                {/* Hiển thị giá sau giảm */}
+                <span className="text-3xl font-medium">
+                  {selectedInstant.sale > 0
+                    ? formatCurrency(
+                        selectedInstant.price * (1 - selectedInstant.sale)
+                      )
+                    : formatCurrency(selectedInstant.price)}
+                </span>
+              </>
+            )}
+          </p>
+
           {productData.listAtt?.map((att, index) => (
             <div key={index} className="flex flex-col gap-2 my-5">
-              <p>{att.name}:</p> 
+              <p>{att.name}:</p>
               <div className="flex gap-2">
                 {att.values?.map((value, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleAttributeSelection(att.name, value)}
-                    className={`border py-2 px-4 ${selectedAttributes[att.name] === value ? 'bg-orange-500 text-white' : 'bg-gray-100'}`}
+                    className={`border py-2 px-4 ${
+                      selectedAttributes[att.name] === value
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-100"
+                    }`}
                     style={{
-                      cursor: 'pointer',
-                      borderRadius: '4px',
-                      borderColor: selectedAttributes[att.name] === value ? 'orange' : '#ccc',
+                      cursor: "pointer",
+                      borderRadius: "4px",
+                      borderColor:
+                        selectedAttributes[att.name] === value
+                          ? "orange"
+                          : "#ccc",
                     }}
                   >
                     {value}
@@ -217,39 +270,75 @@ const Product = () => {
 
           <div>
             <p>Số lượng</p>
-            <input 
+            <input
               min={1}
               onChange={(e) => {
-                const value = Math.max(1, Math.min(Number(e.target.value), selectedInstant?.quantityInStock || 1));
-                if (selectedInstant && value > selectedInstant.quantityInStock) {
-                  toast.error("Số lượng vượt quá hàng tồn kho, đã điều chỉnh về giá trị tối đa.");
+                const value = Math.max(
+                  1,
+                  Math.min(
+                    Number(e.target.value),
+                    selectedInstant?.quantityInStock || 1
+                  )
+                );
+                if (
+                  selectedInstant &&
+                  value > selectedInstant.quantityInStock
+                ) {
+                  toast.error(
+                    "Số lượng vượt quá hàng tồn kho, đã điều chỉnh về giá trị tối đa."
+                  );
                 }
                 setQuantity(value);
               }}
               value={quantity}
-              type="number" defaultValue={quantity} className="border max-w-10 sm:max-w-20 px-1 my-5 sm:px-2 py-1"
+              type="number"
+              defaultValue={quantity}
+              className="border max-w-10 sm:max-w-20 px-1 my-5 sm:px-2 py-1"
             />
           </div>
 
           <button
-            onClick={() => handleAddToCart(selectedInstant?.instantId, quantity, selectedInstant)}
+            onClick={() =>
+              handleAddToCart(
+                selectedInstant?.instantId,
+                quantity,
+                selectedInstant
+              )
+            }
             disabled={!selectedInstant || selectedInstant === "not_found"}
             className={`bg-black text-white px-8 py-3 text-sm active:bg-gray-700 ${
-              (!selectedInstant || selectedInstant === "not_found") ? "opacity-50 cursor-not-allowed" : ""
+              !selectedInstant || selectedInstant === "not_found"
+                ? "opacity-50 cursor-not-allowed"
+                : ""
             }`}
           >
-            {isAddLoading ? <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" /> : "THÊM VÀO GIỎ HÀNG" }
+            {isAddLoading ? (
+              <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />
+            ) : (
+              "THÊM VÀO GIỎ HÀNG"
+            )}
           </button>
           <button
-            onClick={() => placeOrder(productData.product_name, productId, quantity, selectedAttributes, selectedInstant, image)}
+            onClick={() =>
+              placeOrder(
+                productData.product_name,
+                productId,
+                quantity,
+                selectedAttributes,
+                selectedInstant,
+                image
+              )
+            }
             disabled={!selectedInstant || selectedInstant === "not_found"}
             className={`bg-black text-white mx-4 px-8 py-3 text-sm active:bg-gray-700 ${
-              (!selectedInstant || selectedInstant === "not_found") ? "opacity-50 cursor-not-allowed" : ""
+              !selectedInstant || selectedInstant === "not_found"
+                ? "opacity-50 cursor-not-allowed"
+                : ""
             }`}
           >
             ĐẶT HÀNG
           </button>
-          <hr className="mt-8 sm:w-4/5"/>
+          <hr className="mt-8 sm:w-4/5" />
           <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
             <p>100% Original product.</p>
             <p>Cash on delivery is available on this product.</p>
@@ -258,14 +347,15 @@ const Product = () => {
         </div>
       </div>
 
-      <hr /> 
+      <hr />
       <div className="mt-8 p-4 border rounded-lg shadow-md bg-white">
         {productData.seller ? (
           <div>
             <div className="flex items-center mb-2">
-              <span className="text-blue-500 text-2xl mr-2">🏪</span> {/* Biểu tượng Unicode cho cửa hàng */}
-              <Link 
-                to={`/shopView/${productData.seller.sellerId}`} 
+              <span className="text-blue-500 text-2xl mr-2">🏪</span>{" "}
+              {/* Biểu tượng Unicode cho cửa hàng */}
+              <Link
+                to={`/shopView/${productData.seller.sellerId}`}
                 className="text-xl font-bold text-blue-600 hover:underline"
               >
                 {productData.seller.shopName}
@@ -277,7 +367,9 @@ const Product = () => {
             </p>
           </div>
         ) : (
-          <p className="text-center italic text-gray-500">Thông tin của shop hiện không có!</p>
+          <p className="text-center italic text-gray-500">
+            Thông tin của shop hiện không có!
+          </p>
         )}
       </div>
 
@@ -289,13 +381,10 @@ const Product = () => {
       <hr />
       <div className="mt-5">
         <h2 className="text-lg font-bold">Bình luận của khách hàng</h2>
-
         {isReviewLoading ? ( // Hiển thị "Đang tải" khi review đang được tải
-          (
-            <div className="flex justify-center items-center py-[500px]">
-              <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
-            </div>
-          )
+          <div className="flex justify-center items-center py-[500px]">
+            <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
+          </div>
         ) : review.length > 0 ? (
           review.map((reviewItem) => (
             <div
@@ -308,16 +397,17 @@ const Product = () => {
                   <span className="text-yellow-500 inline-flex items-center gap-1">
                     {[...Array(5)].map((_, index) => (
                       <span key={index}>
-                        {index + 1 <= Math.floor(reviewItem.rating) ? (
-                          "★" // Sao đầy
-                        ) : index < reviewItem.rating ? (
-                          "⭑" // Sao nửa
-                        ) : (
-                          "☆" // Sao trống
-                        )}
+                        {index + 1 <= Math.floor(reviewItem.rating)
+                          ? "★" // Sao đầy
+                          : index < reviewItem.rating
+                          ? "⭑" // Sao nửa
+                          : "☆" // Sao trống
+                        }
                       </span>
                     ))}
-                    <span className="ml-2 text-gray-700 text-sm">({reviewItem.rating.toFixed(1)})</span>
+                    <span className="ml-2 text-gray-700 text-sm">
+                      ({reviewItem.rating.toFixed(1)})
+                    </span>
                   </span>
                 </div>
                 <p className="text-sm text-gray-500">{reviewItem.date}</p>
@@ -327,28 +417,30 @@ const Product = () => {
             </div>
           ))
         ) : (
-          <p className="text-gray-500 text-center">Chưa có bình luận nào.</p>
+          <p className="text-gray-500 text-center py-5">
+            Chưa có bình luận nào.
+          </p>
         )}
-
-
-        {/* Nút phân trang */}
-        <div className="flex justify-center gap-4 mt-4">
-          <button
-            onClick={handlePreviousPage}
-            disabled={pageReview === 0}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-          >
-            Trang Trước
-          </button>
-          <p>{pageReview + 1}</p>
-          <button
-            onClick={handleNextPage}
-            disabled={!hasMore}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-          >
-            Trang Tiếp
-          </button>
-        </div>
+        {/* Nút phân trang */}{" "}
+        {
+          <div className="flex justify-center gap-4 mt-4">
+            <button
+              onClick={handlePreviousPage}
+              disabled={pageReview === 0}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+            >
+              Trang Trước
+            </button>
+            <p>{pageReview + 1}</p>
+            <button
+              onClick={handleNextPage}
+              disabled={!hasMore}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+            >
+              Trang Tiếp
+            </button>
+          </div>
+        }
       </div>
     </div>
   ) : (

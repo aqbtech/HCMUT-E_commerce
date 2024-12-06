@@ -49,28 +49,17 @@ const ShopManagement = () => {
 
     if (!status) {
         return (
-            <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-                <div className="bg-white p-8 rounded shadow-lg text-center max-w-md">
-                    <h2 className="text-2xl font-bold text-red-600 mb-4">Đang Xử Lý</h2>
-                    <p className="text-gray-700">
-                        Đơn đăng ký của bạn đang chờ để được xử lý. Vui lòng quay lại sau khi admin đã duyệt tài khoản của bạn.
-                    </p>
-                    <div className="mt-6">
-                        <img
-                            src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-hourglass-website-flatart-icons-outline-flatarticons.png"
-                            alt="Processing"
-                            className="mx-auto w-16 h-16"
-                        />
-                    </div>
-                    <div className="mt-6">
-                        <Link
-                            to='/'
-                            className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition duration-300"
-                        >
-                            Về trang chủ
-                        </Link>
-                    </div>
-                </div>
+            <div className="flex flex-col items-center  mt-48 min-h-screen text-center">
+                <h1 className="text-4xl font-bold text-red-500">Đang Xử Lý</h1>
+                <p className="text-gray-600 mt-4">
+                Đơn đăng ký của bạn đang chờ để được xử lý. Vui lòng quay lại sau khi admin đã duyệt tài khoản của bạn.
+                </p>
+                <Link
+                    to="/"
+                    className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                >
+                    Về Trang Chủ
+                </Link>
             </div>
         );
     }

@@ -209,8 +209,6 @@ const ReviewPage = () => {
         </div>
       )}
     </div>
-
-
   );
 };
 

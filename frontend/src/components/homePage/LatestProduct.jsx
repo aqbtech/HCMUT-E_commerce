@@ -23,6 +23,7 @@ const LatestProduct = ({data}) => {
                     name={item.name} 
                     price={item.minPrice} 
                     rating={item.rating} 
+                    sale = {item.sale}
                 />
             ))
         }

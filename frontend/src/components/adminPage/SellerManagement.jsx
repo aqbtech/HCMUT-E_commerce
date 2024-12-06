@@ -124,7 +124,7 @@ const SellerManagement = () => {
       )}
 
       {/* Phân trang */}
-      {hasMore && (
+      {(
         <div className="flex justify-center items-center mt-4">
           <button
             className={`px-4 py-2 rounded mx-2 ${

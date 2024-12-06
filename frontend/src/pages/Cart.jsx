@@ -133,6 +133,7 @@ const Cart = () => {
           instantId: item.productInstanceId,
           quantity: item.quantity,
           price: item.price,
+          IMG : item.IMG
         };
       });
       localStorage.setItem(
@@ -167,7 +168,7 @@ const Cart = () => {
       {Object.keys(groupedCartData).length > 0 ? (
         Object.keys(groupedCartData).map((sellerId) => (
           <div key={sellerId} className="border mb-6 p-4 bg-gray-50">
-            <Link to={``}>
+            <Link to={`/shopView/${groupedCartData[sellerId].seller}`}>
               <h2 className="text-lg font-bold mb-4">
                 {groupedCartData[sellerId].sellerName}
               </h2>

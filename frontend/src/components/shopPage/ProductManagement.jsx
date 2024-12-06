@@ -3,6 +3,7 @@ import AddProductModal from "./AddProductModal";
 import {getProduct, getProductOfSeller} from "../../fetchAPI/fetchProduct.jsx";
 import ProductItem from "../ProductItem.jsx";
 import ProductTestItem from "../ProductTestItem.jsx";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 
 const ProductManagement = () => {
@@ -15,6 +16,7 @@ const ProductManagement = () => {
 
 
     const loadProducts = async () => {
+        setLoading(true);
         try {
             const response = await getProductOfSeller(page);
             if(page === 0) {
@@ -31,7 +33,9 @@ const ProductManagement = () => {
             }
             setHasMore(page + 1 < response.page.totalPages);
         } catch(err) {
-            throw err;
+            console.log("Lỗi khi lấy sản phẩm")
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -61,13 +65,21 @@ const ProductManagement = () => {
                 </button>
             </div>
 
-            {listProduct.map((item, index) => (
-            <div key={index} className='flex gap-2'>
-                <ProductTestItem name={item.name} price={item.minPrice} image={item.img} rating={item.rating} status={item.status} productId={item.productId} setSelectProduct={setSelectProduct} />
-            </div>
-            ))}
-
-            {hasMore && !loading && (
+            {
+                loading ? (
+                    <div className="flex justify-center mt-32 h-screen">
+                        <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
+                    </div>
+                ) : (
+                listProduct.map((item, index) => (
+                    <div key={index} className='flex gap-2'>
+                        <ProductTestItem name={item.name} price={item.minPrice} image={item.img} rating={item.rating} status={item.status} productId={item.productId} setSelectProduct={setSelectProduct} />
+                    </div>
+                ))
+                )
+            }
+           
+            {hasMore && (
                 <div className="text-center mt-6">
                     <button
                         onClick={handleLoadmore}

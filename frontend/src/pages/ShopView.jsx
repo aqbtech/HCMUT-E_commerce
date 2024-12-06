@@ -1,25 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams} from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
-import { getProductForShopView } from "../fetchAPI/fetchProduct";
-import { getInfoShopView, getInfo, follow, unfollow } from "../fetchAPI/fetchShop";
+import { getProductForShop } from "../fetchAPI/fetchProduct";
+import { getInfo, follow, unfollow } from "../fetchAPI/fetchShop";
 import { toast } from "react-toastify";
 import ErrorMessage from "/src/components/errorMessage";
-import { assets, categories } from '../../src/assets/assets';
+import { assets } from '../../src/assets/assets';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import ProductItem from "../components/ProductItem";
 import Cookies from 'js-cookie'
-import { getCateShop } from "../fetchAPI/fetchCategory";
 
 const ShopView = () => {
   const { shopId } = useParams();
-  const { navigate, systemError, setSystemError } = useContext(ShopContext);
+  const { navigate } = useContext(ShopContext);
   const [shopInfo, setShopInfo] = useState(null);
   const [listProduct, setListProduct] = useState([]);
   const [ListCategories, setListCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingProducts, setLoadingProduct] = useState(true)
   const [sort, setSort] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const listSorting = [
@@ -34,41 +34,27 @@ const ShopView = () => {
       const response = await getInfo(shopId);
       setShopInfo(response);
     } catch (err) {
-      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
+      toast.error("Lỗi khi lấy sản phẩm của shop");
     }
     setIsLoading(false);
   };
 
   const fetchProduct = async () => {
-    setIsLoading(true);
+    setLoadingProduct(true);
     try {
-      const response = await getProductForShopView(shopId, page, sort, categories);
-      const products = response.content;
+      const response = await getProductForShop(shopId, page, selectedCategory, sort );
+      const products = response.productSummaryPage.content;
+      setListCategories(response.categories)
       setListProduct((prev) => (page === 0 ? products : [...prev, ...products]));
-      setHasMore(page + 1 < response.page.totalPages);
+      setHasMore(page + 1 < response.productSummaryPage.page.totalPages);
     } catch (err) {
       console.log(err);
-      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
     }
-    setIsLoading(false);
+    setLoadingProduct(false);
   };
-
-  const fetchCategories = async () => {
-    setIsLoading(true);
-    try {
-      const response = await getCateShop(shopId); // Gọi API lấy danh mục
-      setListCategories(response); // Cập nhật danh mục vào state
-    } catch (err) {
-      console.error(err);
-      setSystemError(err.response?.data?.message || err.response?.data?.error || "Mất kết nối máy chủ");
-    }
-    setIsLoading(false);
-  };
-  
 
   useEffect(() => {
     fetchInfo();
-    fetchCategories();
   }, [shopId]);
 
   useEffect(() => {
@@ -121,11 +107,8 @@ const ShopView = () => {
       </div>
     );
   }
-  if (systemError) {
-    return <ErrorMessage message={systemError} />;
-  }
   return (
-    <div className="container mx-auto py-8">
+    <div className="container min-h-screen mx-auto py-8">
       <div className="bg-white p-6 rounded-lg shadow-lg flex items-center justify-between">
         {/* Shop Info Section */}
         <div className="flex items-center space-x-4">
@@ -140,13 +123,13 @@ const ShopView = () => {
             <button
               className={`mt-2 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 
                 ${
-                  shopInfo?.isFollowed 
+                  shopInfo?.followed 
                     ? "text-white bg-red-500 hover:bg-red-600 focus:ring-red-400"  // Đã theo dõi
                     : "text-white bg-blue-500 hover:bg-blue-600 focus:ring-blue-400" // Chưa theo dõi
                 }`}
               onClick={ () => handleFollow()}
             >
-              {shopInfo?.isFollowed ? "Hủy theo dõi" : "Theo dõi"}
+              {shopInfo?.followed ? "Hủy theo dõi" : "Theo dõi"}
             </button>
 
           </div>
@@ -155,7 +138,7 @@ const ShopView = () => {
           <div>
             <h1 className="text-2xl font-semibold text-gray-800">{shopInfo?.shopName}</h1>
             <p className="text-sm text-gray-500">{shopInfo?.status}</p>
-            <p className="text-sm text-gray-500 mt-1">{shopInfo?.address.province}</p>
+            <p className="text-sm text-gray-500 mt-1">{shopInfo?.address}</p>
           </div>
         </div>
 
@@ -186,8 +169,8 @@ const ShopView = () => {
         >
           <option value="">Tất cả danh mục</option>
           {ListCategories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.categoryName}
+            <option key={category.value} value={category}>
+              {category}
             </option>
           ))}
         </select>
@@ -206,7 +189,13 @@ const ShopView = () => {
           </select>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      {
+        loadingProducts ?
+        (<div className="flex justify-center mt-24 min-h-screen">
+          <AiOutlineLoading3Quarters className="animate-spin text-4xl" />
+        </div>) 
+        :
+        (<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {listProduct.length > 0 ? (
             listProduct.map((item) => (
               <ProductItem
@@ -221,7 +210,8 @@ const ShopView = () => {
           ) : (
             <p className="col-span-full text-center text-gray-500">Không tìm thấy sản phẩm phù hợp.</p>
           )}
-      </div>
+      </div>)
+      }
 
       {/* Load More Button */}
       {hasMore && (
