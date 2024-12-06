@@ -9,6 +9,7 @@ import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.*;
 import com.se.backend.repository.*;
+import com.se.backend.service.CartService;
 import com.se.backend.service.storage.FileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,7 @@ public class OrderService  {
     private final CategoryPolicyRepository categoryPolicyRepository;
     private final FileInfoRepo fileInfoRepo;
     private final FileService fileService;
+    private final CartService cartService;
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         long addressId;
@@ -163,6 +165,9 @@ public class OrderService  {
                 ProductInstance productInstance = orderProductInstance.getProductInstance();
                 Product product = productInstance.getBuildProduct().get(0).getProduct();
                 orderProducts.add(orderProductInstance);
+
+                //Handle remove in cart
+                cartService.removeProductInsFromCart(username, productInstance.getId());
                 // Handle Sale here
                 List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(product.getSeller().getUsername());
                 shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
