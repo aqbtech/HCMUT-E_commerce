@@ -115,6 +115,12 @@ const Product = () => {
     updateSelectedInstant();
   }, [selectedAttributes, productData?.listInstants]);
 
+  const getRandomShippingFee = () => {
+    const min = 100; // phí ship tối thiểu
+    const max = 500; // phí ship tối đa
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }; 
+
   const placeOrder = async (
     productName,
     productId,
@@ -139,6 +145,8 @@ const Product = () => {
         value,
       })
     );
+    
+    const fakeShippingFee = getRandomShippingFee();
 
     const body = {
       IMG: IMG,
@@ -150,6 +158,7 @@ const Product = () => {
       price: selectedInstant.price,
       isCart: false,
       sale: sale,
+      fakeShippingFee : fakeShippingFee
     };
 
     // Ghi đè trực tiếp `ListProductToPlace` trong localStorage với `body`

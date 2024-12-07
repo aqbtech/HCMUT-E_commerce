@@ -20,6 +20,8 @@ const PlaceOrder = () => {
   const [listProductToPlace, setListProductToPlace] = useState([]);
   const { navigate, formatCurrency, setTotalQuantityInCart } =
     useContext(ShopContext);
+  const [fakeShippingFee, setFakeShippingFee] = useState(0);
+  
   // Lấy danh sách địa chỉ từ API
   useEffect(() => {
     const loadAddresses = async () => {
@@ -37,7 +39,9 @@ const PlaceOrder = () => {
   useEffect(() => {
     const savedListProductToPlace = localStorage.getItem("ListProductToPlace");
     if (savedListProductToPlace) {
-      setListProductToPlace(JSON.parse(savedListProductToPlace));
+      const parsedList = JSON.parse(savedListProductToPlace); 
+      setListProductToPlace(parsedList);
+      setFakeShippingFee(parsedList[0]?.fakeShippingFee * 100 || 0); 
     }
   }, []);
 
@@ -73,12 +77,6 @@ const PlaceOrder = () => {
     }, 0);
   };
 
-  const getRandomShippingFee = () => {
-    const min = 100; // phí ship tối thiểu
-    const max = 500; // phí ship tối đa
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-  const fakeShippingFee = getRandomShippingFee() * 100;
   // Xử lý đặt hàng
   const handlePlaceOrder = async (
     selectedAddressId,
@@ -123,12 +121,8 @@ const PlaceOrder = () => {
       setListProductToPlace([]); // Đặt lại listProductToPlace thành array rỗng
       const response = await getMininalProfile();
       setTotalQuantityInCart(response.totalQuantityInCart);
-      localStorage.setItem(
-        "url",
-        JSON.stringify(res.url)
-      );
-      if (method === "zalo") {
-        navigate("/payment");
+      if(method !== 'cod') {
+        window.location.href = res?.url;
       } else {
         toast.success("Đặt hàng thành công!");
         navigate("/orders");
@@ -272,7 +266,7 @@ const PlaceOrder = () => {
           <div className="border rounded p-4 mt-4">
             <div className="w-full">
               <div className="text-2xl">
-                <Title text1={"CART"} text2={"TOTAL"} />
+                <Title text1={"TỔNG"} text2={"ĐƠN"} />
               </div>
 
               <div className="flex flex-col gap-2 mt-2 text-sm">
@@ -297,24 +291,54 @@ const PlaceOrder = () => {
               <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN" />
               <div className="flex gap-3 flex-col mt-4">
                 <div
-                  onClick={() => setMethod("zalo")}
-                  className="flex items-center gap-3 border p-2 cursor-pointer"
+                    onClick={() => setMethod("zalo_wallet")}
+                    className="flex items-center gap-3 border p-2 cursor-pointer"
                 >
                   <p
-                    className={`w-4 h-4 border rounded-full ${
-                      method === "zalo" ? "bg-green-400" : ""
-                    }`}
+                      className={`w-4 h-4 border rounded-full ${
+                          method === "zalo_wallet" ? "bg-green-400" : ""
+                      }`}
                   ></p>
-                  <img className="h-5 mx-4" src={assets.zalo} alt="" /> zalo
+                  <img className="h-5 mx-4" src={assets.zalo} alt=""/>
+                  <p className="text-gray-500 text-sm font-medium mx-4">
+                   Ví ZaloPay
+                  </p>
+
                 </div>
                 <div
-                  onClick={() => setMethod("cod")}
-                  className="flex items-center gap-3 border p-2 cursor-pointer"
+                    onClick={() => setMethod("visa")}
+                    className="flex items-center gap-3 border p-2 cursor-pointer"
                 >
                   <p
-                    className={`w-4 h-4 border rounded-full ${
-                      method === "cod" ? "bg-green-400" : ""
-                    }`}
+                      className={`w-4 h-4 border rounded-full ${
+                          method === "visa" ? "bg-green-400" : ""
+                      }`}
+                  ></p>
+                  <p className="text-gray-500 text-sm font-medium mx-4">
+                    Visa, Mastercard, JCB (qua cổng ZaloPay)
+                  </p>
+                </div>
+                <div
+                    onClick={() => setMethod("atm")}
+                    className="flex items-center gap-3 border p-2 cursor-pointer"
+                >
+                  <p
+                      className={`w-4 h-4 border rounded-full ${
+                          method === "atm" ? "bg-green-400" : ""
+                      }`}
+                  ></p>
+                  <p className="text-gray-500 text-sm font-medium mx-4">
+                    Thẻ ATM (qua cổng ZaloPay)
+                  </p>
+                </div>
+                <div
+                    onClick={() => setMethod("cod")}
+                    className="flex items-center gap-3 border p-2 cursor-pointer"
+                >
+                  <p
+                      className={`w-4 h-4 border rounded-full ${
+                          method === "cod" ? "bg-green-400" : ""
+                      }`}
                   ></p>
                   <p className="text-gray-500 text-sm font-medium mx-4">
                     Thanh toán khi nhận hàng
@@ -322,18 +346,18 @@ const PlaceOrder = () => {
                 </div>
               </div>
               {loading ? (
-                <AiOutlineLoading3Quarters />
+                  <AiOutlineLoading3Quarters/>
               ) : (
-                <button
-                  onClick={() =>
-                    handlePlaceOrder(
-                      selectedAddressId,
-                      listProductToPlace,
-                      method
-                    )
-                  }
-                  className="bg-black text-white px-8 py-3 text-sm mt-6 w-full"
-                >
+                  <button
+                      onClick={() =>
+                          handlePlaceOrder(
+                              selectedAddressId,
+                              listProductToPlace,
+                              method
+                          )
+                      }
+                      className="bg-black text-white px-8 py-3 text-sm mt-6 w-full"
+                  >
                   {loading ? (
                     <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />
                   ) : (

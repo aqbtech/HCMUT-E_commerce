@@ -117,10 +117,18 @@ const Cart = () => {
     );
   };
 
+  const getRandomShippingFee = () => {
+    const min = 100; // phí ship tối thiểu
+    const max = 500; // phí ship tối đa
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }; 
+
+
   const handleProceed = () => {
     if (selectedItems.length === 0) {
       toast.error("Vui lòng chọn ít nhất một mặt hàng để đặt hàng!");
     } else {
+      const fakeShippingFee = getRandomShippingFee();
       const listProductToPlace = selectedItems.map((id) => {
         const item = cartData.find((item) => item.productInstanceId === id);
         return {
@@ -132,7 +140,8 @@ const Cart = () => {
           quantity: item.quantity,
           price: item.price,
           IMG: item.IMG,
-          sale: item.sale
+          sale: item.sale,
+          fakeShippingFee : fakeShippingFee
         };
       });
       localStorage.setItem(
