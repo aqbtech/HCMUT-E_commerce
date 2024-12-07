@@ -8,8 +8,8 @@ ENV TZ=Asia/Ho_Chi_Minh \
 # Tạo thư mục làm việc trong container
 WORKDIR /app
 
-# Sao chép tệp JAR đã build từ máy cục bộ vào container
-COPY target/*.jar app.jar
+# Sao chép JAR từ thư mục Backend/target
+COPY Backend/target/*.jar app.jar
 
 # Mở cổng mặc định của ứng dụng Spring Boot (thường là 8080)
 EXPOSE 8080
