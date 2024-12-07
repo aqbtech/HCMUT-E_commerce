@@ -169,12 +169,13 @@ export const getProductOfCategory = async (category, page) => {
 }
 
 export const uploadIMG = async (file, productId) => {
+    const api = import.meta.env.BASE_URL;
     const formData = new FormData();
     formData.append('file', file);
     console.log("Hài cot", formData);
     const token = Cookies.get("token");
     try {
-        const res = await fetch(`http://localhost:8080/upload?productId=${productId}`,{
+        const res = await fetch(api +`/upload?productId=${productId}`,{
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
