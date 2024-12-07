@@ -13,11 +13,8 @@ import { Link } from "react-router-dom";
 import { getMininalProfile } from "../fetchAPI/fetchAccount";
 
 const Cart = () => {
-  const {
-    formatCurrency,
-    navigate,
-    setTotalQuantityInCart,
-  } = useContext(ShopContext);
+  const { formatCurrency, navigate, setTotalQuantityInCart } =
+      useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [total, setTotal] = useState(0);
@@ -37,11 +34,11 @@ const Cart = () => {
       } else {
         setCartData((prevData) => {
           const newData = res.content.filter(
-            (newItem) =>
-              !prevData.some(
-                (prevItem) =>
-                  prevItem.productInstantId === newItem.productInstantId
-              )
+              (newItem) =>
+                  !prevData.some(
+                      (prevItem) =>
+                          prevItem.productInstantId === newItem.productInstantId
+                  )
           );
           return [...prevData, ...newData];
         });
@@ -66,7 +63,7 @@ const Cart = () => {
   useEffect(() => {
     const newTotal = selectedItems.reduce((acc, id) => {
       const item = cartData.find((item) => item.productInstanceId === id);
-      return item ? acc + item.price * (item.quantity || 1) : acc;
+      return item ? acc + item.price * (1 - item.sale) * (item.quantity || 1) : acc;
     }, 0);
     setTotal(newTotal);
   }, [selectedItems, cartData]);
@@ -77,16 +74,16 @@ const Cart = () => {
     try {
       await updateQuantity(productInstanceId, quantity);
       setCartData((prev) =>
-        prev.map((item) =>
-          item.productInstanceId === productInstanceId
-            ? { ...item, quantity }
-            : item
-        )
+          prev.map((item) =>
+              item.productInstanceId === productInstanceId
+                  ? { ...item, quantity }
+                  : item
+          )
       );
       const response = await getMininalProfile();
       setTotalQuantityInCart(response.totalQuantityInCart);
     } catch (err) {
-      const errorCode = err.response?.data?.code; 
+      const errorCode = err.response?.data?.code;
       if (err.response?.status === 400 && errorCode === 2002) {
         toast.error("Số lượng vượt quá, vui lòng thử lại");
       } else {
@@ -100,23 +97,23 @@ const Cart = () => {
     try {
       await deleteFromCart(productInstanceId);
       setCartData((prev) =>
-        prev.filter((item) => item.productInstanceId !== productInstanceId)
+          prev.filter((item) => item.productInstanceId !== productInstanceId)
       );
       const response = await getMininalProfile();
       setTotalQuantityInCart(response.totalQuantityInCart);
       console.log(response, "123");
       toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
     } catch (err) {
-      console.error("Lỗi xóa sản phẩm:", err); 
+      console.error("Lỗi xóa sản phẩm:", err);
       toast.error("Không thể xóa sản phẩm khỏi giỏ hàng!");
     }
   };
 
   const handleSelectItem = (productInstanceId) => {
     setSelectedItems((prev) =>
-      prev.includes(productInstanceId)
-        ? prev.filter((id) => id !== productInstanceId)
-        : [...prev, productInstanceId]
+        prev.includes(productInstanceId)
+            ? prev.filter((id) => id !== productInstanceId)
+            : [...prev, productInstanceId]
     );
   };
 
@@ -130,16 +127,17 @@ const Cart = () => {
           productName: item.productName,
           productId: item.productId,
           listAtt: item.listName,
-          isCart : true,
+          isCart: true,
           instantId: item.productInstanceId,
           quantity: item.quantity,
           price: item.price,
-          IMG : item.IMG
+          IMG: item.IMG,
+          sale: item.sale
         };
       });
       localStorage.setItem(
-        "ListProductToPlace",
-        JSON.stringify(listProductToPlace)
+          "ListProductToPlace",
+          JSON.stringify(listProductToPlace)
       );
       navigate("/place-Order");
     }
@@ -157,142 +155,168 @@ const Cart = () => {
   }, {});
 
   return loading ? (
-    <div className="flex justify-center items-center py-[500px]">
-      <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
-    </div>
+      <div className="flex justify-center items-center py-[500px]">
+        <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
+      </div>
   ) : (
-    <div className="border-t pt-14 min-h-screen">
-      <div className="text-2xl mb-3">
-        <Title text1="GIỎ" text2="HÀNG" />
-      </div>
+      <div className="border-t pt-14 min-h-screen">
+        <div className="text-2xl mb-3">
+          <Title text1="GIỎ" text2="HÀNG" />
+        </div>
 
-      {Object.keys(groupedCartData).length > 0 ? (
-        Object.keys(groupedCartData).map((sellerId) => (
-          <div key={sellerId} className="border mb-6 p-4 bg-gray-50">
-            <Link to={`/shopView/${groupedCartData[sellerId].seller}`}>
-              <h2 className="text-lg font-bold mb-4">
-                {groupedCartData[sellerId].sellerName}
-              </h2>
-            </Link>
-            {groupedCartData[sellerId].items.map((item) => (
-              <div
-                key={item.productInstanceId} // Key là productInstanceId duy nhất
-                className="py-4 border-t text-gray-700 grid grid-cols-[0.5fr_4fr_0.5fr_0.5fr] sm:grid-cols-[1fr_4fr_2fr_1fr] items-center gap-4"
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedItems.includes(item.productInstanceId)}
-                  onChange={() => handleSelectItem(item.productInstanceId)}
-                />
-                <div className="flex items-start gap-6">
-                  <img
-                    className="w-16 sm:w-20"
-                    src={item.IMG || "default.jpg"}
-                    alt={item.productName}
-                  />
-                  <div>
-                    <Link to={`/product/${item.productId}`}>
-                      <p className="text-xl sm:text-lg font-medium text-blue-500">
-                        {item.productName}
-                      </p>
-                    </Link>
-                    <div className="flex items-center gap-5 mt-2">
-                      <p>{formatCurrency(item.price)}</p>
-                      <ul>
-                        { item.listValue.map((att, idx) => (
-                          (att && 
-                          <li
-                            key={`${item.productInstanceId}-${idx}`} // Đảm bảo key duy nhất cho từng thuộc tính
-                            className="px-2 sm:px-3 sm:py-1 border bg-slate-50"
-                          >
-                            {att}
-                          </li>
-                          )
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+        {Object.keys(groupedCartData).length > 0 ? (
+            Object.keys(groupedCartData).map((sellerId) => (
+                <div key={sellerId} className="border mb-6 p-4 bg-gray-50">
+                  <Link to={`/shopView/${sellerId}`}>
+                    <h2 className="text-lg font-bold mb-4">
+                      {groupedCartData[sellerId].sellerName}
+                    </h2>
+                  </Link>
+                  {groupedCartData[sellerId].items.map((item) => (
+                      <div
+                          key={item.productInstanceId}
+                          className="py-4 border-t text-gray-700 grid grid-cols-[0.5fr_1fr_2fr_1fr_1fr_0.5fr] items-center gap-4"
+                      >
+                        {/* Cột Checkbox */}
+                        <div className="items-center justify-center ml-auto">
+                          <input
+                              type="checkbox"
+                              checked={selectedItems.includes(item.productInstanceId)}
+                              onChange={() => handleSelectItem(item.productInstanceId)}
+                              className="w-8 h-8 cursor-pointer"
+                          />
+                        </div>
+                        {/* Cột Hình ảnh */}
+                        <div className="flex items-center justify-center">
+                          <img
+                              className="w-40 h-40 sm:w-36 sm:h-36 object-cover"
+                              src={item.IMG || "default.jpg"}
+                              alt={item.productName}
+                          />
+                        </div>
+
+                        {/* Cột Tên và Thuộc tính */}
+                        <div className="flex flex-col items-start gap-2">
+                          <Link to={`/product/${item.productId}`}>
+                            <p className="text-2xl font-bold text-blue-600">{item.productName}</p>
+                          </Link>
+                          <ul className="flex gap-2 flex-wrap">
+                            {item.listValue.map(
+                                (att, idx) =>
+                                    att && (
+                                        <li
+                                            key={`${item.productInstanceId}-${idx}`}
+                                            className="px-3 py-1 border bg-slate-50 rounded-md text-sm"
+                                        >
+                                          {att}
+                                        </li>
+                                    )
+                            )}
+                          </ul>
+                        </div>
+
+                        {/* Cột Giá tiền */}
+                        <div className="flex items-start justify-start">
+                          <div className="flex flex-col items-start gap-1">
+                            {item.sale ? (
+                                <>
+                                  <p className="text-sm text-gray-500 line-through">
+                                    {formatCurrency(item.price)}
+                                  </p>
+                                  <p className="text-lg font-bold text-red-600">
+                                    {formatCurrency(item.price * (1 - item.sale))}
+                                  </p>
+                                </>
+                            ) : (
+                                <p className="text-lg font-medium">{formatCurrency(item.price)}</p>
+                            )}
+                          </div>
+                        </div>
+
+
+                        {/* Cột Số lượng */}
+                        <div className="flex items-start justify-start">
+                          <input
+                              type="number"
+                              min={1}
+                              max={9999}
+                              value={item.quantity || 1}
+                              className="border w-14 text-center px-2 py-1"
+                              onChange={(e) => {
+                                const newQuantity = Math.max(1, Math.min(Number(e.target.value), 9999));
+                                if (newQuantity >= 1) {
+                                  handleQuantityChange(item.productInstanceId, newQuantity);
+                                }
+                              }}
+                              onBlur={(e) => {
+                                const newQuantity = Number(e.target.value);
+                                if (newQuantity < 1) {
+                                  handleQuantityChange(item.productInstanceId, 1);
+                                } else if (newQuantity > (item.maxQuantity || Infinity)) {
+                                  handleQuantityChange(item.productInstanceId, 10);
+                                }
+                              }}
+                          />
+                        </div>
+
+                        {/* Cột Xóa */}
+                        <div className="flex items-start justify-start">
+                          <img
+                              src={assets.bin_icon}
+                              alt="Remove item"
+                              className="w-6 h-6 cursor-pointer"
+                              onClick={() => handleRemoveItem(item.productInstanceId)}
+                          />
+                        </div>
+                      </div>
+
+                  ))}
                 </div>
+            ))
+        ) : (
+            <div className="text-center p-6 bg-gray-50">
+              <h2 className="text-xl font-bold">Giỏ hàng trống!</h2>
+              <p>
+                Chưa có sản phẩm nào trong giỏ hàng của bạn. Hãy thêm sản phẩm để
+                tiếp tục mua sắm.
+              </p>
+            </div>
+        )}
 
-                <input
-                  type="number"
-                  min={1}
-                  max={9999} // Giới hạn số lượng tối đa nếu tồn tại maxQuantity
-                  value={item.quantity || 1} // Đặt mặc định là 1 nếu quantity bị undefined
-                  className="border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
-                  onChange={(e) => {
-                    const newQuantity = Math.max(
-                      1,
-                      Math.min(Number(e.target.value), 9999)
-                    );
-                    if (newQuantity >= 1) {
-                      handleQuantityChange(item.productInstanceId, newQuantity);
-                    }
-                  }}
-                  onBlur={(e) => {
-                    // Reset về giá trị hợp lệ nếu người dùng nhập sai và thoát khỏi input
-                    const newQuantity = Number(e.target.value);
-                    if (newQuantity < 1) {
-                      handleQuantityChange(item.productInstanceId, 1); // Đặt về tối thiểu là 1
-                    } else if (newQuantity > (item.maxQuantity || Infinity)) {
-                      handleQuantityChange(item.productInstanceId, 10); // Đặt về tối đa
-                    }
-                  }}
-                />
-                <img
-                  src={assets.bin_icon}
-                  alt="Remove item"
-                  className="w-4 mr-4 sm:w-5 cursor-pointer"
-                  onClick={() => handleRemoveItem(item.productInstanceId)}
-                />
-              </div>
-            ))}
-          </div>
-        ))
-      ) : (
-        <div className="text-center p-6 bg-gray-50">
-          <h2 className="text-xl font-bold">Giỏ hàng trống!</h2>
-          <p>
-            Chưa có sản phẩm nào trong giỏ hàng của bạn. Hãy thêm sản phẩm để
-            tiếp tục mua sắm.
-          </p>
-        </div>
-      )}
+        {hasMore ? (
+            <div className="flex justify-center gap-4 mt-8">
+              <button
+                  onClick={loadMoreItems}
+                  disabled={!hasMore}
+                  className="border-2 border-gray-300  px-4 py-2 font-medium hover:bg-gray-300"
+              >
+                Xem thêm
+              </button>
+            </div>
+        ) : (
+            ""
+        )}
 
-      {hasMore ? (
-        <div className="flex justify-center gap-4 mt-8">
-          <button
-            onClick={loadMoreItems}
-            disabled={!hasMore}
-            className="border-2 border-gray-300  px-4 py-2 font-medium hover:bg-gray-300"
-          >
-            Xem thêm
-          </button>
-        </div>
-      ) : (
-        ""
-      )}
-
-      <div className="flex justify-end my-20">
-        <div className="w-full sm:w-[450px]">
-          <div className="text-2xl">
-            <Title text1="TỔNG" text2="TIỀN" />
-          </div>
-          <div className="flex justify-between">
-            <b>Tổng cộng</b>
-            <b>{formatCurrency(total)}</b>
-          </div>
-          <div className="w-full text-end">
-            <button
-              onClick={handleProceed}
-              className="bg-black text-white text-sm my-8 px-8 py-3"
-            >
-              ĐẶT HÀNG
-            </button>
+        <div className="flex justify-end my-20">
+          <div className="w-full sm:w-[450px]">
+            <div className="text-2xl">
+              <Title text1="TỔNG" text2="TIỀN" />
+            </div>
+            <div className="flex justify-between">
+              <b>Tổng cộng</b>
+              <b>{formatCurrency(total)}</b>
+            </div>
+            <div className="w-full text-end">
+              <button
+                  onClick={handleProceed}
+                  className="bg-black text-white text-sm my-8 px-8 py-3"
+              >
+                ĐẶT HÀNG
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

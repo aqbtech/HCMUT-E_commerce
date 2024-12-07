@@ -174,7 +174,9 @@ public class OrderService  {
                 orderProducts.add(orderProductInstance);
 
                 //Handle remove in cart
-                cartService.removeProductInsFromCart(username, productInstance.getId());
+                if(createOrderRequest.getIsCart()) {
+                    cartService.removeProductInsFromCart(username, productInstance.getId());
+                }
                 // Handle Sale here
                 List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(product.getSeller().getUsername());
                 shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
@@ -225,7 +227,7 @@ public class OrderService  {
             order.setDeliveryStatus(deliveryResponse.getDeliveryStatus());
             Double shipping_fee = (double) deliveryResponse.getFee();
             order.setTotalPrice(totalPrice);
-            order.setDelieryFee(shipping_fee);
+            order.setDelieryFee((double) createOrderRequest.getFakeShippingFee());
 //            order.setDelivery(deliveryInfor);
             try {
                 orderRepository.save(order);
@@ -421,6 +423,8 @@ public class OrderService  {
         result.setPrice(String.valueOf(totalPrice+ shipping_fee));
         result.setShipping_fee(shipping_fee);
         result.setListProduct(product_of_getOrderResponseList);
+        result.setDeliveryDate(order.getDeliveryDate());
+        result.setExpectedDeliveryDate(order.getExpectedDeliveryDate());
         result.setMethod(method);
         return result;
     }

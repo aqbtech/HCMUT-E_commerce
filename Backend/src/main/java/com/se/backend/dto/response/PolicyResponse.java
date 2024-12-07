@@ -15,6 +15,7 @@ public class PolicyResponse {
 //    @Builder
 //    public static class ShopPolicyResponse{
         private Long policyId;
+        private String type;
         private LocalDate apply_date;
         private String policy_description;
         private String policy_name;

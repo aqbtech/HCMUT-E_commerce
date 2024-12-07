@@ -45,7 +45,7 @@ const ProductItem = ({ id, image, name, price, rating, sale }) => {
             <span key={index} className="text-yellow-500">&#9733;</span> // Icon sao
           ))}
           {rating % 1 !== 0 && <span className="text-yellow-500">&#9734;</span>} 
-          <span className="text-sm text-gray-600 ml-2">({rating})</span>
+          <span className="text-sm text-gray-600 ml-2">({rating.toFixed(1)})</span>
         </div>
       </div>
     </Link>

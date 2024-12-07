@@ -237,7 +237,7 @@ const OrderManagement = () => {
                                 <div className="flex items-start gap-6 text-sm">
                                     <img
                                         className="w-16 sm:w-20 object-cover rounded-lg border"
-                                        src={product.IMG}
+                                        src={product.img}
                                         alt={product.productName}
                                     />
                                     <div>

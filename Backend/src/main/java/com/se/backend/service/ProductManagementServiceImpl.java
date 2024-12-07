@@ -66,7 +66,10 @@ public class ProductManagementServiceImpl implements IProductManagementSerivce {
                 .status("ENABLED")
                 .admins(new ArrayList<>())
                 .build();
-        product.addAdmin(admins.getFirst()); //list admin
+        for (Admin admin : admins){
+            product.addAdmin(admin);
+        }
+        //list admin
 
         productRepository.save(product);
 

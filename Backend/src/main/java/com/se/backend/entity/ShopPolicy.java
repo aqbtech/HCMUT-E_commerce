@@ -6,6 +6,12 @@ import lombok.*;
 import java.util.List;
 
 @Entity
+@NamedEntityGraphs(
+		@NamedEntityGraph(name = "shopPolicy", attributeNodes = {
+				@NamedAttributeNode("sellers")
+		}
+		)
+)
 @Getter
 @Setter
 @Builder

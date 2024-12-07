@@ -121,7 +121,8 @@ const Product = () => {
     quantity,
     selectedAttributes,
     selectedInstant,
-    IMG
+    IMG,
+    sale
   ) => {
     if (curState !== "Login")
       return navigate("/Login", { state: { from: location.pathname } });
@@ -147,6 +148,8 @@ const Product = () => {
       instantId: selectedInstant.instantId,
       quantity: quantity,
       price: selectedInstant.price,
+      isCart: false,
+      sale: sale
     };
 
     // Ghi đè trực tiếp `ListProductToPlace` trong localStorage với `body`
@@ -211,7 +214,7 @@ const Product = () => {
           </h1>
           <div className="flex items-center gap-1 mt-2">
             <span className="text-yellow-500 font-medium text-lg">
-              {productData.rating}
+              {productData.rating.toFixed(1)}
             </span>
             <img src={assets.star_icon} alt="Star" className="w-4 h-4" />
           </div>
@@ -326,7 +329,8 @@ const Product = () => {
                 quantity,
                 selectedAttributes,
                 selectedInstant,
-                image
+                image,
+                productData.sale
               )
             }
             disabled={!selectedInstant || selectedInstant === "not_found"}

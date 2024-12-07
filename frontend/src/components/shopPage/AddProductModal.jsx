@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import {getAllCategory} from "../../fetchAPI/fetchCategory.jsx";
 import {createProduct, uploadIMG} from "../../fetchAPI/fetchProduct.jsx";
 import {toast} from "react-toastify";
-
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 const AddProductModal = ({isOpen, onClose}) => {
     const [formData, setFormData] = useState({
         username: Cookies.get('username'),
@@ -17,7 +17,7 @@ const AddProductModal = ({isOpen, onClose}) => {
     });
     const [images, setImages] = useState([]);
     const [categories, setCategories] = useState([]);  // Lưu danh sách categories
-
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         // Gọi API để lấy danh sách categories
@@ -307,7 +307,7 @@ const AddProductModal = ({isOpen, onClose}) => {
         if(images.length === 0) {
             return toast.error("Hình ảnh sản phẩm còn đang trống!");
         }
-
+        setLoading(true)
         try {
             const responseProductId = await createProduct(formData);
             const uploadPromises = images.map((image) =>
@@ -332,6 +332,9 @@ const AddProductModal = ({isOpen, onClose}) => {
         } catch (err){
             toast.error("Lỗi khi tạo sản phẩm")
             throw err;
+        }
+        finally{
+            setLoading(false)
         }
     }
     if (!isOpen) return null;
@@ -596,10 +599,11 @@ const AddProductModal = ({isOpen, onClose}) => {
                         </div>
                         <div className="mt-6 flex justify-end">
                             <button
+                                disabled={loading}
                                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-300"
                                 onClick={handleCreateProduct}
                             >
-                                Tạo sản phẩm
+                                {loading ? ( <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />) : (<div>Tạo sản phẩm</div>)}
                             </button>
                         </div>
                     </div>

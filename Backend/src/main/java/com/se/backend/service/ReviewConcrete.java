@@ -71,6 +71,7 @@ public class ReviewConcrete implements ReviewService {
 		ReviewContent reviewContent = ReviewContent.builder()
 				.content(reviewRequest.getComment())
 				.rating(reviewRequest.getRating())
+				.seller(order.getSeller())
 				.build();
 		reviewContentRepository.save(reviewContent);
 
