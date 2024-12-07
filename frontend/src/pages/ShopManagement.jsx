@@ -35,7 +35,7 @@ const ShopManagement = () => {
             setLoading(true);
             try {
                 const response = await checkStatus();
-                if (response) setStatus(true);
+                if (!response) setStatus(false);
             } catch (err) {
                 toast.error("Lỗi khi kiểm tra trạng thái người bán!");
             } finally {

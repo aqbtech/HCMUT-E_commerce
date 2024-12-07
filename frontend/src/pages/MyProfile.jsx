@@ -106,7 +106,8 @@ const MyProfile = () => {
     const handleAddAddress = useCallback(async (newAddress) => {
         try {
             await createAddress(newAddress);
-            setAddresses((prevAddresses) => [...prevAddresses, newAddress]);
+            const response = await getAddress();
+            setAddresses(response);
             toast.success("Thêm địa chỉ giao hàng thành công!");
         } catch(err) {
             toast.error("Thêm địa chỉ mới thất bại, vui lòng thử lại!");
