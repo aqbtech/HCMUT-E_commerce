@@ -81,7 +81,7 @@ const Regist = () => {
     try {
       await register(body);
       toast.success('Đăng ký thành công!');
-      navigate('/Login');
+      navigate('/login');
     } catch (error) {
       console.error('Lỗi đăng ký:', error);
       if (error.status === 401) toast.error('Thông tin hiện đã tồn tại!');

@@ -65,7 +65,7 @@ const ReviewPage = () => {
         product.orderId === selectedProduct.orderId
           ? {
               ...product,
-              isReviewed: true,
+              review: true,
               reviewInfo: {
                 rating,
                 comment: reviewText,

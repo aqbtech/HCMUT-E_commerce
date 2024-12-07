@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { createAddress, updateAddress } from "../../fetchAPI/fetchAddress";
+import { toast } from "react-toastify";
 
 const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
     const [name, setName] = useState('');
@@ -101,7 +102,47 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
         onClose(); // Đóng modal
     };
 
+    const validate = () => {
+        // Kiểm tra các trường bắt buộc
+        if (!name.trim()) {
+            toast.error('Họ và tên không được để trống!');
+            return false;
+        }
+        if (!phone.trim()) {
+            toast.error('Số điện thoại không được để trống!');
+            return false;
+        }
+        // Kiểm tra định dạng số điện thoại (ví dụ: chỉ chấp nhận số và có độ dài tối thiểu)
+        const phoneRegex = /^[0-9]{10,11}$/;
+        if (!phoneRegex.test(phone)) {
+            toast.error('Số điện thoại không hợp lệ!');
+            return false;
+        }
+    
+        if (!province) {
+            toast.error('Vui lòng chọn tỉnh/thành phố!');
+            return false;
+        }
+        if (!district) {
+            toast.error('Vui lòng chọn quận/huyện!');
+            return false;
+        }
+        if (!ward) {
+            toast.error('Vui lòng chọn xã/phường!');
+            return false;
+        }
+        if (!detailAddress.trim()) {
+            toast.error('Địa chỉ cụ thể không được để trống!');
+            return false;
+        }
+    
+        // Nếu tất cả các trường hợp trên đều hợp lệ, trả về true
+        return true;
+    }
+
+
     const handleCreateAddress = () => {
+        if(!validate()) return;
         const newAddress = {
             name,
             phone,

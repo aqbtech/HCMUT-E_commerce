@@ -109,8 +109,8 @@ const CategoriesManagement = () => {
                 <thead>
                     <tr className="bg-gray-100">
                         <th className="border border-gray-200 p-3 text-left">ID</th>
-                        <th className="border border-gray-200 p-3 text-left">Category Name</th>
-                        <th className="border border-gray-200 p-3 text-left">Actions</th>
+                        <th className="border border-gray-200 p-3 text-left">Danh Mục</th>
+                        <th className="border border-gray-200 p-3 text-left"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -185,7 +185,7 @@ const CategoriesManagement = () => {
                                 }}
                                 className="bg-gray-500 text-white px-3 py-1 rounded mr-2"
                             >
-                                Cancel
+                                Hủy
                             </button>
                             <button
                                 onClick={handleSave}

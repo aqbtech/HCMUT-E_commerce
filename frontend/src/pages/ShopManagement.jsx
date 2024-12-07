@@ -15,7 +15,7 @@ const ShopManagement = () => {
     const location = useLocation(); // Để lấy đường dẫn hiện tại
     const initialTab = searchParams.get("tab") || "product";
     const [activeTab, setActiveTab] = useState(initialTab);
-    const [status, setStatus] = useState(false);
+    const [status, setStatus] = useState(true);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -66,7 +66,7 @@ const ShopManagement = () => {
                                     : "hover:text-gray-300"
                             }`}
                         >
-                            Product Management
+                            Quản Lý Sản Phẩm
                         </li>
                         <li
                             onClick={() => handleTabChange("order")}
@@ -76,7 +76,7 @@ const ShopManagement = () => {
                                     : "hover:text-gray-300"
                             }`}
                         >
-                            Order Management
+                            Quản Lý Đơn Hàng
                         </li>
                         <li
                             onClick={() => handleTabChange("shop")}
@@ -86,7 +86,7 @@ const ShopManagement = () => {
                                     : "hover:text-gray-300"
                             }`}
                         >
-                            Shop Info
+                            Thông Tin Cửa Hàng
                         </li>
                     </ul>
                 </div>

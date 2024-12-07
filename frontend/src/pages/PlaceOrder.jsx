@@ -9,7 +9,7 @@ import AddressModal from "../components/profilePage/AddressModal";
 import { createAddress } from "../fetchAPI/fetchAddress";
 import Cookies from "js-cookie";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import {getMininalProfile} from "../fetchAPI/fetchAccount.jsx";
+import { getMininalProfile } from "../fetchAPI/fetchAccount.jsx";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState("cod");
@@ -18,7 +18,8 @@ const PlaceOrder = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listProductToPlace, setListProductToPlace] = useState([]);
-  const { navigate, formatCurrency, setTotalQuantityInCart } = useContext(ShopContext);
+  const { navigate, formatCurrency, setTotalQuantityInCart } =
+    useContext(ShopContext);
   // Lấy danh sách địa chỉ từ API
   useEffect(() => {
     const loadAddresses = async () => {
@@ -44,7 +45,7 @@ const PlaceOrder = () => {
   const handleSaveAddress = async (newAddress) => {
     try {
       const savedAddress = await createAddress(newAddress);
-      const addressData = await getAddress()
+      const addressData = await getAddress();
       setAddresses(addressData);
       setSelectedAddressId(savedAddress.id); // Chọn địa chỉ mới làm mặc định
       setIsModalOpen(false); // Đóng modal
@@ -77,9 +78,13 @@ const PlaceOrder = () => {
     const max = 500; // phí ship tối đa
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
-  let fakeShippingFee = getRandomShippingFee() * 100;
+  const fakeShippingFee = getRandomShippingFee() * 100;
   // Xử lý đặt hàng
-  const handlePlaceOrder = async (selectedAddressId, listProductToPlace, method) => {
+  const handlePlaceOrder = async (
+    selectedAddressId,
+    listProductToPlace,
+    method
+  ) => {
     if (loading) return;
 
     if (!selectedAddressId) {
@@ -88,7 +93,7 @@ const PlaceOrder = () => {
     }
 
     const deliveryAddress = addresses.find(
-        (address) => address.id === selectedAddressId
+      (address) => address.id === selectedAddressId
     );
 
     if (!deliveryAddress) {
@@ -101,7 +106,7 @@ const PlaceOrder = () => {
       instantId: product.instantId,
       quantity: product.quantity,
     }));
-    let isCart = false
+    let isCart = false;
     if (listProductToPlace[0].isCart) isCart = true;
     const bodyRequest = {
       username: Cookies.get("username"),
@@ -110,17 +115,21 @@ const PlaceOrder = () => {
       method: method,
       total: calculateTotal(),
       isCart: isCart,
-      fakeShippingFee: fakeShippingFee
+      fakeShippingFee: fakeShippingFee,
     };
-
+    console.log(bodyRequest);
     try {
       const res = await createOrder(bodyRequest);
       setListProductToPlace([]); // Đặt lại listProductToPlace thành array rỗng
       const response = await getMininalProfile();
       setTotalQuantityInCart(response.totalQuantityInCart);
-      if(method === "zalo") {
-          navigate("/payment");
-      }else{
+      localStorage.setItem(
+        "url",
+        JSON.stringify(res.url)
+      );
+      if (method === "zalo") {
+        navigate("/payment");
+      } else {
         toast.success("Đặt hàng thành công!");
         navigate("/orders");
       }
@@ -174,57 +183,68 @@ const PlaceOrder = () => {
               listProductToPlace.map((product, index) => (
                 <div
                   key={index}
-                  className="mb-6 px-3 border-b last:border-none"
+                  className="mt-2 px-2 py-2 border-b last:border-none"
                 >
                   {/* Hình ảnh và thông tin sản phẩm */}
-                  <div className="flex items-start gap-6 text-sm mb-3">
+                  <div className="flex gap-6 text-sm mb-3">
                     <img
-                      className="w-16 sm:w-20 object-cover rounded-lg border"
+                      className="w-24 sm:w-32 object-cover rounded-lg border shadow-md"
                       src={product.IMG}
                       alt={product.productName}
                     />
-                    <div>
-                      <h2 className="text-lg font-semibold text-gray-900">
+                    <div className="flex-1">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-2">
                         {product.productName || "Sản phẩm không xác định"}
                       </h2>
 
                       {/* Giá và Số lượng */}
-                      <div className="flex items-center justify-between mt-2">
+                      <div className="mt-2">
                         <p className="text-gray-600">
-                          <span className="font-medium">Giá:</span>{" "}
+                          <span className="font-medium text-lg">Giá:</span>{" "}
                           {product.sale > 0 ? (
-                              <>
-                                <span className="line-through text-red-500 mr-2">
-                                  {formatCurrency(product.price)}
-                                </span>
-                                <span className="font-bold text-green-600">
-                                {formatCurrency(product.price * (1 - product.sale))}
-                                </span>
-                                <span className="ml-2 text-sm text-gray-500">(-{product.sale * 100}%)</span>
-                              </>
-                            ) : (
-                            <span>{formatCurrency(product.price)}</span>
-                            )
-                          }
+                            <>
+                              <span className="line-through mr-2 text-gray-500">
+                                {formatCurrency(product.price)}
+                              </span>
+                              <span className="font-bold text-red-600 text-2xl">
+                                {formatCurrency(
+                                  product.price * (1 - product.sale)
+                                )}
+                              </span>
+                              <span className="ml-2 text-sm text-red-500">
+                                (-{product.sale * 100}%)
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-2xl">
+                              {formatCurrency(product.price)}
+                            </span>
+                          )}
                         </p>
-                        <p className="text-gray-600">
+
+                        {/* Số lượng */}
+                        <p className="text-gray-600 text-sm mt-2">
                           <span className="font-medium">Số lượng:</span>{" "}
                           {product.quantity}
                         </p>
                       </div>
+
                       {/* Thuộc tính dưới dạng ô nhỏ */}
                       {product.listAtt.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-3">
-                          {product.listAtt.map((att, idx) => (
-                            (att &&
-                            <div
-                              key={idx}
-                              className="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-lg border"
-                            >
-                              <span className="mr-1">{att.value || att}</span>
-                            </div>
-                            )
-                          ))}
+                        <div className="flex gap-3 mt-3">
+                          {product.listAtt.map(
+                            (att, idx) =>
+                              att && (
+                                <div
+                                  key={idx}
+                                  className="inline-flex items-center px-3 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-lg border"
+                                >
+                                  <span className="mr-1">
+                                    {att.value || att}
+                                  </span>
+                                </div>
+                              )
+                          )}
                         </div>
                       )}
                     </div>
@@ -233,7 +253,7 @@ const PlaceOrder = () => {
                   {/* Hiển thị khi không có thuộc tính */}
                   {product.listAtt.length === 0 && (
                     <p className="text-gray-500 text-sm mt-2">
-                      
+                      Không có thuộc tính
                     </p>
                   )}
                 </div>
@@ -252,7 +272,7 @@ const PlaceOrder = () => {
           <div className="border rounded p-4 mt-4">
             <div className="w-full">
               <div className="text-2xl">
-                <Title text1={"CART"} text2={"TOTAL"}/>
+                <Title text1={"CART"} text2={"TOTAL"} />
               </div>
 
               <div className="flex flex-col gap-2 mt-2 text-sm">
@@ -261,20 +281,20 @@ const PlaceOrder = () => {
                   <p>{formatCurrency(calculateTotal())}</p>
                 </div>
               </div>
-              <hr/>
+              <hr />
               <div className="flex justify-between">
                 <p>Phí ship</p>
                 <p>{formatCurrency(fakeShippingFee)}</p>
               </div>
-              <hr/>
+              <hr />
               <div className="flex justify-between">
                 <b>Tổng cộng</b>
                 {/* <b>{currency} {getCartAmount() === 0 ? 0 : String(getCartAmount() + delivery_fee) + '.00'}</b> */}
-                <b>{formatCurrency(calculateTotal() + fakeShippingFee)}  </b>
+                <b>{formatCurrency(calculateTotal() + fakeShippingFee)} </b>
               </div>
             </div>
             <div className="mt-8">
-              <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN"/>
+              <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN" />
               <div className="flex gap-3 flex-col mt-4">
                 <div
                   onClick={() => setMethod("zalo")}

@@ -149,7 +149,7 @@ const Product = () => {
       quantity: quantity,
       price: selectedInstant.price,
       isCart: false,
-      sale: sale
+      sale: sale,
     };
 
     // Ghi đè trực tiếp `ListProductToPlace` trong localStorage với `body`
@@ -218,27 +218,60 @@ const Product = () => {
             </span>
             <img src={assets.star_icon} alt="Star" className="w-4 h-4" />
           </div>
+
           <p className="mt-5 text-3xl font-medium">
             {selectedInstant === null ? (
-              `${formatCurrency(productData.minPrice * (1 - productData.sale))}`
+              <div className="mt-5">
+                {productData.sale > 0 ? (
+                  <div className="flex items-center space-x-3">
+                    {/* Giá gốc (gạch ngang) */}
+                    <span className="text-lg line-through">
+                      {formatCurrency(productData.minPrice)}
+                    </span>
+                    {/* Giá sau giảm */}
+                    <span className="text-3xl font-medium text-red-600">
+                      {formatCurrency(
+                        productData.minPrice * (1 - productData.sale)
+                      )}
+                    </span>
+                    {/* Phần trăm giảm giá */}
+                    <span className="text-sm text-white bg-red-500 px-2 py-1 rounded">
+                      -{Math.round(productData.sale * 100)}%
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-3xl font-medium">
+                    {formatCurrency(productData.minPrice)}
+                  </span>
+                )}
+              </div>
             ) : selectedInstant === "not_found" ? (
               "Sản phẩm đã hết :((("
             ) : (
-              <>
-                {/* Kiểm tra nếu có giảm giá */}
-                <span className="text-lg text-red-600 line-through mr-2">
-                  {selectedInstant.sale > 0 &&
-                    formatCurrency(selectedInstant.price)}
-                </span>
-                {/* Hiển thị giá sau giảm */}
-                <span className="text-3xl font-medium">
-                  {productData.sale > 0
-                    ? formatCurrency(
+              <div className="mt-5">
+                {productData.sale > 0 ? (
+                  <div className="flex items-center space-x-3">
+                    {/* Hiển thị giá gốc (gạch ngang) */}
+                    <span className="text-lg line-through">
+                      {formatCurrency(selectedInstant.price)}
+                    </span>
+                    {/* Hiển thị giá giảm */}
+                    <span className="text-3xl font-medium text-red-600">
+                      {formatCurrency(
                         selectedInstant.price * (1 - productData.sale)
-                      )
-                    : formatCurrency(selectedInstant.price)}
-                </span>
-              </>
+                      )}
+                    </span>
+                    {/* Hiển thị phần trăm giảm giá */}
+                    <span className="text-sm text-white bg-red-500 px-2 py-1 rounded">
+                      -{Math.round(productData.sale * 100)}%
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-3xl font-medium ">
+                    {formatCurrency(selectedInstant.price)}
+                  </span>
+                )}
+              </div>
             )}
           </p>
 
@@ -401,11 +434,12 @@ const Product = () => {
                   <span className="text-yellow-500 inline-flex items-center gap-1">
                     {[...Array(5)].map((_, index) => (
                       <span key={index}>
-                        {index + 1 <= Math.floor(reviewItem.rating)
-                          ? "★" // Sao đầy
-                          : index < reviewItem.rating
-                          ? "⭑" // Sao nửa
-                          : "☆" // Sao trống
+                        {
+                          index + 1 <= Math.floor(reviewItem.rating)
+                            ? "★" // Sao đầy
+                            : index < reviewItem.rating
+                            ? "⭑" // Sao nửa
+                            : "☆" // Sao trống
                         }
                       </span>
                     ))}
