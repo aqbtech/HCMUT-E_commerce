@@ -30,3 +30,9 @@ payment:
         secret-key: ${ZALO_SECRET_KEY}
         public-key: ${ZALO_PUBLIC_KEY}
         endpoint: ${ZALO_ENDPOINT}
+
+security:
+    cors:
+        allowed-origins: ${CORS_ALLOWED_ORIGINS}
+        allowed-methods: ${CORS_ALLOWED_METHODS:*}
+        allowed-headers: ${CORS_ALLOWED_HEADERS:*}
