@@ -175,14 +175,11 @@ export const uploadIMG = async (file, productId) => {
     console.log("Hài cot", formData);
     const token = Cookies.get("token");
     try {
-        const res = await fetch(api +`/upload?productId=${productId}`,{
-            method: 'POST',
+        const res =  await axiosClient2.post(`/upload?productId=${productId}`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
-                // 'Content-Type': 'multipart/form-data',
-            },
-            body: formData
-        });
+            }
+        })
         return res.data;
     } catch (error) {
         console.error('Lỗi upload ảnh:', error.response || error.message);
