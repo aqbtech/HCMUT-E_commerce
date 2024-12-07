@@ -1,18 +1,27 @@
-# Sử dụng hình ảnh cơ sở OpenJDK chính thức hỗ trợ Java 21
-FROM eclipse-temurin:21-jdk-alpine
+# Stage 1: Build the application
+FROM maven:3.9.4-eclipse-temurin-21 AS build
 
-# Đặt biến môi trường để tránh các lỗi liên quan đến vùng giờ
-ENV TZ=Asia/Ho_Chi_Minh \
-    LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
-
-# Tạo thư mục làm việc trong container
+# Set the working directory in the container
 WORKDIR /app
 
-# Sao chép JAR từ thư mục Backend/target
-COPY Backend/target/*.jar app.jar
+# Copy the Maven project files to the container
+COPY pom.xml ./
+COPY src ./src
 
-# Mở cổng mặc định của ứng dụng Spring Boot (thường là 8080)
+# Build the application
+RUN mvn clean package -DskipTests
+
+# Stage 2: Run the application
+FROM eclipse-temurin:21-jre
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the built application from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose the application's default port
 EXPOSE 8080
 
-# Câu lệnh chạy ứng dụng
+# Command to run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
