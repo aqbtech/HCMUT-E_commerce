@@ -27,7 +27,8 @@ const SaleOffManagement = () => {
 
     const handleSubmitPolicy = async (data) => {
         try {
-            if (data) {
+            console.log(data);
+            if (data.policyId) {
                 await handleUpdateSaleOff(data);
             } else {
                 await handleCreateSaleOff(data);
@@ -79,9 +80,9 @@ const SaleOffManagement = () => {
         }
     };
 
-    const handleDeleteSaleOff = async (id) => {
+    const handleDeleteSaleOff = async (type, id) => {
         try {
-            await deletePolicy(id);
+            await deletePolicy(type, id);
             toast.success("Xóa chính sách thành công!");
             loadPolicies();
         } catch (err) {
@@ -139,7 +140,7 @@ const SaleOffManagement = () => {
                                         <strong>Ngày ban hành:</strong> {policy.apply_date || 'Chưa có'}
                                     </div>
                                     <div>
-                                        <strong>Tỷ lệ giảm:</strong> {policy.sale}%
+                                        <strong>Tỷ lệ giảm:</strong> {policy.sale * 100}%
                                     </div>
                                     <div>
                                         <strong>Số lượt sử dụng:</strong> {policy.count}
@@ -153,7 +154,7 @@ const SaleOffManagement = () => {
                                         Sửa
                                     </button>
                                     <button
-                                        onClick={() => handleDeleteSaleOff(policy.id)}
+                                        onClick={() => handleDeleteSaleOff(policy.type, policy.policyId)}
                                         className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                                     >
                                         Xóa
@@ -242,8 +243,8 @@ const SaleOffManagement = () => {
                                             )
                                         ).map((input) => input.value);
                                 data.count = parseInt(data.count, 10) || 0;
-                                data.sale = parseFloat(data.sale) || 0;
-                                data.id = currentPolicy?.id || null;
+                                data.sale = parseFloat(data.sale/100) || 0;
+                                data.policyId = currentPolicy?.policyId || null;
                                 handleSubmitPolicy(data);
                             }}
                         >
@@ -298,7 +299,7 @@ const SaleOffManagement = () => {
                                                     name="category_targets"
                                                     value={category.name}
                                                     defaultChecked={currentPolicy?.target?.includes(
-                                                        String(category.id)
+                                                        String(category.name)
                                                     )}
                                                     className="mr-2"
                                                 />
@@ -315,7 +316,7 @@ const SaleOffManagement = () => {
                                 <input
                                     name="sale"
                                     type="number"
-                                    defaultValue={currentPolicy?.sale || ''}
+                                    defaultValue={currentPolicy?.sale * 100 || ''}
                                     className="w-full border px-3 py-2 rounded"
                                     onChange={(e) => {
                                         if(e.target.value <= 1) e.target.value = 1

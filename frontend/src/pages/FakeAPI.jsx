@@ -60,18 +60,14 @@ const FakeAPI = () => {
     try {
       const body = {
         orderId: selectedOrder.orderId,
-        status: selectedOrder.state,
+        status: selectedOrder.deliveryState,
         deliveryDate: selectedOrder.deliveryDate,
-        expectedDeliveryDate: selectedOrder.expectDate,
+        expectedDeliveryDate: selectedOrder.expectedDeliveryDate,
       };
 
       await axiosClient2.post(`/api/admin/order`, body);
       toast.success("Cập nhật đơn hàng thành công!");
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.orderId === selectedOrder.orderId ? { ...order, ...body } : order
-        )
-      );
+      fetchOrders(username);
       closeModal();
     } catch (err) {
       toast.error("Lỗi khi cập nhật đơn hàng!");
@@ -121,7 +117,7 @@ const FakeAPI = () => {
                   <p>Order ID: {order.orderId}</p>
                   <p>Trạng Thái: {order.deliveryState}</p>
                   <p>Ngày Giao Thực Tế: {order.deliveryDate}</p>
-                  <p>Ngày Giao Dự Kiến: {order.expectDate}</p>
+                  <p>Ngày Giao Dự Kiến: {order.expectedDeliveryDate}</p>
                 </div>
                 <button
                   className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -148,14 +144,16 @@ const FakeAPI = () => {
             <div className="mb-4">
               <label className="block mb-2">Trạng Thái:</label>
               <select
-                value={selectedOrder.state}
-                onChange={(e) =>
-                  setSelectedOrder({ ...selectedOrder, state: e.target.value })
-                }
-                className="w-full border p-2 rounded"
+                  value={selectedOrder.deliveryState}
+                  defaultValue={"CANCELLED"}
+                  onChange={(e) =>
+                      setSelectedOrder({...selectedOrder, deliveryState: e.target.value})
+                  }
+                  className="w-full border p-2 rounded"
               >
+                <option value="">{selectedOrder.deliveryState || 'Chọn trạng thái đơn hàng'}</option>
                 <option value="CANCELLED">CANCELLED</option>
-                <option value="PENDING">COMPLETED</option>
+                <option value="COMPLETED">COMPLETED</option>
                 <option value="DELIVERED">WAITING</option>
                 <option value="APPROVED">APPROVED</option>
                 <option value="SHIPPING">SHIPPING</option>
@@ -176,9 +174,9 @@ const FakeAPI = () => {
               <label className="block mb-2">Ngày Giao Dự Kiến:</label>
               <input
                 type="date"
-                value={selectedOrder.expectDate}
+                value={selectedOrder.expectedDeliveryDate}
                 onChange={(e) =>
-                  setSelectedOrder({ ...selectedOrder, expectDate: e.target.value })
+                  setSelectedOrder({ ...selectedOrder, expectedDeliveryDate: e.target.value })
                 }
                 className="w-full border p-2 rounded"
               />

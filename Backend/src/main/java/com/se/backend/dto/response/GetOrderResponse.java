@@ -3,6 +3,7 @@ package com.se.backend.dto.response;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -17,4 +18,6 @@ public class GetOrderResponse {
         private String seller;
         private String method;
         private Double shipping_fee;
+        private LocalDate deliveryDate;
+        private LocalDate expectedDeliveryDate;
 }

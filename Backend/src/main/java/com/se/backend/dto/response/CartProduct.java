@@ -20,6 +20,7 @@ public class CartProduct {
 	private List<String> listValue;
 	private String sellerId;
 	private String ShopName;
+	private Double sale;
 	private CartProduct() {
 	}
 }

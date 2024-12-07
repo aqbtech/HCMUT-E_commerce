@@ -9,6 +9,7 @@ import AddressModal from "../components/profilePage/AddressModal";
 import { createAddress } from "../fetchAPI/fetchAddress";
 import Cookies from "js-cookie";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import {getMininalProfile} from "../fetchAPI/fetchAccount.jsx";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState("cod");
@@ -17,8 +18,7 @@ const PlaceOrder = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listProductToPlace, setListProductToPlace] = useState([]);
-  const { navigate, formatCurrency } = useContext(ShopContext);
-
+  const { navigate, formatCurrency, setTotalQuantityInCart } = useContext(ShopContext);
   // Lấy danh sách địa chỉ từ API
   useEffect(() => {
     const loadAddresses = async () => {
@@ -68,12 +68,18 @@ const PlaceOrder = () => {
     if (!listProductToPlace || listProductToPlace.length === 0) return 0;
 
     return listProductToPlace.reduce((total, product) => {
-      return total + product.price * product.quantity;
+      return total + product.price * product.quantity * (1 - product.sale);
     }, 0);
   };
 
+  const getRandomShippingFee = () => {
+    const min = 100; // phí ship tối thiểu
+    const max = 500; // phí ship tối đa
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+  let fakeShippingFee = getRandomShippingFee() * 100;
   // Xử lý đặt hàng
-  const handlePlaceOrder = (selectedAddressId, listProductToPlace, method) => {
+  const handlePlaceOrder = async (selectedAddressId, listProductToPlace, method) => {
     if (loading) return;
 
     if (!selectedAddressId) {
@@ -82,7 +88,7 @@ const PlaceOrder = () => {
     }
 
     const deliveryAddress = addresses.find(
-      (address) => address.id === selectedAddressId
+        (address) => address.id === selectedAddressId
     );
 
     if (!deliveryAddress) {
@@ -95,27 +101,35 @@ const PlaceOrder = () => {
       instantId: product.instantId,
       quantity: product.quantity,
     }));
-
+    let isCart = false
+    if (listProductToPlace[0].isCart) isCart = true;
     const bodyRequest = {
       username: Cookies.get("username"),
       listProduct: listProductPlace,
       deliveryAddress: deliveryAddress,
       method: method,
       total: calculateTotal(),
+      isCart: isCart,
+      fakeShippingFee: fakeShippingFee
     };
 
-    createOrder(bodyRequest)
-      .then(() => {
-        setListProductToPlace([]); // Đặt lại listProductToPlace thành array rỗng
+    try {
+      const res = await createOrder(bodyRequest);
+      setListProductToPlace([]); // Đặt lại listProductToPlace thành array rỗng
+      const response = await getMininalProfile();
+      setTotalQuantityInCart(response.totalQuantityInCart);
+      if(method === "zalo") {
+          navigate("/payment");
+      }else{
         toast.success("Đặt hàng thành công!");
-        setLoading(false);
         navigate("/orders");
-      })
-      .catch((err) => {
-        toast.error("Quá trình đặt hàng bị lỗi, vui lòng thử lại");
-        setLoading(false);
-        console.log("lỗi khi đặt đơn hàng:", err);
-      });
+      }
+      setLoading(false);
+    } catch (err) {
+      toast.error("Quá trình đặt hàng bị lỗi, vui lòng thử lại");
+      setLoading(false);
+      console.log("lỗi khi đặt đơn hàng:", err);
+    }
   };
 
   return (
@@ -178,7 +192,20 @@ const PlaceOrder = () => {
                       <div className="flex items-center justify-between mt-2">
                         <p className="text-gray-600">
                           <span className="font-medium">Giá:</span>{" "}
-                          {formatCurrency(product.price)}
+                          {product.sale > 0 ? (
+                              <>
+                                <span className="line-through text-red-500 mr-2">
+                                  {formatCurrency(product.price)}
+                                </span>
+                                <span className="font-bold text-green-600">
+                                {formatCurrency(product.price * (1 - product.sale))}
+                                </span>
+                                <span className="ml-2 text-sm text-gray-500">(-{product.sale * 100}%)</span>
+                              </>
+                            ) : (
+                            <span>{formatCurrency(product.price)}</span>
+                            )
+                          }
                         </p>
                         <p className="text-gray-600">
                           <span className="font-medium">Số lượng:</span>{" "}
@@ -225,7 +252,7 @@ const PlaceOrder = () => {
           <div className="border rounded p-4 mt-4">
             <div className="w-full">
               <div className="text-2xl">
-                <Title text1={"CART"} text2={"TOTAL"} />
+                <Title text1={"CART"} text2={"TOTAL"}/>
               </div>
 
               <div className="flex flex-col gap-2 mt-2 text-sm">
@@ -234,31 +261,31 @@ const PlaceOrder = () => {
                   <p>{formatCurrency(calculateTotal())}</p>
                 </div>
               </div>
-              <hr />
+              <hr/>
               <div className="flex justify-between">
                 <p>Phí ship</p>
-                <p>{formatCurrency(10000)}</p>
+                <p>{formatCurrency(fakeShippingFee)}</p>
               </div>
-              <hr />
+              <hr/>
               <div className="flex justify-between">
                 <b>Tổng cộng</b>
                 {/* <b>{currency} {getCartAmount() === 0 ? 0 : String(getCartAmount() + delivery_fee) + '.00'}</b> */}
-                <b>{formatCurrency(calculateTotal() + 10000)}  </b>
+                <b>{formatCurrency(calculateTotal() + fakeShippingFee)}  </b>
               </div>
             </div>
             <div className="mt-8">
-              <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN" />
+              <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN"/>
               <div className="flex gap-3 flex-col mt-4">
                 <div
-                  onClick={() => setMethod("momo")}
+                  onClick={() => setMethod("zalo")}
                   className="flex items-center gap-3 border p-2 cursor-pointer"
                 >
                   <p
                     className={`w-4 h-4 border rounded-full ${
-                      method === "momo" ? "bg-green-400" : ""
+                      method === "zalo" ? "bg-green-400" : ""
                     }`}
                   ></p>
-                  <img className="h-5 mx-4" src={assets.momo} alt="" /> momo
+                  <img className="h-5 mx-4" src={assets.zalo} alt="" /> zalo
                 </div>
                 <div
                   onClick={() => setMethod("cod")}

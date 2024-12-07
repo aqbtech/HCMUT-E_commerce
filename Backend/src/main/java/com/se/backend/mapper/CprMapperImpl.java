@@ -2,12 +2,11 @@ package com.se.backend.mapper;
 
 import com.se.backend.dto.response.CartProduct;
 import com.se.backend.dto.response.UserDeliveryInfo;
-import com.se.backend.entity.Cart_ProductInstance;
-import com.se.backend.entity.DeliveryInfor;
-import com.se.backend.entity.FileInfo;
-import com.se.backend.entity.Product;
+import com.se.backend.entity.*;
 import com.se.backend.repository.AttributeInsRepository;
+import com.se.backend.repository.CategoryPolicyRepository;
 import com.se.backend.repository.FileInfoRepo;
+import com.se.backend.repository.ShopPolicyRepository;
 import com.se.backend.service.ProductService;
 import com.se.backend.service.storage.FileService;
 import com.se.backend.utils.PaginationUtils;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -25,6 +25,8 @@ public class CprMapperImpl implements Cart_ProductInstanceMapper {
 	private final AttributeInsRepository attributeInsRepository;
 	private final FileInfoRepo fileInfoRepo;
 	private final FileService fileService;
+	private final ShopPolicyRepository shopPolicyRepository;
+	private final CategoryPolicyRepository categoryPolicyRepository;
 
 	@Override
 	public List<CartProduct> toFlashProductList(List<Cart_ProductInstance> cartList) {
@@ -44,6 +46,27 @@ public class CprMapperImpl implements Cart_ProductInstanceMapper {
 			return null;
 		}
 		Product p = productService.findByProductInstance(cartProductInstance.getProductInstance());
+		List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(p.getSeller().getUsername());
+		shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
+		List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(p.getCategory().getRichTextName());
+		categoryPolicy.sort(Comparator.comparing(CategoryPolicy::getSale).reversed());
+		Double shopSale = 0.0;
+		Double cateSale = 0.0;
+		for (ShopPolicy shop: shopPolicy){
+			if(shop.getCount() > 0){
+				shopSale = shop.getSale();
+				break;
+			}
+		}
+		for (CategoryPolicy cate: categoryPolicy){
+			if(cate.getSale() > cateSale && cate.getCount() > 0 ){
+				cateSale = cate.getSale();
+				break;
+			}
+		}
+		double totalSale = shopSale + cateSale;
+		totalSale = totalSale > 1 ? 1 : totalSale;
+
 		String productId = p.getId();
 		String productInstanceId = cartProductInstance.getProductInstance().getId();
 		String productName = p.getName();
@@ -58,6 +81,6 @@ public class CprMapperImpl implements Cart_ProductInstanceMapper {
 		List<String> listValue = new ArrayList<>();
 		attributeInsRepository.findAttributeInstancesBy(cartProductInstance.getProductInstance()).forEach(attributeIns -> listValue.add(attributeIns.getValue()));
 
-		return new CartProduct(productId, productInstanceId, productName, quantity, price, imgUrl, listName, listValue, sellerId, shopName);
+		return new CartProduct(productId, productInstanceId, productName, quantity, price, imgUrl, listName, listValue, sellerId, shopName, totalSale);
 	}
 }

@@ -27,9 +27,9 @@ const Regist = () => {
       return false;
     }
 
-    const idRegex = /^[a-zA-Z][a-zA-Z0-9_]{3,19}$/;
+    const idRegex = /^[a-zA-Z][a-zA-Z0-9_]{7,19}$/;
     if (!idRegex.test(id)) {
-      toast.error('Tài khoản không hợp lệ! Tài khoản phải bắt đầu bằng chữ cái, chỉ chứa chữ cái, số, gạch dưới, và dài từ 4-20 ký tự.');
+      toast.error('Tài khoản không hợp lệ! Tài khoản phải bắt đầu bằng chữ cái, chỉ chứa chữ cái, số, gạch dưới, và dài từ 8-20 ký tự.');
       return false;
     }
 

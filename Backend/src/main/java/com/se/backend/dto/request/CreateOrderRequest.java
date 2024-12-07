@@ -13,4 +13,5 @@ public class CreateOrderRequest {
     private DeliveryAddress_of_CreateOrderRequest deliveryAddress;
     private String method;
     private Boolean isCart;
+    private int fakeShippingFee;
 }

@@ -165,8 +165,7 @@ public class PolicyServiceImpl implements PolicyService{
         else if("category".equals(type)){
             List<Category> categoryList = new ArrayList<>();
             for(String target : targets){
-                Category category = categoryRepository.findCategoryById(Long.valueOf(target))
-                        .orElseThrow(()->new WebServerException(ErrorCode.UNKNOWN_ERROR));
+                Category category = categoryRepository.findByRichTextName(target);
                 categoryList.add(category);
             }
 
@@ -206,6 +205,7 @@ public class PolicyServiceImpl implements PolicyService{
             }
             PolicyResponse r1 = policyMapper.toPolicyDetail(shopPolicy);
             r1.setTarget(target);
+            r1.setType("shop");
             responses.add(r1);
         }
         return new PageImpl<>(
@@ -228,6 +228,7 @@ public class PolicyServiceImpl implements PolicyService{
             }
             PolicyResponse r1 = policyMapper.toPolicyDetail(catetgoryPolicy);
             r1.setTarget(target);
+            r1.setType("category");
             responses.add(r1);
         }
         return new PageImpl<>(

@@ -77,10 +77,10 @@ const ShopView = () => {
       return navigate("/Login", { state: { from: location.pathname + currentTab } });
     }
   
-    if (shopInfo?.isFollowed) {
+    if (shopInfo?.followed) {
       try {
         await unfollow(shopId);  // Gọi API để hủy theo dõi
-        setShopInfo((prev) => ({ ...prev, isFollowed: false }));  // Cập nhật lại trạng thái
+        setShopInfo((prev) => ({ ...prev, followed: false, followers: prev.followers - 1}));  // Cập nhật lại trạng thái
         toast.success("Hủy theo dõi thành công");
       } catch (err) {
         toast.error("Có lỗi xảy ra khi hủy theo dõi");
@@ -88,7 +88,7 @@ const ShopView = () => {
     } else {
       try {
         await follow(shopId);  // Gọi API để theo dõi
-        setShopInfo((prev) => ({ ...prev, isFollowed: true }));  // Cập nhật lại trạng thái
+        setShopInfo((prev) => ({ ...prev, followed: true, followers: prev.followers + 1 }));  // Cập nhật lại trạng thái
         toast.success("Theo dõi thành công");
       } catch (err) {
         toast.error("Có lỗi xảy ra khi theo dõi");
@@ -154,7 +154,7 @@ const ShopView = () => {
             <span>Người Theo Dõi</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="font-semibold text-gray-800">{shopInfo?.rating}/5</span>
+            <span className="font-semibold text-gray-800">{shopInfo?.rating.toFixed(1)}/5</span>
             <span>Đánh Giá</span>
           </div>
         </div>
