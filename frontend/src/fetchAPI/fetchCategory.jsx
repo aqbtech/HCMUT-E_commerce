@@ -1,13 +1,6 @@
-import { axiosClient, axiosClient2, axiosPublic } from '../fetchAPI/axios';
+import { axiosClient2, axiosPublic } from '../fetchAPI/axios';
 
- 
-export const getCateShop = async (shopId) =>{
-  const res = await axiosClient(`/categories?shopId=${shopId}`);
-  console.log("danh mục là shop là:",res);
-  return res.data
-}
 
-//------------
 export const getAllCategories = async () => {
   try {
     const res =  await axiosPublic.get(`/category`)
