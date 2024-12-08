@@ -5,8 +5,8 @@ spring:
     config:
         import: optional:file:.env
     datasource:
-        url: "${SPRING_DATASOURCE_URL}"
-        driverClassName: "${SPRING_DATASOURCE_DRIVER_CLASS_NAME}"
+        url: ${SPRING_DATASOURCE_URL}
+        driverClassName: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
         username: ${SPRING_DATASOURCE_USERNAME}
         password: ${SPRING_DATASOURCE_PASSWORD}
     jpa:
@@ -22,11 +22,11 @@ jwt:
 
 firebase:
     config:
-        path: ${FIREBASE_CONFIG_PATH:}
+        path: ${FIREBASE_CONFIG_PATH}
 
 payment:
     zalo:
-        app-id: ${ZALO_APP_ID:}
-        secret-key: ${ZALO_SECRET_KEY:}
-        public-key: ${ZALO_PUBLIC_KEY:}
-        endpoint: ${ZALO_ENDPOINT:}
+        app-id: ${ZALO_APP_ID}
+        secret-key: ${ZALO_SECRET_KEY}
+        public-key: ${ZALO_PUBLIC_KEY}
+        endpoint: ${ZALO_ENDPOINT}

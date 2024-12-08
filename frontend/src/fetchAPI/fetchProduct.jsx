@@ -153,3 +153,4 @@ export const uploadIMG = async (file, productId) => {
         throw error;
     }
 };
+
