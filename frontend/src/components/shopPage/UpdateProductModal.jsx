@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Cookies from "js-cookie";
 import {getAllCategory} from "../../fetchAPI/fetchCategory.jsx";
-import {createProduct, updateProduct, uploadIMG} from "../../fetchAPI/fetchProduct.jsx";
+import {updateProduct, uploadIMG} from "../../fetchAPI/fetchProduct.jsx";
 import {toast} from "react-toastify";
 
 const UpdateProductModal = ({isOpen, onClose, initData, productId}) => {
@@ -37,7 +37,7 @@ const UpdateProductModal = ({isOpen, onClose, initData, productId}) => {
             
         }
     }, [initData]);
-    const [categories, setCategories] = useState([]);  // Lưu danh sách categories
+    const [categories, setCategories] = useState([]);
 
 
     useEffect(() => {
@@ -184,13 +184,8 @@ const UpdateProductModal = ({isOpen, onClose, initData, productId}) => {
         try {
             console.log(formData);
             await updateProduct(formData);
-            const uploadPromises = images.map((image) =>
-                uploadIMG(image, productId)
-            );
-            await Promise.all(uploadPromises);
-            console.log('Tất cả ảnh đã upload thành công!');
             toast.success("Cập nhật sản phẩm thành công");
-            onClose();
+
             setFormData({
                 username: Cookies.get('username'),
                 name: "",
@@ -201,6 +196,7 @@ const UpdateProductModal = ({isOpen, onClose, initData, productId}) => {
                     { attributeValues: [""], price: "", quantityInStock: "" },
                 ],
             })
+            onClose();
             setImages([])
         } catch (err){
             toast.error("Lỗi khi tạo sản phẩm")
@@ -242,35 +238,35 @@ const UpdateProductModal = ({isOpen, onClose, initData, productId}) => {
                             />
                         </div>
 
-                        {/* IMG */}
-                        <div className="mt-6">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Hình ảnh</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-800"
-                                onChange={(e) => handleImageUpload(e.target.files)}
-                            />
-                            <div className="mt-4 flex gap-4 flex-wrap">
-                                {images.map((image, index) => (
-                                    <div key={index} className="relative w-32 h-32">
-                                    <img
-                                        src={URL.createObjectURL(image)}
-                                        alt={`Preview ${index}`}
-                                        className="w-full h-full object-cover rounded-md shadow-md"
-                                    />
-                                    <button
-                                        type="button"
-                                        className="absolute top-1 right-1 text-red-500 text-lg bg-white rounded-full"
-                                        onClick={() => removeImage(index)}
-                                    >
-                                        &times;
-                                    </button>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                        {/*/!* IMG *!/*/}
+                        {/*<div className="mt-6">*/}
+                        {/*    <label className="block text-sm font-medium text-gray-700 mb-2">Hình ảnh</label>*/}
+                        {/*    <input*/}
+                        {/*        type="file"*/}
+                        {/*        accept="image/*"*/}
+                        {/*        multiple*/}
+                        {/*        className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-800"*/}
+                        {/*        onChange={(e) => handleImageUpload(e.target.files)}*/}
+                        {/*    />*/}
+                        {/*    <div className="mt-4 flex gap-4 flex-wrap">*/}
+                        {/*        {images.map((image, index) => (*/}
+                        {/*            <div key={index} className="relative w-32 h-32">*/}
+                        {/*            <img*/}
+                        {/*                src={URL.createObjectURL(image)}*/}
+                        {/*                alt={`Preview ${index}`}*/}
+                        {/*                className="w-full h-full object-cover rounded-md shadow-md"*/}
+                        {/*            />*/}
+                        {/*            <button*/}
+                        {/*                type="button"*/}
+                        {/*                className="absolute top-1 right-1 text-red-500 text-lg bg-white rounded-full"*/}
+                        {/*                onClick={() => removeImage(index)}*/}
+                        {/*            >*/}
+                        {/*                &times;*/}
+                        {/*            </button>*/}
+                        {/*            </div>*/}
+                        {/*        ))}*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
 
                         {/* Category */}
                         <div>

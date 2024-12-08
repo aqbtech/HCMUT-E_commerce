@@ -1,4 +1,4 @@
-import {axiosClient, axiosClient2, axiosPublic} from '../fetchAPI/axios';
+import { axiosClient2} from '../fetchAPI/axios';
 
 
 export const getShopPolicy = async (page) => {

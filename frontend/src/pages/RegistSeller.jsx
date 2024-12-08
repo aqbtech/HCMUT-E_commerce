@@ -147,7 +147,7 @@ const handleWardChange = (e) => {
     try {
       await registSeller(body);
       toast.success('Đăng ký thành công!');
-      navigate('/Login');
+      navigate('/login');
     } catch (error) {
       console.error('Lỗi đăng ký:', error);
       toast.error("Lỗi khi đăng kí cửa hàng!")
@@ -172,6 +172,7 @@ const handleWardChange = (e) => {
                 <select
                     value={provinceCode}
                     onChange={handleProvinceChange}
+                    required
                     className="w-full px-3 py-2 border border-gray-800"
                 >
                     <option value="">{province || 'Chọn Tỉnh/Thành phố'}</option>
@@ -185,6 +186,7 @@ const handleWardChange = (e) => {
                 <select
                     value={districtCode}
                     onChange={handleDistrictChange}
+                    required
                     className="w-full px-3 py-2 border border-gray-800"
                     disabled={!provinceCode}
                 >
@@ -199,6 +201,7 @@ const handleWardChange = (e) => {
                 <select
                     value={wardCode}
                     onChange={handleWardChange}
+                    required
                     className="w-full px-3 py-2 border border-gray-800"
                     disabled={!districtCode}
                 >
@@ -213,6 +216,7 @@ const handleWardChange = (e) => {
                     type="text"
                     placeholder="Địa chỉ cụ thể" 
                     value={detailAddress}
+                    required
                     onChange={(e) => setDetailAddress(e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded mb-4"
                 />

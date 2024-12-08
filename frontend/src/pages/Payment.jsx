@@ -1,76 +1,77 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import axios from 'axios';
+import React, { useState } from 'react';
 
 const Payment = () => {
-  const [qrCode, setQrCode] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
+  const [selectedPayment, setSelectedPayment] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchQrCode = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get('/api/payment/qr-code'); // API endpoint của bạn
-        if (response.status === 200) {
-          setQrCode(response.data.qrCodeUrl); // Backend trả về URL ảnh QR code
-        } else {
-          toast.error("Không thể tải QR code, vui lòng thử lại.");
-        }
-      } catch (error) {
-        console.error("Lỗi khi fetch QR code:", error);
-        toast.error("Lỗi hệ thống, vui lòng thử lại sau.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchQrCode();
-  }, []);
-
-  const handleBackToOrder = () => {
-    navigate('/place-Order'); // Điều hướng về trang đặt hàng
+  const handlePaymentChange = (e) => {
+    setSelectedPayment(e.target.value);
   };
 
-  const handlePaymentCompleted = () => {
-    navigate('/order-summary'); // gọi API đã thành công chưa, nếu thành công rồi về trang chủ nè
+  const handlePaymentSubmit = () => {
+    // Xử lý thanh toán tại đây
+    console.log('Thanh toán qua:', selectedPayment);
   };
 
   return (
-      <div className="flex flex-col items-center mt-48 h-screen">
-        <div className="bg-white p-8 rounded shadow-lg text-center max-w-md">
-          <h2 className="text-2xl font-bold text-blue-600 mb-4">Thanh Toán</h2>
-          {isLoading ? (
-              <p className="text-gray-700">Đang tải mã QR, vui lòng đợi...</p>
-          ) : qrCode ? (
-              <div>
-                <img
-                    src={qrCode}
-                    alt="QR Code"
-                    className="w-64 h-64 object-cover mx-auto border-2 border-gray-300 rounded-md"
-                />
-                <p className="text-sm text-gray-600 mt-4">Quét mã QR để thanh toán</p>
-              </div>
-          ) : (
-              <p className="text-red-500">Không thể tải mã QR.</p>
-          )}
-          <div className="mt-6 flex justify-between gap-4">
-            <button
-                onClick={handleBackToOrder}
-                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition duration-300"
-            >
-              Trở lại đặt hàng
-            </button>
-            <button
-                onClick={handlePaymentCompleted}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
-            >
-              Đã thanh toán
-            </button>
+    <div className='min-h-screen'>
+       <div className="bg-white p-8 mt-24 rounded shadow-lg text-center max-w-md mx-auto">
+        <h2 className="text-2xl font-bold text-blue-600 mb-4">Thanh Toán</h2>
+        <div className="space-y-4 text-left">
+          <div>
+            <input
+              type="radio"
+              id="zalopay"
+              name="paymentMethod"
+              value="Ví ZaloPay"
+              checked={selectedPayment === 'Ví ZaloPay'}
+              onChange={handlePaymentChange}
+              className="mr-2"
+            />
+            <label htmlFor="zalopay" className="text-lg text-blue-600">Ví ZaloPay</label>
+          </div>
+
+          <div>
+            <input
+              type="radio"
+              id="visa"
+              name="paymentMethod"
+              value="Visa, Master, JCB"
+              checked={selectedPayment === 'Visa, Master, JCB'}
+              onChange={handlePaymentChange}
+              className="mr-2"
+            />
+            <label htmlFor="visa" className="text-lg">Visa, Master, JCB (qua Cổng ZaloPay)</label>
+          </div>
+
+          <div>
+            <input
+              type="radio"
+              id="atm"
+              name="paymentMethod"
+              value="Thẻ ATM"
+              checked={selectedPayment === 'Thẻ ATM'}
+              onChange={handlePaymentChange}
+              className="mr-2"
+            />
+            <label htmlFor="atm" className="text-lg">Thẻ ATM (qua Cổng ZaloPay)</label>
+          </div>
+
+          <div className="text-sm text-gray-600 mt-2">
+            <p>Các hình thức khác của Merchant Site như: COD, chuyển khoản, v.v...</p>
           </div>
         </div>
+
+        <button
+          onClick={handlePaymentSubmit}
+          disabled={!selectedPayment}
+          className="w-full mt-6 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition duration-300 disabled:bg-gray-400"
+        >
+          Thanh Toán
+        </button>
       </div>
+    </div>
+   
   );
 };
 

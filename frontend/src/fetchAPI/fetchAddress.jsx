@@ -1,8 +1,6 @@
 import { axiosClient2 } from '../fetchAPI/axios';
-import Cookies from 'js-cookie'
-import { toast } from 'react-toastify';
 
-//----------------------------mới ----------------------------------------------
+
 
 export const getAddress = async () => {
   try {
