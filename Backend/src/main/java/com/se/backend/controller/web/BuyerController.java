@@ -63,6 +63,9 @@ public class BuyerController {
     public ResponseAPITemplate<CreateOrderResponse> createOrder(
             @RequestBody CreateOrderRequest request){
         CreateOrderResponse response = orderService.create(request);
+        if(request.getIsCart()){
+            orderService.handleRemoveProductFromCart(request.getUsername(), request.getListProduct());
+        }
         return ResponseAPITemplate.<CreateOrderResponse>builder()
                 .result(response)
                 .build();

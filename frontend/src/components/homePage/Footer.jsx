@@ -23,18 +23,17 @@ const Footer = () => {
           </p>
         </div>
         <div>
-            <p className='text-xl font-medium mb-5'>COMPANY</p>
+            <p className='text-xl font-medium mb-5'>ATOM</p>
             <ul className='flex flex-col gap-1 text-gray-600'>
-                <li>HOME</li>
-                <li>ABOUT US</li>
-                <li>DELIVERY</li>
-                <li>PRIVACY POLICY</li>
+                <li>TRANG CHỦ</li>
+                <li>VỀ CHÚNG TÔI</li>
+                <li>CHÍNH SÁCH</li>
             </ul>
         </div>
         <div>
-            <p className='text-xl font-medium mb-5'>GET IN TOUCH</p>
+            <p className='text-xl font-medium mb-5'>THÔNG TIN LIÊN LẠC</p>
             <ul className='flex flex-col gap-1 text-gray-600'>
-                <li>0908373763</li>
+                <li>0918 373 763</li>
                 <li>Chinh.dang5504@hcmut.edu.vn</li>
             </ul>
         </div>

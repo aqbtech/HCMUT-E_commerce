@@ -34,7 +34,7 @@ const UserManagement = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">
-        <Title text1="Quản Lý" text2="Người Bán" />
+        <Title text1="Quản Lý" text2="Người Dùng" />
       </h2>
       <table className="w-full border border-gray-300">
         {/* Table Headers */}

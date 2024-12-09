@@ -93,7 +93,7 @@ const CategoriesManagement = () => {
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">
-                <Title text1="Quản Lý" text2="Người Bán" />
+                <Title text1="Quản Lý" text2="Danh Mục" />
             </h2>
 
             <div className="mb-4 flex justify-end">

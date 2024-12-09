@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { updateInfo, getInfo } from "../../fetchAPI/fetchShop";
 import Cookies from "js-cookie";
+import Title from "../Title.jsx";
 
 const ShopInfo = () => {
   const [shopInfo, setShopInfo] = useState({
@@ -117,10 +118,12 @@ const ShopInfo = () => {
 
   return (
     <>
-      <h2 className="text-2xl font-bold mb-2">Thông tin Cửa hàng của bạn</h2>
-        <div className="grid grid-cols-2 gap-6">
-          {/* Thông tin cửa hàng */}
-          <div className="col-span-2">
+      <h2 className="text-2xl font-bold mb-4">
+        <Title text1="Thông Tin" text2="Cửa Hàng"/>
+      </h2>
+      <div className="grid grid-cols-2 gap-6">
+        {/* Thông tin cửa hàng */}
+        <div className="col-span-2">
           <label className="block mb-2">Tên cửa hàng</label>
           <input
             className="w-full p-2 border border-gray-300 rounded mb-4"

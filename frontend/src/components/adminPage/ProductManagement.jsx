@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {getProductForAdmin} from "../../fetchAPI/fetchProduct.jsx";
 import ProductTest from "./ProductTest.jsx";
+import Title from "../Title.jsx";
 
 
 const ProductManagement = () => {
@@ -43,10 +44,15 @@ const ProductManagement = () => {
     }
   };
   return (
-      <div className="p-4">
+      <div className="">
+        <h2 className="text-2xl font-bold mb-4">
+          <Title text1="Quản Lý" text2="Sản Phẩm"/>
+        </h2>
         {listProduct.map((item, index) => (
             <div key={index} className='flex gap-2'>
-              <ProductTest name={item.name} price={item.minPrice} image={item.img} rating={item.rating} status={item.status} productId={item.productId} setSelectProduct={setSelectProduct} shopName={item.shopName} />
+              <ProductTest name={item.name} price={item.minPrice} image={item.img} rating={item.rating}
+                           status={item.status} productId={item.productId} setSelectProduct={setSelectProduct}
+                           shopName={item.shopName}/>
             </div>
         ))}
 
