@@ -83,7 +83,7 @@ const Cart = () => {
     try {
       //await updateQuantity(productInstanceId, quantity);
       const res = await updateQuantity_DB(productInstanceId, quantity); //DB
-      if(res.code === 400) {
+      if(res.code !== 200) {
         return toast.error(res.message);
       }
       setCartData((prev) =>
@@ -112,7 +112,7 @@ const Cart = () => {
     try {
       //await deleteFromCart(productInstanceId);
       const res = await deleteFromCart_DB(productInstanceId);
-      if(res.code === 400) {
+      if(res.code !== 200) {
         return toast.error(res.message);
       }
       setCartData((prev) =>

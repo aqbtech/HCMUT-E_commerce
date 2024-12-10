@@ -37,7 +37,7 @@ const Home = () => {
         // setListProduct(response.productSummaryPage.content);
         // setHasMore(page + 1 < response.productSummaryPage.page.totalPages);
         const response = await searchProductByCate_DB(category);
-        if(response.code === 400) {
+        if(response.code !== 200) {
           return toast.error(response.message);
         }
         setListProduct(response.result);

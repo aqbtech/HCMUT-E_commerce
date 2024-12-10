@@ -33,7 +33,7 @@ const ShopView = () => {
     try {
       // const response = await getInfo(shopId);
       const response = await shopInfo_DB(shopId);
-      if(response.code === 400) {
+      if(response.code !== 200) {
         return toast.error(response.message);
       }
       toast.success("Lấy thông tin shop thành công!")

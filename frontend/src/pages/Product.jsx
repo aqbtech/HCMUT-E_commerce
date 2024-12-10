@@ -189,7 +189,7 @@ const Product = () => {
     try {
       //await addToCart(instantId, quantity);
       const res = await addToCart_DB(instantId, quantity); // DB
-      if(res.code === 400) {
+      if(res.code !== 200) {
         return toast.error(res.message);
       }
       const response = await getMininalProfile();
