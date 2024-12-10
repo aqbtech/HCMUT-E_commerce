@@ -2,12 +2,14 @@ package com.se.backend.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class CartProduct {
 	private String productId;
 	private String productInstanceId;

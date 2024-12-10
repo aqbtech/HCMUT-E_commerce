@@ -27,7 +27,8 @@ public class Security {
 			"/search", "/search/filter", "/category", "/shop_information", "/shop_product",
 			"/sellerregister",
 			"/search", "/search/filter", "/category", "/shop_information", "/shop_product",
-			"/create", "/checkout"
+			"/create", "/checkout",
+			"/database/cart/add"
 	};
 	private final CustomJwtDecoder customJwtDecoder;
 
