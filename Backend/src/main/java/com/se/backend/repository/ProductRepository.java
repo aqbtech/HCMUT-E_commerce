@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -44,4 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
 	Page<Product> findProductBySeller(Seller seller, Pageable pageable);
 	@EntityGraph(value = "product-summary", type = EntityGraph.EntityGraphType.LOAD)
 	Page<Product> findAll(Pageable pageable);
+	@EntityGraph(value = "product-summary", type = EntityGraph.EntityGraphType.LOAD)
+	@Query("SELECT p FROM Product p WHERE p.status = 'ENABLE'")
+	Page<Product> findActiveProducts(Pageable pageable);
 }

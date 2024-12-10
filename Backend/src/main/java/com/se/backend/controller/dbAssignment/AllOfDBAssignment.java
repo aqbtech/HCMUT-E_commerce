@@ -17,6 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -259,7 +261,8 @@ public class AllOfDBAssignment {
 		query.registerStoredProcedureParameter("category_name", String.class, ParameterMode.IN);
 
 		try {
-			query.setParameter("category_name", categoryName);
+			String decodedCategoryName = URLDecoder.decode(categoryName, StandardCharsets.UTF_8);
+			query.setParameter("category_name", decodedCategoryName);
 			List<Object[]> queryResultList = query.getResultList();
 			List<ProductSummary> res = convertToList(queryResultList);
 			return ResponseAPITemplate.<List<ProductSummary>>builder()
