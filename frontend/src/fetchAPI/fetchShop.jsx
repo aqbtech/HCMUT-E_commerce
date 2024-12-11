@@ -3,7 +3,7 @@ import { axiosClient2,  } from "./axios";
 
 export const getInfo = async (shopId) => {
     try {
-        const res = await axiosClient2.get(`/shop_information?shop=${shopId}`);
+        const res = await axiosClient2.get(`/seller/shop_information?username=${shopId}`);
         console.log(`Lay shop thành công!`, res);
         return res.data.result;
     } catch(err) {

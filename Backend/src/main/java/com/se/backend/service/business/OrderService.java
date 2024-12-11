@@ -74,6 +74,12 @@ public class OrderService  {
 	@Autowired
 	private PaymentService paymentService;
 
+    public void handleRemoveProductFromCart(String username, List<Product_of_OrderRequest> ListProduct) {
+        //Handle remove in cart
+        for(Product_of_OrderRequest product : ListProduct){
+            cartService.removeProductInsFromCart(username, product.getInstantId());
+        }
+    }
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         long addressId;
@@ -177,9 +183,9 @@ public class OrderService  {
                 orderProducts.add(orderProductInstance);
 
                 //Handle remove in cart
-                if(createOrderRequest.getIsCart()) {
-                    cartService.removeProductInsFromCart(username, productInstance.getId());
-                }
+//                if(createOrderRequest.getIsCart()) {
+//                    cartService.removeProductInsFromCart(username, productInstance.getId());
+//                }
                 // Handle Sale here
                 List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(product.getSeller().getUsername());
                 shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());

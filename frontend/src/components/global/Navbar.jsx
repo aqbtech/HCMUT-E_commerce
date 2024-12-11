@@ -48,7 +48,7 @@ const Navbar = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={handleKeyDown}
                 type="text"
-                placeholder="Search please!!!"
+                placeholder="Tìm kiếm ngay!!!"
                 className="w-full px-4 py-2 rounded-full outline-none text-gray-800"
               />
               <button
