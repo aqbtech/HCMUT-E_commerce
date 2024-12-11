@@ -121,6 +121,9 @@ const PlaceOrder = () => {
       if(method === "zalo") {
           navigate("/payment");
       }else{
+        if(res.code === 400){
+          return toast.error(res.message);
+        }
         toast.success("Đặt hàng thành công!");
         navigate("/orders");
       }

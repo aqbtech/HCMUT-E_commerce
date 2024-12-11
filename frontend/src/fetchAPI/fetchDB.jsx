@@ -1,5 +1,8 @@
 import { axiosClient2, axiosPublic} from "./axios.jsx";
 
+
+
+
 export const addToCart_DB = async (productInstanceId, quantity) => {
     const res = await axiosClient2.post( `/database/cart/add?productInstanceId=${productInstanceId}&quantity=${quantity}`)
     console.log("them gio hang thanh cong", res);

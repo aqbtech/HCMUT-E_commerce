@@ -157,6 +157,13 @@ public class AllOfDBAssignment {
 			@SuppressWarnings("unchecked")
 			List<Object[]> result = query.getResultList();
 			List<CartProduct> res = convertToListCartProduct(result);
+			if (res == null) {
+				return ResponseAPITemplate.<List<CartProduct>>builder()
+						.code(400)
+						.message("No user found")
+						.result(res)
+						.build();
+			}
 			return ResponseAPITemplate.<List<CartProduct>>builder()
 					.result(res)
 					.build();
@@ -175,6 +182,7 @@ public class AllOfDBAssignment {
 	}
 
 	private List<CartProduct> convertToListCartProduct(List<Object[]> queryResultList) {
+		if (queryResultList.isEmpty()) {return null;}
 		List<CartProduct> res = new ArrayList<>();
 		String prevProductInstanceId = null;
 		for (Object[] objects : queryResultList) {
@@ -223,6 +231,13 @@ public class AllOfDBAssignment {
 		try {
 			List<Object[]> q = query.getResultList();
 			ShopInfoForGuestResponse res = convertShopInfoForGuestResponse(q);
+			if (res == null) {
+				return ResponseAPITemplate.<ShopInfoForGuestResponse>builder()
+						.code(400)
+						.message("No shop found")
+						.result(res)
+						.build();
+			}
 			return ResponseAPITemplate.<ShopInfoForGuestResponse>builder()
 					.result(res)
 					.build();
@@ -265,6 +280,13 @@ public class AllOfDBAssignment {
 			query.setParameter("category_name", decodedCategoryName);
 			List<Object[]> queryResultList = query.getResultList();
 			List<ProductSummary> res = convertToList(queryResultList);
+			if (res == null) {
+				return ResponseAPITemplate.<List<ProductSummary>>builder()
+						.code(400)
+						.message("No user found")
+						.result(res)
+						.build();
+			}
 			return ResponseAPITemplate.<List<ProductSummary>>builder()
 					.result(res)
 					.build();

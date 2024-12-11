@@ -5,6 +5,7 @@ import com.se.backend.dto.response.*;
 import com.se.backend.service.BuyerService;
 import com.se.backend.service.ReviewService;
 import com.se.backend.service.business.OrderService;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,10 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -43,7 +46,14 @@ public class BuyerController {
     @PutMapping("/update_information")
     public ResponseAPITemplate<String> updateInfo(
             @AuthenticationPrincipal Jwt jwt,
-            @RequestBody UpdateBuyerInformationRequest request){
+            @Valid @RequestBody UpdateBuyerInformationRequest request,
+            BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            return ResponseAPITemplate.<String>builder()
+                    .code(400)
+                    .message(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage())
+                    .build();
+        }
         String username = jwt.getSubject();
         String response = buyerService.updateBuyerInformation(username, request);
         return ResponseAPITemplate.<String>builder()
@@ -63,6 +73,15 @@ public class BuyerController {
     public ResponseAPITemplate<CreateOrderResponse> createOrder(
             @RequestBody CreateOrderRequest request){
         CreateOrderResponse response = orderService.create(request);
+
+        if (response.getMsg().equals("spam")) {
+
+            return ResponseAPITemplate.<CreateOrderResponse>builder()
+                    .code(400)
+                    .message(response.getMsg())
+                    .result(response)
+                    .build();
+        }
         return ResponseAPITemplate.<CreateOrderResponse>builder()
                 .result(response)
                 .build();

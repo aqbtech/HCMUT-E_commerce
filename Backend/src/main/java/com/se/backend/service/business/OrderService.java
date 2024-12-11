@@ -121,6 +121,10 @@ public class OrderService  {
             ProductInstance productInstance = productInstanceRepository.findById(productInstanceId)
                     .orElseThrow(() -> new WebServerException(ErrorCode.PRODUCT_NOT_FOUND));
 
+            if(createOrderRequest.getListProduct().get(i).getQuantity() > 100){
+                return CreateOrderResponse.builder().msg("spam").build();
+            }
+
             // Kiểm tra số lượng trong kho
             if (productInstance.getQuantityInStock() < quantity) {
                 CreateOrderResponse response = CreateOrderResponse.builder().msg("Some products are out of quantity in stock").build();
