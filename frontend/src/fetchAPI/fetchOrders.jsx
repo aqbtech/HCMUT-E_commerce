@@ -2,8 +2,8 @@ import { axiosClient2 } from '../fetchAPI/axios';
 
 
   export const createOrder = async (body) => {
-    const response = await axiosClient2.post(`/buyer/order`,body)
-
+    const  response = await axiosClient2.post(`/buyer/order`,body)
+    return response.data;
   };
     
   export const getListOrders = async (username, page, limmit) => {
