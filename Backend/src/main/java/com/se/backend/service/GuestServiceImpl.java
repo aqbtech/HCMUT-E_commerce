@@ -29,10 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -67,10 +64,7 @@ public class GuestServiceImpl implements GuestService {
 	private final AddressMapper addressMapper;
 	private final FollowRepository followRepository;
 	private final AddressRepository addressRepository;
-
-
 	private final CategoryRepository categoryRepository;
-
 	private final BuyerRepository buyerRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final FileService fileService;
@@ -80,6 +74,7 @@ public class GuestServiceImpl implements GuestService {
 
 	private ProductDetail productDetailFactory(Product p, List<ProductInstance> pIs, List<Attribute> as) {
 		var productDetail = productInfoMapper.toProductDetail(p);
+		// REFACTOR: extract duplicate logic to gain Inversion of dependency
 		List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(p.getSeller().getUsername());
 		shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
 		List<CategoryPolicy> categoryPolicy = categoryPolicyRepository.findCategoryId(p.getCategory().getRichTextName());
@@ -135,7 +130,7 @@ public class GuestServiceImpl implements GuestService {
 					attributeMap.put(key, value);
 				} else {
 					hasNull = true;
-					log.error("Attribute instance has no attribute");
+					log.warn("Attribute instance has no attribute");
 				}
 			}
 			if (!hasNull) {
@@ -168,8 +163,19 @@ public class GuestServiceImpl implements GuestService {
 		// find all product with pageable, sort by name asc
 		Pageable pageable = PageRequest.of(page, 5, Sort.by("name").ascending());
 		Page<Product> products = productRepository.findAll(pageable);
+		List<FileInfo> productImages = productRepository.fetchProductImages(products.getContent());
+		Map<String, List<FileInfo>> productImagesMap = productImages.stream()
+				.collect(Collectors.groupingBy(fileInfo -> fileInfo.getProduct().getId()));
+		for (Product product : products) {
+			List<FileInfo> images = productImagesMap.getOrDefault(product.getId(), Collections.emptyList());
+			product.setProductImgs(images);
+		}
 		List<Product> productsList = products.getContent();
-		return PaginationUtils.convertListToPage(productSummaryMapper.toProductSummaries(productsList), pageable,(int) products.getTotalElements());
+		return new PageImpl<>(
+				productSummaryMapper.toProductSummaries(productsList),
+				products.getPageable(),
+				products.getTotalElements()
+		);
 	}
 
 	@Override
@@ -215,7 +221,7 @@ public class GuestServiceImpl implements GuestService {
 		} catch (DataIntegrityViolationException e) {
 			throw new WebServerException(ErrorCode.USER_EXISTED);
 		} catch (Exception e) {
-			log.error("Error when register new user {}", e.getMessage());
+			log.error("Error when register new SELLER {}", e.getMessage());
 			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
 		}
 		return MinimalUserProfile.builder()
@@ -251,7 +257,7 @@ public class GuestServiceImpl implements GuestService {
 		} catch (DataIntegrityViolationException e) {
 			throw new WebServerException(ErrorCode.USER_EXISTED);
 		} catch (Exception e) {
-			log.error("Error when register new user {}", e.getMessage());
+			log.error("Error when register new BUYER {}", e.getMessage());
 			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
 		}
 		return MinimalUserProfile.builder()
@@ -267,6 +273,7 @@ public class GuestServiceImpl implements GuestService {
 		Page<Product> products = productRepository.findByNameContaining(keyword, pageable);
 
 		List<Product> productsList = products.getContent();
+		// REFACTOR: extract duplicate logic to gain Inversion of dependency
 		List<ProductSummary> productSummaries = productSummaryMapper.toProductSummaries(productsList);
 
 		if ("asc".equalsIgnoreCase(sort)) {
@@ -335,6 +342,7 @@ public class GuestServiceImpl implements GuestService {
 		if(!request.getRatings().isEmpty()){
 			productsList = this.filterByRating(productsList, request.getRatings());
 		}
+		// REFACTOR: extract duplicate logic to gain Inversion of dependency
 		List<ProductSummary> productSummaries = productSummaryMapper.toProductSummaries(productsList);
 		if ("asc".equalsIgnoreCase(sort)) {
 			productSummaries.sort(Comparator.comparing(ProductSummary::getMinPrice));
@@ -379,6 +387,7 @@ public class GuestServiceImpl implements GuestService {
 
 	@Override
 	public ShopInfoForGuestResponse getShopInformation(String buyername, String sellername) {
+		// REFACTOR: extract duplicate logic to gain Inversion of dependency
 		Seller seller = sellerRepository.findByUsername(sellername)
 				.orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
 		Integer follower  = seller.getFollowers();
@@ -457,5 +466,5 @@ public class GuestServiceImpl implements GuestService {
 				.categories(categories)
 				.categoryValue(category)
 				.build();
-	};
+	}
 }
