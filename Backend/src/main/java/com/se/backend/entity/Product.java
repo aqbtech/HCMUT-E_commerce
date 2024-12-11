@@ -30,7 +30,19 @@ import java.util.List;
 				@NamedSubgraph(
 						name = "location",
 						attributeNodes = @NamedAttributeNode("address"))
-		}
+				}
+		),@NamedEntityGraph(name = "product-summary-without-imgs", attributeNodes = {
+				@NamedAttributeNode("id"),
+				@NamedAttributeNode("name"),
+				@NamedAttributeNode("description"),
+				@NamedAttributeNode("category"),
+				@NamedAttributeNode(value = "seller", subgraph = "location")
+			},
+				subgraphs = {
+				@NamedSubgraph(
+						name = "location",
+						attributeNodes = @NamedAttributeNode("address"))
+				}
 		),
 		@NamedEntityGraph(name = "product-attribute", attributeNodes = {
 				@NamedAttributeNode("attributes"),
