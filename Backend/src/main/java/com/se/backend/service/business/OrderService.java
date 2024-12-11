@@ -7,11 +7,14 @@ import com.se.backend.dto.response.*;
 import com.se.backend.entity.*;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
-import com.se.backend.mapper.*;
+import com.se.backend.mapper.AttributeMapper;
+import com.se.backend.mapper.DeliveryInforInOrderMapper;
+import com.se.backend.mapper.OrderMapper;
+import com.se.backend.mapper.ProductInOrderMapper;
 import com.se.backend.repository.*;
 import com.se.backend.service.CartService;
-import com.se.backend.service.storage.FileService;
 import com.se.backend.service.payment.PaymentService;
+import com.se.backend.service.storage.FileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -242,7 +245,10 @@ public class OrderService  {
                 throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
             }
             paymentOrder.getOrder().add(order);
-
+            // add price of order to total pay for create payment if it not cod payment
+            if(!isCod) {
+                totalPay += order.getTotalPrice().longValue();
+            }
         }
         long paymentOrderCode = paymentOrderRepository.save(paymentOrder).getPaymentOrderCode();
         if (!isCod) {
