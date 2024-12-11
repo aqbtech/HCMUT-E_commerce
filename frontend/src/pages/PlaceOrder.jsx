@@ -115,15 +115,14 @@ const PlaceOrder = () => {
       isCart: isCart,
       fakeShippingFee: fakeShippingFee,
     };
-    console.log(bodyRequest);
     try {
-      const res = await createOrder(bodyRequest);
-      setListProductToPlace([]); // Đặt lại listProductToPlace thành array rỗng
-      const response = await getMininalProfile();
-      setTotalQuantityInCart(response.totalQuantityInCart);
-      if(method !== 'cod') {
-        window.location.href = res?.url;
-      } else {
+        const res = await createOrder(bodyRequest);
+        setListProductToPlace([]); // Đặt lại listProductToPlace thành array rỗng
+        const response = await getMininalProfile();
+        setTotalQuantityInCart(response.totalQuantityInCart);
+        if(method !== 'cod') {
+          window.location.href = res.result.url;
+        } else {
         toast.success("Đặt hàng thành công!");
         navigate("/orders");
       }
