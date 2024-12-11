@@ -70,15 +70,28 @@ const ProductManagement = () => {
                     <div className="flex justify-center mt-32 h-screen">
                         <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
                     </div>
-                ) : (
-                listProduct.map((item, index) => (
-                    <div key={index} className='flex gap-2'>
-                        <ProductTestItem name={item.name} price={item.minPrice} image={item.img} rating={item.rating} status={item.status} productId={item.productId} setSelectProduct={setSelectProduct} />
+                ) : listProduct.length === 0 ? (
+                    // Hiển thị thông báo khi không có sản phẩm
+                    <div className="flex justify-center mt-32 h-screen">
+                        <p className="text-gray-500 text-lg">Không có sản phẩm nào!</p>
                     </div>
-                ))
+                ) : (
+                    listProduct.map((item, index) => (
+                        <div key={index} className="flex gap-2">
+                            <ProductTestItem
+                                name={item.name}
+                                price={item.minPrice}
+                                image={item.img}
+                                rating={item.rating}
+                                status={item.status}
+                                productId={item.productId}
+                            />
+                        </div>
+                    ))
                 )
             }
-           
+
+
             {hasMore && (
                 <div className="text-center mt-6">
                     <button

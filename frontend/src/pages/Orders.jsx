@@ -154,7 +154,7 @@ const Orders = () => {
                       alt={product.productName}
                     />
                     <div>
-                      <Link to={`/product/${product.productId}`}>
+                      <Link to={`/product/${product.id}`}>
                         <p className="sm:text-base font-medium text-gray-900 hover:text-blue-200">
                           {product.productName || "Sản phẩm không xác định"}
                         </p>
