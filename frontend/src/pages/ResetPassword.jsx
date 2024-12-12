@@ -70,7 +70,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen border-t pt-16">
+    <div className="min-h-screen border-t">
       <form
         onSubmit={onSubmitHandler}
         className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800"

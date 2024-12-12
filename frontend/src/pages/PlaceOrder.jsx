@@ -117,18 +117,25 @@ const PlaceOrder = () => {
     };
     try {
         const res = await createOrder(bodyRequest);
-        setListProductToPlace([]); // Đặt lại listProductToPlace thành array rỗng
+
         const response = await getMininalProfile();
         setTotalQuantityInCart(response.totalQuantityInCart);
         if(method !== 'cod') {
-          window.location.href = res.result.url;
+          if (res?.result?.url) {
+            window.location.href = res.result.url;
+          } else {
+            console.error("URL không hợp lệ.");
+            toast.error("Đã xảy ra lỗi khi thanh toán!")
+            navigate("/orders")
+          }
         } else {
-        toast.success("Đặt hàng thành công!");
-        navigate("/orders");
-      }
+          toast.success("Đặt hàng thành công!");
+          navigate("/orders");
+        }
+      setListProductToPlace([]);
       setLoading(false);
     } catch (err) {
-      toast.error("Quá trình đặt hàng bị lỗi, vui lòng thử lại");
+      toast.error(err.response.data.message);
       setLoading(false);
       console.log("lỗi khi đặt đơn hàng:", err);
     }
@@ -300,7 +307,7 @@ const PlaceOrder = () => {
                   ></p>
                   <img className="h-5 mx-4" src={assets.zalo} alt=""/>
                   <p className="text-gray-500 text-sm font-medium mx-4">
-                   Ví ZaloPay
+                    Ví ZaloPay
                   </p>
 
                 </div>
@@ -344,26 +351,17 @@ const PlaceOrder = () => {
                   </p>
                 </div>
               </div>
-              {loading ? (
-                  <AiOutlineLoading3Quarters/>
-              ) : (
-                  <button
-                      onClick={() =>
-                          handlePlaceOrder(
-                              selectedAddressId,
-                              listProductToPlace,
-                              method
-                          )
-                      }
-                      className="bg-black text-white px-8 py-3 text-sm mt-6 w-full"
-                  >
-                  {loading ? (
+              <button
+                  onClick={() => handlePlaceOrder(selectedAddressId, listProductToPlace, method)}
+                  className={`bg-black text-white px-8 py-3 mt-6 text-sm active:bg-gray-700 w-full flex items-center justify-center`}
+                  disabled={loading}
+              >
+                {loading ? (
                     <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />
-                  ) : (
+                ) : (
                     "Đặt Hàng"
-                  )}
-                </button>
-              )}
+                )}
+              </button>
             </div>
           </div>
         </div>

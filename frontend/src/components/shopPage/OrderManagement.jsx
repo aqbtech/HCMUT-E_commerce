@@ -26,7 +26,7 @@ const OrderManagement = () => {
     } = useContext(ShopContext);
     const username = Cookies.get('username');
     const [currentPage, setCurrentPage] = useState(0)
-    const limit = 2;
+    const limit = 10;
 
     const getOrdersByState = async (state) => {
         if (loading) return;
@@ -183,40 +183,45 @@ const OrderManagement = () => {
 
                             {/* Trạng thái giao hàng và các nút hủy/xác nhận đơn */}
                             <div className="flex justify-between items-center mb-4">
-                            <span
-                                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                    order.deliveryState === "WAITING"
-                                        ? "bg-gray-100 text-gray-600"
-                                        : order.deliveryState === "APPROVED"
-                                            ? "bg-yellow-100 text-yellow-600"
-                                            : order.deliveryState === "SHIPPING"
-                                                ? "bg-green-100 text-green-600"
-                                                : order.deliveryState === "CANCELLED"
-                                                    ? "bg-red-100 text-red-600"
-                                                    : order.deliveryState === "COMPLETED"
-                                                        ? "bg-red-100 text-red-600"
-                                                        : ""
-                                }`}
-                            >
-                                {order.deliveryState === "WAITING"
-                                    ? "Chờ duyệt"
-                                    : order.deliveryState === "APPROVED"
-                                        ? "Đã duyệt"
-                                        : order.deliveryState === "SHIPPING"
-                                            ? "Đang giao"
-                                            : order.deliveryState === "CANCELLED"
-                                                ? "Đã hủy"
-                                                : order.deliveryState === "COMPLETED"
-                                                    ? "Đã giao"
-                                                    : ""
-                                }
-                            </span>
+                                <div className="flex items-center gap-4">
+                                    <span
+                                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                            order.deliveryState === "WAITING"
+                                                ? "bg-gray-100 text-gray-600" // Chờ duyệt
+                                                : order.deliveryState === "APPROVED"
+                                                    ? "bg-blue-100 text-blue-600" // Đã duyệt
+                                                    : order.deliveryState === "SHIPPING"
+                                                        ? "bg-yellow-100 text-yellow-600" // Đang giao
+                                                        : order.deliveryState === "COMPLETED"
+                                                            ? "bg-green-100 text-green-600" // Đã giao
+                                                            : order.deliveryState === "CANCELLED"
+                                                                ? "bg-red-100 text-red-600" // Đã hủy
+                                                                : ""
+                                        }`}
+                                    >
+                                      {order.deliveryState === "WAITING"
+                                          ? "Chờ duyệt"
+                                          : order.deliveryState === "APPROVED"
+                                              ? "Đã duyệt"
+                                              : order.deliveryState === "SHIPPING"
+                                                  ? "Đang giao"
+                                                  : order.deliveryState === "COMPLETED"
+                                                      ? "Đã giao"
+                                                      : order.deliveryState === "CANCELLED"
+                                                          ? "Đã hủy"
+                                                          : ""}
+                                    </span>
+                                    <span
+                                        className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-600">
+                                      {!order.isCOD ? "Đã thanh toán" : ""}
+                                    </span>
+                                </div>
 
                                 {/* Nút hủy và xác nhận */}
                                 <div>
                                     <button
                                         onClick={() => handleCancelOrder(order.orderId)}
-                                        disabled={order.deliveryState !== "WAITING"}
+                                        disabled={order.deliveryState !== "WAITING" || !order.isCOD}
                                         className="px-4 py-2 rounded border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Hủy đơn hàng
@@ -273,7 +278,7 @@ const OrderManagement = () => {
                                         {order.deliveryAddress.phone}
                                     </p>
                                     <p>
-                                        <strong>Địa chỉ:</strong> {order.deliveryAddress.Detail},{" "}
+                                        <strong>Địa chỉ:</strong> {order.deliveryAddress.detail},{" "}
                                         {order.deliveryAddress.ward},
                                         {order.deliveryAddress.district},{" "}
                                         {order.deliveryAddress.province}
