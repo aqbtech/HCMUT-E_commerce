@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,7 +16,8 @@ import java.util.List;
 public interface CategoryPolicyRepository extends JpaRepository<CategoryPolicy, Long> {
     @Query("SELECT cp FROM CategoryPolicy cp JOIN cp.categories c WHERE c.richTextName = :categoryId")
     List<CategoryPolicy> findCategoryId(@Param("categoryId") String id);
-
+    // Refactor: fetch paging first after that fetch collection to avoid in memory paging
     @EntityGraph(value = "categoryPolicy", type = EntityGraph.EntityGraphType.LOAD)
-    Page<CategoryPolicy> findAll(Pageable pageable);
+    @NonNull
+    Page<CategoryPolicy> findAll(@NonNull Pageable pageable);
 }

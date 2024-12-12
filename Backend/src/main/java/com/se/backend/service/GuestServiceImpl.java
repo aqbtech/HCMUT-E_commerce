@@ -1,48 +1,31 @@
 package com.se.backend.service;
 
 
-import com.se.backend.dto.request.UserSellerRegister;
-import com.se.backend.dto.response.*;
-import com.se.backend.entity.Attribute;
-import com.se.backend.entity.Category;
-import com.se.backend.entity.Product;
-import com.se.backend.entity.ProductInstance;
-
 import com.se.backend.constant.SystemConstant;
 import com.se.backend.dto.request.FilterProductRequest;
 import com.se.backend.dto.request.UserRegister;
+import com.se.backend.dto.request.UserSellerRegister;
+import com.se.backend.dto.response.*;
 import com.se.backend.entity.*;
-
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
 import com.se.backend.mapper.*;
 import com.se.backend.repository.*;
-
-
 import com.se.backend.service.searchService.ProductSpecification;
-
 import com.se.backend.service.storage.FileService;
 import com.se.backend.utils.PaginationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -81,14 +64,14 @@ public class GuestServiceImpl implements GuestService {
 		categoryPolicy.sort(Comparator.comparing(CategoryPolicy::getSale).reversed());
 		Double shopSale = 0.0;
 		Double cateSale = 0.0;
-		for (ShopPolicy shop: shopPolicy){
-			if(shop.getCount() > 0){
+		for (ShopPolicy shop : shopPolicy) {
+			if (shop.getCount() > 0) {
 				shopSale = shop.getSale();
 				break;
 			}
 		}
-		for (CategoryPolicy cate: categoryPolicy){
-			if(cate.getSale() > cateSale && cate.getCount() > 0 ){
+		for (CategoryPolicy cate : categoryPolicy) {
+			if (cate.getSale() > cateSale && cate.getCount() > 0) {
 				cateSale = cate.getSale();
 				break;
 			}
@@ -163,14 +146,7 @@ public class GuestServiceImpl implements GuestService {
 		// find all product with pageable, sort by name asc
 		Pageable pageable = PageRequest.of(page, 5, Sort.by("name").ascending());
 		Page<Product> products = productRepository.findAll(pageable);
-		List<FileInfo> productImages = productRepository.fetchProductImages(products.getContent());
-		Map<String, List<FileInfo>> productImagesMap = productImages.stream()
-				.collect(Collectors.groupingBy(fileInfo -> fileInfo.getProduct().getId()));
-		for (Product product : products) {
-			List<FileInfo> images = productImagesMap.getOrDefault(product.getId(), Collections.emptyList());
-			product.setProductImgs(images);
-		}
-		List<Product> productsList = products.getContent();
+		List<Product> productsList = productService.productWithImgs(products);
 		return new PageImpl<>(
 				productSummaryMapper.toProductSummaries(productsList),
 				products.getPageable(),
@@ -195,10 +171,9 @@ public class GuestServiceImpl implements GuestService {
 				.commune(userRegister.getWard())
 				.specificAddress(userRegister.getDetailAddress())
 				.build();
-		try{
+		try {
 			addressRepository.save(address);
-		}
-		catch (WebServerException e){
+		} catch (WebServerException e) {
 			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
 		}
 
@@ -268,11 +243,10 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
-	public SearchFilterResponse searchByKeyword(String keyword, int page, String sort){
+	public SearchFilterResponse searchByKeyword(String keyword, int page, String sort) {
 		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
 		Page<Product> products = productRepository.findByNameContaining(keyword, pageable);
-
-		List<Product> productsList = products.getContent();
+		List<Product> productsList = productService.productWithImgs(products);
 		// REFACTOR: extract duplicate logic to gain Inversion of dependency
 		List<ProductSummary> productSummaries = productSummaryMapper.toProductSummaries(productsList);
 
@@ -303,21 +277,22 @@ public class GuestServiceImpl implements GuestService {
 				.build();
 	}
 
-	private List<Product> filterByRating(List<Product> productsList, List<String> ranges){
+	private List<Product> filterByRating(List<Product> productsList, List<String> ranges) {
 		List<Double> left = new ArrayList<>();
 		List<Double> right = new ArrayList<>();
-		for(String range : ranges){
+		for (String range : ranges) {
 			String[] bounds = range.split("-");
 			double lowerBound = Double.parseDouble(bounds[0]);
 			double upperBound = Double.parseDouble(bounds[1]);
-			left.add(lowerBound); right.add(upperBound);
+			left.add(lowerBound);
+			right.add(upperBound);
 		}
 		List<Product> res = new ArrayList<>();
-		for(Product product: productsList){
+		for (Product product : productsList) {
 			Double rating = reviewService.ratingCalculator(product.getId());
-			for(int i = 0; i < left.size(); i ++){
-				if(rating >= left.get(i) && rating <= right.get(i)){
-                    res.add(product);
+			for (int i = 0; i < left.size(); i++) {
+				if (rating >= left.get(i) && rating <= right.get(i)) {
+					res.add(product);
 					break;
 				}
 			}
@@ -339,7 +314,7 @@ public class GuestServiceImpl implements GuestService {
 		}
 
 		List<Product> productsList = productRepository.findAll(spec);
-		if(!request.getRatings().isEmpty()){
+		if (!request.getRatings().isEmpty()) {
 			productsList = this.filterByRating(productsList, request.getRatings());
 		}
 		// REFACTOR: extract duplicate logic to gain Inversion of dependency
@@ -370,14 +345,16 @@ public class GuestServiceImpl implements GuestService {
 				.filter(filterValueResponse)
 				.build();
 	}
-	private List<String> getCategoriesForFilter(List<Product> productsList){
+
+	private List<String> getCategoriesForFilter(List<Product> productsList) {
 		return productsList.stream()
 				.map(product -> product.getCategory().getRichTextName())
 				.distinct()
 				.sorted()
 				.toList();
 	}
-	private List<String> getLocationsForFilter(List<Product> productsList){
+
+	private List<String> getLocationsForFilter(List<Product> productsList) {
 		return productsList.stream()
 				.map(product -> product.getSeller().getAddress().getProvince())
 				.distinct()
@@ -389,27 +366,25 @@ public class GuestServiceImpl implements GuestService {
 	public ShopInfoForGuestResponse getShopInformation(String buyername, String sellername) {
 		// REFACTOR: extract duplicate logic to gain Inversion of dependency
 		Seller seller = sellerRepository.findByUsername(sellername)
-				.orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
-		Integer follower  = seller.getFollowers();
+				.orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
+		Integer follower = seller.getFollowers();
 		Address address = seller.getAddress();
 		double rating;
 		int numberOfProduct;
-		try{
+		try {
 			List<Product> products = productRepository.findBySeller(seller);
 			numberOfProduct = products.size();
-		}
-		catch (WebServerException e){
+		} catch (WebServerException e) {
 			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
 		}
-		try{
+		try {
 			List<ReviewContent> reviewContentList = reviewContentRepository.findBySeller(seller);
 			rating = reviewContentList.stream()
 					.filter(review -> review.getRating() != null)
 					.mapToDouble(ReviewContent::getRating)
 					.average()
 					.orElse(0);
-		}
-		catch (WebServerException e){
+		} catch (WebServerException e) {
 			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
 		}
 
@@ -420,7 +395,7 @@ public class GuestServiceImpl implements GuestService {
 				shopAddressResponse.getDistrict(),
 				shopAddressResponse.getProvince());
 		boolean isFollowed = false;
-		if(!"guest".equals(buyername)){
+		if (!"guest".equals(buyername)) {
 			isFollowed = followRepository.existsByBuyerAndSeller(buyername, sellername);
 		}
 		ShopInfoForGuestResponse response = ShopInfoForGuestResponse.builder()
@@ -435,11 +410,11 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
-	public ShopProductForGuestResponse shopFilterProducts(String seller, int page, String sort, String category){
+	public ShopProductForGuestResponse shopFilterProducts(String seller, int page, String sort, String category) {
 		Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
 		Specification<Product> spec = Specification.where(ProductSpecification.hasCategories(Collections.singletonList(category)));
 		Seller sellerObj = sellerRepository.findByUsername(seller)
-				.orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
+				.orElseThrow(() -> new WebServerException(ErrorCode.USER_NOT_FOUND));
 		// Nếu có keyword, thêm điều kiện tìm kiếm
 //		if (seller != null && !seller.trim().isEmpty()) {
 //			spec = spec.and((root, query, criteriaBuilder) ->
@@ -447,7 +422,7 @@ public class GuestServiceImpl implements GuestService {
 //		}
 
 		List<Product> productsList = productRepository.findBySeller(sellerObj);
-		if(!category.equals("")){
+		if (!category.isEmpty()) {
 			productsList = productsList.stream().filter(product -> product
 					.getCategory()
 					.getRichTextName().equals(category)).toList();
@@ -460,7 +435,7 @@ public class GuestServiceImpl implements GuestService {
 		}
 		PaginationUtils.convertListToPage(productSummaries, pageable);
 		List<String> categories = this.getCategoriesForFilter(productsList);
-        Page<ProductSummary> productSummaryPage = PaginationUtils.convertListToPage(productSummaries, pageable);
+		Page<ProductSummary> productSummaryPage = PaginationUtils.convertListToPage(productSummaries, pageable);
 		return ShopProductForGuestResponse.builder()
 				.productSummaryPage(productSummaryPage)
 				.categories(categories)

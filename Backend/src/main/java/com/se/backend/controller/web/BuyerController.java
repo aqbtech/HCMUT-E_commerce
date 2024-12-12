@@ -5,7 +5,6 @@ import com.se.backend.dto.response.*;
 import com.se.backend.service.BuyerService;
 import com.se.backend.service.ReviewService;
 import com.se.backend.service.business.OrderService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -149,7 +148,7 @@ public class BuyerController {
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<Integer> limit) {
         Pageable pageable = PageRequest.of(page.orElse(0), limit.orElse(10));
-        Page<GetOrderResponse> response = orderService.getShippingOrder(username, pageable);
+        Page<GetOrderResponse> response = orderService.getOrdersBySellerAndStatus(username, "shipping", pageable);
         if (response == null || response.isEmpty()) {
             return ResponseAPITemplate.<Page<GetOrderResponse>>builder()
                     .message("does not have any order")

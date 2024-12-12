@@ -12,7 +12,6 @@ import com.se.backend.repository.ReviewContentRepository;
 import com.se.backend.repository.SellerRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,15 +20,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class SellerServiceImpl implements SellerService{
-    @Autowired
     private final SellerRepository sellerRepository;
-    @Autowired
     private final AddressRepository addressRepository;
-    @Autowired
     private final ReviewContentRepository reviewContentRepository;
-    @Autowired
     private final ProductRepository productRepository;
-    @Autowired
     private final AddressMapper addressMapper;
     @Override
     @Transactional
@@ -68,14 +62,13 @@ public class SellerServiceImpl implements SellerService{
             throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
         }
 
-        ShopInformationResponse response = ShopInformationResponse.builder()
-                .shopName(seller.getShopName())
-                .follower(follower)
-                .numberOfProduct(numberOfProduct)
-                .rating(rating)
-                .address(addressMapper.toShopAddressResponse(address))
-                .build();
-        return response;
+		return ShopInformationResponse.builder()
+				.shopName(seller.getShopName())
+				.follower(follower)
+				.numberOfProduct(numberOfProduct)
+				.rating(rating)
+				.address(addressMapper.toShopAddressResponse(address))
+				.build();
     }
 
     @Override

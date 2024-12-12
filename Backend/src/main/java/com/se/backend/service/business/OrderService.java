@@ -232,7 +232,7 @@ public class OrderService  {
             order.setExpectedDeliveryDate(deliveryResponse.getExpectedDeliveryDate());
             order.setDeliveryStatus(deliveryResponse.getDeliveryStatus());
             order.setTotalPrice(totalPrice);
-            order.setDelieryFee((double) createOrderRequest.getFakeShippingFee());
+            order.setDeliveryFee((double) createOrderRequest.getFakeShippingFee());
             try {
                 orderRepository.save(order);
                 for(Order_ProductInstance e: orderProducts){
@@ -248,7 +248,7 @@ public class OrderService  {
             paymentOrder.getOrder().add(order);
             // add price of order to total pay for create payment if it not cod payment
             if(!isCod) {
-                totalPay += (order.getTotalPrice().longValue() +  order.getDelieryFee().longValue());
+                totalPay += (order.getTotalPrice().longValue() +  order.getDeliveryFee().longValue());
             }
         }
         long paymentOrderCode = paymentOrderRepository.save(paymentOrder).getPaymentOrderCode();
@@ -290,7 +290,7 @@ public class OrderService  {
             //Find Order//HERE
         Order order = orderRepository.findById(orderId)
                     .orElseThrow(() -> new WebServerException(ErrorCode.UNKNOWN_ERROR));
-        Double newPrice = 0.0;
+        double newPrice = 0.0;
         // if state of order is not "WAITING" then throw "State of order does not allow to add product"
         if(!order.getStatus().equals("WAITING")){
             throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
@@ -427,7 +427,7 @@ public class OrderService  {
         for(int i = 0; i < quantityOfProduct.size(); i++){
             product_of_getOrderResponseList.get(i).setQuantity(quantityOfProduct.get(i));
         }
-        Double shipping_fee = order.getDelieryFee();
+        Double shipping_fee = order.getDeliveryFee();
         result.setPrice(String.valueOf(totalPrice+ shipping_fee));
         result.setShipping_fee(shipping_fee);
         result.setListProduct(product_of_getOrderResponseList);
@@ -463,13 +463,12 @@ public class OrderService  {
                 orderPage.getTotalElements()
         );
     }
-
-    public Page<GetOrderResponse> getApprovedOrder(String username, Pageable pageable){
+    public Page<GetOrderResponse> getOrdersBySellerAndStatus(String username, String status , Pageable pageable)  {
         List<GetOrderResponse> responses = new ArrayList<>();
         Seller seller = sellerRepository.findById(username)
                 .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
-        Page<Order> orderPage = orderRepository.findApprovedOrderBySeller(seller, pageable);
-        if(orderPage.isEmpty()){
+        Page<Order> orderPage = orderRepository.findOrdersBySellerAndStatus(seller, status.toUpperCase(), pageable);
+        if(orderPage.isEmpty()) {
             return new PageImpl<>(responses);
         }
         for(Order o: orderPage.getContent()){
@@ -488,108 +487,6 @@ public class OrderService  {
                 orderPage.getTotalElements()
         );
     }
-
-    public Page<GetOrderResponse> getWaitingOrder(String username, Pageable pageable){
-        List<GetOrderResponse> responses = new ArrayList<>();
-        Seller seller = sellerRepository.findById(username)
-                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
-        Page<Order> orderPage = orderRepository.findWaitingOrderBySeller(seller, pageable);
-        if(orderPage.isEmpty()){
-            return new PageImpl<>(responses);
-        }
-        for(Order o: orderPage.getContent()){
-            List<Order_ProductInstance> order_productInstanceList = o.getOrderProductInstances();
-            List<ProductInstance> productInstances = new ArrayList<>();
-            for(Order_ProductInstance opI: order_productInstanceList){
-                ProductInstance productInstance = opI.getProductInstance();
-                productInstances.add(productInstance);
-            }
-            responses.add(this.OrderResponseHandler(o, productInstances));
-        }
-
-        return new PageImpl<>(
-                responses,
-                pageable,
-                orderPage.getTotalElements()
-        );
-    }
-
-    public Page<GetOrderResponse> getCancelledOrder(String username, Pageable pageable){
-        List<GetOrderResponse> responses = new ArrayList<>();
-        Seller seller = sellerRepository.findById(username)
-                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
-        Page<Order> orderPage = orderRepository.findCancelOrderBySeller(seller, pageable);
-        if(orderPage.isEmpty()){
-            return new PageImpl<>(responses);
-        }
-        for(Order o: orderPage.getContent()){
-            List<Order_ProductInstance> order_productInstanceList = o.getOrderProductInstances();
-            List<ProductInstance> productInstances = new ArrayList<>();
-            for(Order_ProductInstance opI: order_productInstanceList){
-                ProductInstance productInstance = opI.getProductInstance();
-                productInstances.add(productInstance);
-            }
-            responses.add(this.OrderResponseHandler(o, productInstances));
-        }
-
-        return new PageImpl<>(
-                responses,
-                pageable,
-                orderPage.getTotalElements()
-        );
-    }
-
-    public Page<GetOrderResponse> getShippingOrder(String username, Pageable pageable){
-        List<GetOrderResponse> responses = new ArrayList<>();
-        Seller seller = sellerRepository.findById(username)
-                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
-        Page<Order> orderPage = orderRepository.findShippingOrderBySeller(seller, pageable);
-        if(orderPage.isEmpty()){
-            return new PageImpl<>(responses);
-        }
-        for(Order o: orderPage.getContent()){
-            List<Order_ProductInstance> order_productInstanceList = o.getOrderProductInstances();
-            List<ProductInstance> productInstances = new ArrayList<>();
-            for(Order_ProductInstance opI: order_productInstanceList){
-                ProductInstance productInstance = opI.getProductInstance();
-                productInstances.add(productInstance);
-            }
-            responses.add(this.OrderResponseHandler(o, productInstances));
-        }
-
-        return new PageImpl<>(
-                responses,
-                pageable,
-                orderPage.getTotalElements()
-        );
-    }
-
-    public Page<GetOrderResponse> getCompletedOrder(String username, Pageable pageable){
-        List<GetOrderResponse> responses = new ArrayList<>();
-        Seller seller = sellerRepository.findById(username)
-                .orElseThrow(()-> new WebServerException(ErrorCode.USER_NOT_FOUND));
-        Page<Order> orderPage = orderRepository.findCompletedOrderBySeller(seller, pageable);
-        if(orderPage.isEmpty()){
-            return new PageImpl<>(responses);
-        }
-        for(Order o: orderPage.getContent()){
-            List<Order_ProductInstance> order_productInstanceList = o.getOrderProductInstances();
-            List<ProductInstance> productInstances = new ArrayList<>();
-            for(Order_ProductInstance opI: order_productInstanceList){
-                ProductInstance productInstance = opI.getProductInstance();
-                productInstances.add(productInstance);
-            }
-            responses.add(this.OrderResponseHandler(o, productInstances));
-        }
-
-        return new PageImpl<>(
-                responses,
-                pageable,
-                orderPage.getTotalElements()
-        );
-    }
-
-
 
     public CreateOrderResponse findById(String orderId) {
         Order order = orderRepository.findById(orderId)

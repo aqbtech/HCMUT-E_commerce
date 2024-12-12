@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
 public interface ShopPolicyRepository extends JpaRepository<ShopPolicy, Long> {
     @Query("SELECT sp FROM ShopPolicy sp JOIN sp.sellers s WHERE s.username = :sellerId")
     List<ShopPolicy> findBySellerId(@Param("sellerId") String sellerId);
+    // Refactor: delete entity graph and self-mapping collection data
     @EntityGraph(value = "shopPolicy", type = EntityGraph.EntityGraphType.LOAD)
-    Page<ShopPolicy> findAll(Pageable pageable);
+    @NonNull
+    Page<ShopPolicy> findAll(@NonNull Pageable pageable);
 }

@@ -65,6 +65,7 @@ public class AuthenticationService implements AuthenticationProvider {
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 		var user = userRepository.findUserWithRoleByUsername(request.getUsername());
 		assert user != null : new WebServerException(ErrorCode.USER_NOT_FOUND);
+		// refactor: handler out of array size
 		boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getFirst()[1].toString());
 		if (!authenticated) {
 			throw new WebServerException(ErrorCode.UNAUTHENTICATED);

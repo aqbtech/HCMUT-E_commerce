@@ -69,13 +69,13 @@ import java.util.List;
 						)
 				}
 		),
-		@NamedEntityGraph(name = "product-summary-seller", attributeNodes = {
+		@NamedEntityGraph(name = "product-summary-seller-without-imgs", attributeNodes = {
 				@NamedAttributeNode("id"),
 				@NamedAttributeNode("name"),
 				@NamedAttributeNode("description"),
 				@NamedAttributeNode("seller"),
 				@NamedAttributeNode("category"),
-				@NamedAttributeNode("productImgs")
+//				@NamedAttributeNode("productImgs")
 //				@NamedAttributeNode(value = "seller", subgraph = "location")
 		}
 //				subgraphs = {

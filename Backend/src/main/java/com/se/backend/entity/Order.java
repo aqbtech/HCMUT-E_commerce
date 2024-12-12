@@ -77,7 +77,7 @@ public class Order {
 	private LocalDate deliveryDate;
 	private LocalDate deliveryJoinDate;
 	private String deliveryStatus;
-	private Double delieryFee;
+	private Double deliveryFee;
 
 	// mapping seller
 	@ManyToOne
@@ -86,6 +86,6 @@ public class Order {
 
 	// mapping payment-order
 	@ManyToOne
-	@JoinColumn(name = "payment_odrder_id", referencedColumnName = "payment_order_id")
+	@JoinColumn(name = "payment_order_id", referencedColumnName = "payment_order_id")
 	private PaymentOrder paymentOrder;
 }

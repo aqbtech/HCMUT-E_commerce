@@ -2,6 +2,7 @@ package com.se.backend.service;
 
 
 import com.se.backend.entity.BuildProduct;
+import com.se.backend.entity.FileInfo;
 import com.se.backend.entity.Product;
 import com.se.backend.entity.ProductInstance;
 import com.se.backend.exception.ErrorCode;
@@ -10,10 +11,14 @@ import com.se.backend.repository.BuildProductRepository;
 import com.se.backend.repository.ProductInstanceRepository;
 import com.se.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +53,17 @@ public class ProductServiceImpl implements ProductService {
 		List<BuildProduct> bp = buildProductRepository.findByProductInstance(productInstance)
 				.orElseThrow(() -> new WebServerException(ErrorCode.PRODUCT_NOT_FOUND));
 		return productRepository.findProductCartById(bp.getFirst().getId().getProductId());
+	}
+
+	@Override
+	public List<Product> productWithImgs(Page<Product> products) {
+		List<FileInfo> productImages = productRepository.fetchProductImages(products.getContent());
+		Map<String, List<FileInfo>> productImagesMap = productImages.stream()
+				.collect(Collectors.groupingBy(fileInfo -> fileInfo.getProduct().getId()));
+		for (Product product : products) {
+			List<FileInfo> images = productImagesMap.getOrDefault(product.getId(), Collections.emptyList());
+			product.setProductImgs(images);
+		}
+		return products.getContent();
 	}
 }
