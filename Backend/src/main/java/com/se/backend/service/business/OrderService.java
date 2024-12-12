@@ -106,8 +106,8 @@ public class OrderService  {
         PaymentOrder paymentOrder = new PaymentOrder();
 
         if(!deliveryInfor.getBuyer().equals(buyer)){
-            CreateOrderResponse response = CreateOrderResponse.builder().msg("address of buyer does not exist").build();
-            return response;
+            return CreateOrderResponse.builder()
+                    .msg("address of buyer does not exist").build();
         }
 
         paymentOrder.setDeliveryInfor(deliveryInfor);
@@ -116,6 +116,7 @@ public class OrderService  {
         boolean isCod = createOrderRequest.getMethod().equals("COD");
         long totalPay = 0;
         paymentOrder.setPayment_method(createOrderRequest.getMethod());
+        paymentOrder.setIsCOD(isCod);
         paymentOrderRepository.save(paymentOrder);
         //----------------------
 
@@ -132,8 +133,8 @@ public class OrderService  {
 
             // Kiểm tra số lượng trong kho
             if (productInstance.getQuantityInStock() < quantity) {
-                CreateOrderResponse response = CreateOrderResponse.builder().msg("Some products are out of quantity in stock").build();
-                return response;
+                return CreateOrderResponse.builder()
+                        .msg("out of quantity in stock").build();
 //                throw new WebServerException(ErrorCode.INSUFFICIENT_STOCK);
             }
 
@@ -182,10 +183,6 @@ public class OrderService  {
                 Product product = productInstance.getBuildProduct().get(0).getProduct();
                 orderProducts.add(orderProductInstance);
 
-                //Handle remove in cart
-//                if(createOrderRequest.getIsCart()) {
-//                    cartService.removeProductInsFromCart(username, productInstance.getId());
-//                }
                 // Handle Sale here
                 List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(product.getSeller().getUsername());
                 shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
@@ -200,7 +197,7 @@ public class OrderService  {
                         try {
                             shopPolicyRepository.save(shop);
                         } catch (WebServerException e){
-                            throw e;
+                            throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
                         }
                         break;
                     }
@@ -212,7 +209,7 @@ public class OrderService  {
                         try {
                             categoryPolicyRepository.save(cate);
                         } catch (WebServerException e){
-                            throw e;
+                            throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
                         }
                         break;
                     }
@@ -234,10 +231,8 @@ public class OrderService  {
             order.setDeliveryJoinDate(deliveryResponse.getDeliveryJoinDate());
             order.setExpectedDeliveryDate(deliveryResponse.getExpectedDeliveryDate());
             order.setDeliveryStatus(deliveryResponse.getDeliveryStatus());
-            Double shipping_fee = (double) deliveryResponse.getFee();
             order.setTotalPrice(totalPrice);
             order.setDelieryFee((double) createOrderRequest.getFakeShippingFee());
-//            order.setDelivery(deliveryInfor);
             try {
                 orderRepository.save(order);
                 for(Order_ProductInstance e: orderProducts){
@@ -253,7 +248,7 @@ public class OrderService  {
             paymentOrder.getOrder().add(order);
             // add price of order to total pay for create payment if it not cod payment
             if(!isCod) {
-                totalPay += order.getTotalPrice().longValue();
+                totalPay += (order.getTotalPrice().longValue() +  order.getDelieryFee().longValue());
             }
         }
         long paymentOrderCode = paymentOrderRepository.save(paymentOrder).getPaymentOrderCode();
@@ -351,6 +346,7 @@ public class OrderService  {
         DeliveryInfor deliveryInfor = order.getPaymentOrder().getDeliveryInfor();
         result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
         String method = order.getPaymentOrder().getPayment_method();
+        Boolean isCOD = order.getPaymentOrder().getIsCOD();
         List<Product_of_GetOrderResponse> product_of_getOrderResponseList = new ArrayList<>();
 
         List<Long> quantityOfProduct = new ArrayList<>();
@@ -438,6 +434,7 @@ public class OrderService  {
         result.setDeliveryDate(order.getDeliveryDate());
         result.setExpectedDeliveryDate(order.getExpectedDeliveryDate());
         result.setMethod(method);
+        result.setIsCOD(isCOD);
         return result;
     }
     public Page<GetOrderResponse> getOrderForBuyer(String username, Pageable pageable){
