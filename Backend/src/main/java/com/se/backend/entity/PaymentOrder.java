@@ -18,6 +18,7 @@ public class PaymentOrder {
 	@Column(name = "payment_order_id")
 	private Long paymentOrderCode;
 	private String payment_method;
+	private Boolean isCOD;
 	// -- Relationships -- //
 	// mapping delivery info
 	@ManyToOne(optional = false)
