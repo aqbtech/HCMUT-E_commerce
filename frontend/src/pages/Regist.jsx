@@ -53,6 +53,12 @@ const Regist = () => {
       return false;
     }
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Đặt giờ về 0 để so sánh chính xác
+    if (date > today) {
+      toast.error('Ngày sinh không hợp lệ!');
+      return false;
+    }
 
     if (pass !== confirmPass) {
       toast.error('Mật khẩu không khớp mất rùi :(((');
@@ -84,40 +90,57 @@ const Regist = () => {
       navigate('/login');
     } catch (error) {
       console.error('Lỗi đăng ký:', error);
-      if (error.status === 401) toast.error('Thông tin hiện đã tồn tại!');
+      if (error.status === 401)  return toast.error('Thông tin hiện đã tồn tại!');
+      else if(error.status === 400) {
+        toast.error(error.response.data.message);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className='min-h-screen border-t pt-16'>
-      <form onSubmit={onSubmitHandler} className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800">
+    <div className='min-h-screen border-t'>
+      <form onSubmit={onSubmitHandler}
+            className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800">
         <div className="inline-flex items-center gap-2 mb-2 mt-10">
           <p className="prata-regular text-3xl">Đăng ký</p>
-          <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
+          <hr className="border-none h-[1.5px] w-8 bg-gray-800"/>
         </div>
-        <input type="text" className="w-full px-3 py-2 border border-gray-800" placeholder="Tài khoản" value={id} onChange={(e) => setId(e.target.value)} />
-        <input type="password" className="w-full px-3 py-2 border border-gray-800" placeholder="Mật khẩu" value={pass} onChange={(e) => setPass(e.target.value)} />
-        <input type="password" className="w-full px-3 py-2 border border-gray-800" placeholder="Nhập lại mật khẩu" value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)} />
-        <input type="email" className="w-full px-3 py-2 border border-gray-800" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input type="text" className="w-full px-3 py-2 border border-gray-800" placeholder="Tài khoản" value={id}
+               onChange={(e) => setId(e.target.value)}/>
+        <input type="password" className="w-full px-3 py-2 border border-gray-800" placeholder="Mật khẩu" value={pass}
+               onChange={(e) => setPass(e.target.value)}/>
+        <input type="password" className="w-full px-3 py-2 border border-gray-800" placeholder="Nhập lại mật khẩu"
+               value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)}/>
+        <input type="email" className="w-full px-3 py-2 border border-gray-800" placeholder="E-mail" value={email}
+               onChange={(e) => setEmail(e.target.value)}/>
         <div className="flex gap-3">
-          <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" placeholder="Họ và tên đệm" value={hovatendem} onChange={(e) => setHovatendem(e.target.value)} />
-          <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" placeholder="Tên" value={ten} onChange={(e) => setTen(e.target.value)} />
+          <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" placeholder="Họ và tên đệm"
+                 value={hovatendem} onChange={(e) => setHovatendem(e.target.value)}/>
+          <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" placeholder="Tên"
+                 value={ten} onChange={(e) => setTen(e.target.value)}/>
         </div>
-        <input type="text" className="w-full px-3 py-2 border border-gray-800" placeholder="Số điện thoại" value={sdt} onChange={(e) => setSdt(e.target.value)} />
-        <input type="date" className="w-full px-3 py-2 border border-gray-800" value={date} onChange={(e) => setDate(e.target.value)} />
+        <input type="text" className="w-full px-3 py-2 border border-gray-800" placeholder="Số điện thoại" value={sdt}
+               onChange={(e) => setSdt(e.target.value)}/>
+        <input
+            type="date"
+            className="w-full px-3 py-2 border border-gray-800"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            max={new Date().toISOString().split("T")[0]}
+        />
         <div className="w-full flex justify-between text-sm mt-[-8px]">
-          <Link to="/Login">
+          <Link to="/login">
             <p className="cursor-pointer hover:text-black hover:underline">Bạn đã có tài khoản?</p>
           </Link>
         </div>
         <button
-          disabled={isLoading}
-          type="submit"
-          className={`bg-black text-white font-light px-8 py-2 mt-4 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isLoading}
+            type="submit"
+            className={`bg-black text-white font-light px-8 py-2 mt-4 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          {isLoading ? <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" /> : 'Đăng ký'}
+          {isLoading ? <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl"/> : 'Đăng ký'}
         </button>
       </form>
     </div>

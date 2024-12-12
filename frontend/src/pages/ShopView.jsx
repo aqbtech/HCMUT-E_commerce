@@ -33,7 +33,8 @@ const ShopView = () => {
       const response = await getInfo(shopId);
       setShopInfo(response);
     } catch (err) {
-      toast.error("Lỗi khi lấy sản phẩm của shop");
+      toast.error("Lỗi khi lấy thông tin của shop");
+
     }
     setIsLoading(false);
   };
@@ -47,7 +48,7 @@ const ShopView = () => {
       setListProduct((prev) => (page === 0 ? products : [...prev, ...products]));
       setHasMore(page + 1 < response.productSummaryPage.page.totalPages);
     } catch (err) {
-      console.log(err);
+      toast.error("Lỗi khi lấy sản phẩm  của shop");
     }
     setLoadingProduct(false);
   };

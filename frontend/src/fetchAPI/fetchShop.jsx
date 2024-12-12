@@ -3,7 +3,7 @@ import { axiosClient2,  } from "./axios";
 
 export const getInfo = async (shopId) => {
     try {
-        const res = await axiosClient2.get(`/seller/shop_information?username=${shopId}`);
+        const res = await axiosClient2.get(`/shop_information?shop=${shopId}`);
         console.log(`Lay shop thành công!`, res);
         return res.data.result;
     } catch(err) {
@@ -33,6 +33,18 @@ export const unfollow = async (shopId) => {
         throw err;
     }
 }
+
+export const getInforShop = async (shopId) => {
+    try {
+        const res = await axiosClient2.get(`/seller/shop_information?username=${shopId}`);
+        console.log(`Lay shop thành công!`, res);
+        return res.data.result;
+    } catch(err) {
+        console.log(`Lay shop thất bại!`, err);
+        throw err;
+    }
+}
+
 
 export const updateInfo = async (shopId, body) => {
     try {

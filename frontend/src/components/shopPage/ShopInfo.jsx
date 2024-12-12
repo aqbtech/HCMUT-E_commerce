@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { updateInfo, getInfo } from "../../fetchAPI/fetchShop";
+import {updateInfo, getInforShop} from "../../fetchAPI/fetchShop";
 import Cookies from "js-cookie";
 import Title from "../Title.jsx";
 
@@ -28,7 +28,7 @@ const ShopInfo = () => {
   // Lấy thông tin cửa hàng
   const loadInfo = async () => {
     try {
-      const response = await getInfo(Cookies.get("username"));
+      const response = await getInforShop(Cookies.get("username"));
       setShopInfo(response);
       setProvince(response.address.province || "");
       setDistrict(response.address.district || "");

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Cookies from 'js-cookie'
 import Title from "../Title.jsx";
+import {toast} from "react-toastify";
 
 
 const ProfileTab = ({ account, onSave }) => {
@@ -10,6 +11,39 @@ const ProfileTab = ({ account, onSave }) => {
     const [phone, setPhone] = useState(account.phone);
     const [gender, setGender] = useState(account.sex || "Nam");
     const [birthday, setBirthday] = useState(account.dob);
+
+    const validateInputs = () => {
+        // Kiểm tra các trường rỗng
+        if (!name.trim() || !Hovatendem.trim() || !email.trim() || !phone.trim() || !birthday) {
+            toast.error("Bạn chưa điền đủ thông tin!");
+            return false;
+        }
+
+        // Kiểm tra email hợp lệ
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            toast.error("Email không hợp lệ!");
+            return false;
+        }
+
+        // Kiểm tra số điện thoại (10 chữ số, bắt đầu bằng số 0)
+        const phoneRegex = /^0\d{9}$/;
+        if (!phoneRegex.test(phone)) {
+            toast.error("Số điện thoại không hợp lệ!");
+            return false;
+        }
+
+        // Kiểm tra ngày sinh không được là ngày tương lai
+        const today = new Date();
+        const selectedDate = new Date(birthday);
+        if (selectedDate > today) {
+            toast.error("Ngày sinh không hợp lệ! Không được chọn ngày trong tương lai.");
+            return false;
+        }
+
+        // Tất cả đều hợp lệ
+        return true;
+    };
 
     return (
         <div>
@@ -62,14 +96,24 @@ const ProfileTab = ({ account, onSave }) => {
                     <input className="w-full p-2 border border-gray-300 rounded mb-4" type='date' value={birthday}
                            onChange={(e) => setBirthday(e.target.value)}/>
 
-                    <button type='button' onClick={() => onSave({
-                        lastName: name,
-                        firstName: Hovatendem,
-                        email: email,
-                        phone: phone,
-                        DOB: birthday,
-                        sex: gender
-                    })} className="bg-gray-300 text-white px-4 py-2 rounded hover:bg-black hover:text-white">Lưu
+                    <button
+                        type='button'
+                        onClick={() => {
+                            if (validateInputs()) {
+                                onSave({
+                                    lastName: name,
+                                    firstName: Hovatendem,
+                                    email: email,
+                                    phone: phone,
+                                    DOB: birthday,
+                                    sex: gender
+                                });
+                                toast.success("Lưu thông tin thành công!");
+                            }
+                        }}
+                        className="bg-gray-300 text-white px-4 py-2 rounded hover:bg-black hover:text-white"
+                    >
+                        Lưu
                     </button>
                 </div>
             </div>
