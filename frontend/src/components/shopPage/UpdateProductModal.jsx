@@ -170,6 +170,8 @@ const UpdateProductModal = ({isOpen, onClose, initData, productId}) => {
     };
 
     const handleCreateProduct = async () => {
+        if(!formData.name) return toast.error("Vui lòng nhập tên sản phẩm")
+
         for(let i = 0; i < formData.productInstances.length; i++){
             if(formData.productInstances[i].price === "" ){
                 toast.error("Vui lòng nhập giá tiền cho sản phẩm");
