@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {updateInfo, getInforShop} from "../../fetchAPI/fetchShop";
 import Cookies from "js-cookie";
 import Title from "../Title.jsx";
+import {toast} from "react-toastify";
 
 const ShopInfo = () => {
   const [shopInfo, setShopInfo] = useState({
@@ -21,6 +22,7 @@ const ShopInfo = () => {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
 
+  const [shopName, setShopName] = useState(shopInfo.shopName)
   const [province, setProvince] = useState("");
   const [district, setDistrict] = useState("");
   const [commune, setCommune] = useState("");
@@ -30,6 +32,7 @@ const ShopInfo = () => {
     try {
       const response = await getInforShop(Cookies.get("username"));
       setShopInfo(response);
+      setShopName(response.shopName);
       setProvince(response.address.province || "");
       setDistrict(response.address.district || "");
       setCommune(response.address.commune || "");
@@ -97,6 +100,7 @@ const ShopInfo = () => {
   };
 
   const handleSave = async () => {
+    if(!shopName) return toast.error("Vui lòng nhập tên shop!")
     try {
       const updatedInfo = {
         shopName: shopInfo.shopName,
@@ -110,6 +114,7 @@ const ShopInfo = () => {
 
       const response = await updateInfo(Cookies.get("username"), updatedInfo);
       console.log("Sửa thông tin shop thành công!", response);
+      toast.success("Cập nhật thành công!")
     } catch (err) {
       console.error("Lỗi khi cập nhật thông tin:", err);
       alert("Đã xảy ra lỗi trong quá trình lưu thông tin.");
@@ -127,8 +132,8 @@ const ShopInfo = () => {
           <label className="block mb-2">Tên cửa hàng</label>
           <input
             className="w-full p-2 border border-gray-300 rounded mb-4"
-            value={shopInfo.shopName}
-            onChange={(e) => handleFieldChange("shopName", e.target.value)}
+            value={shopName}
+            onChange={(e) => setShopName(e.target.value)}
           />
 
           <label className="block mb-2">Đánh giá cửa hàng</label>

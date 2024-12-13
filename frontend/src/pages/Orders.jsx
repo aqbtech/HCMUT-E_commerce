@@ -58,7 +58,7 @@ const Orders = () => {
       setUserOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.orderId === orderId
-            ? { ...order, deliveryState: "CANCEL" }
+            ? { ...order, deliveryState: "CANCELLED" }
             : order
         )
       );

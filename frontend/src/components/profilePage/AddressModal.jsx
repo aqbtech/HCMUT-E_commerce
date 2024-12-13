@@ -88,6 +88,7 @@ const CreateAddress = ({ onClose, onSave, initialData = {} }) => {
     };
 
     const handleUpdateAddress = () => {
+        if(!validate()) return;
         const updatedAddress = {
             Id: initialData.id, // Đảm bảo có ID để xử lý cập nhật
             name,
