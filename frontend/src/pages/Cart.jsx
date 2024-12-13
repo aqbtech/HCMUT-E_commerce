@@ -134,7 +134,7 @@ const Cart = () => {
         return {
           productName: item.productName,
           productId: item.productId,
-          listAtt: item.listName,
+          listAtt: item.listValue,
           isCart: true,
           instantId: item.productInstanceId,
           quantity: item.quantity,

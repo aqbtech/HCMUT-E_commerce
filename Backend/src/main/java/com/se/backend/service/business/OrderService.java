@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -113,10 +114,12 @@ public class OrderService  {
         paymentOrder.setDeliveryInfor(deliveryInfor);
         paymentOrder.setOrder(new ArrayList<>());
         paymentOrder.setReview(new ArrayList<>());
-        boolean isCod = createOrderRequest.getMethod().equals("COD");
+        boolean isCod = createOrderRequest.getMethod().equals("cod");
+        LocalDate createDate = LocalDate.now();
         long totalPay = 0;
         paymentOrder.setPayment_method(createOrderRequest.getMethod());
         paymentOrder.setIsCOD(isCod);
+        paymentOrder.setCreateDate(createDate);
         paymentOrderRepository.save(paymentOrder);
         //----------------------
 
@@ -347,6 +350,7 @@ public class OrderService  {
         result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
         String method = order.getPaymentOrder().getPayment_method();
         Boolean isCOD = order.getPaymentOrder().getIsCOD();
+        LocalDate placeOrderDate = order.getPaymentOrder().getCreateDate();
         List<Product_of_GetOrderResponse> product_of_getOrderResponseList = new ArrayList<>();
 
         List<Long> quantityOfProduct = new ArrayList<>();
@@ -435,6 +439,7 @@ public class OrderService  {
         result.setExpectedDeliveryDate(order.getExpectedDeliveryDate());
         result.setMethod(method);
         result.setIsCOD(isCOD);
+        result.setPlaceOrderDate(placeOrderDate);
         return result;
     }
     public Page<GetOrderResponse> getOrderForBuyer(String username, Pageable pageable){

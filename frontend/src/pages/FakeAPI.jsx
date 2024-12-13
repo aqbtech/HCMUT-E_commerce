@@ -22,7 +22,6 @@ const FakeAPI = () => {
       setTotalPages(response.page?.totalPages || 1);
       setHasMore(page + 1 < response.page?.totalPages);
       setOrders(response.data.result.content);
-      toast.success("Lấy đơn hàng thành công!");
       console.log("Lấy đơn hàng thành công", response.data.result);
     } catch (err) {
       console.error("Failed to fetch orders:", err);

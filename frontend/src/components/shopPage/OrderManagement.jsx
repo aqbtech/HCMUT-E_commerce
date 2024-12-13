@@ -211,10 +211,15 @@ const OrderManagement = () => {
                                                           ? "Đã hủy"
                                                           : ""}
                                     </span>
-                                    <span
-                                        className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-600">
-                                      {!order.isCOD ? "Đã thanh toán" : ""}
-                                    </span>
+                                    <span className={`px-3 py-1 rounded-full text-sm font-medium
+                                   ${order.isCOD
+                                                    ? "bg-yellow-100 text-yellow-600"
+                                                    : "bg-green-100 text-green-600"
+                                                }
+                                  }`}
+                                                >
+                                    {!order.isCOD ? "Đã thanh toán" : "Chưa thanh toán"}
+                                  </span>
                                 </div>
 
                                 {/* Nút hủy và xác nhận */}
@@ -222,14 +227,14 @@ const OrderManagement = () => {
                                     <button
                                         onClick={() => handleCancelOrder(order.orderId)}
                                         disabled={order.deliveryState !== "WAITING" || !order.isCOD}
-                                        className="px-4 py-2 rounded border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="px-4 py-2 rounded-full border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Hủy đơn hàng
                                     </button>
                                     <button
                                         onClick={() => handleApproveOrder(order.orderId)}
                                         disabled={order.deliveryState !== "WAITING"}
-                                        className="ml-2 px-4 py-2 rounded border text-sm font-medium bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="ml-2 px-4 py-2 rounded-full border text-sm font-medium bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Xác nhận đơn hàng
                                     </button>

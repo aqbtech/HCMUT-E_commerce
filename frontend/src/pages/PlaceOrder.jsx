@@ -124,7 +124,7 @@ const PlaceOrder = () => {
           if (res?.result?.url) {
             window.location.href = res.result.url;
           } else {
-            console.error("URL không hợp lệ.");
+            console.error("URL không hợp lệ.", res);
             toast.error("Đã xảy ra lỗi khi thanh toán!")
             navigate("/orders")
           }
@@ -174,190 +174,140 @@ const PlaceOrder = () => {
         </select>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col lg:flex-row gap-8">
         {/* Bên trái: Hiển thị sản phẩm trong listProductToPlace */}
         <div className="flex-1">
-          <Title text1="SẢN PHẨM" text2="ĐẶT HÀNG" />
+          <Title text1="SẢN PHẨM" text2="ĐẶT HÀNG"/>
           <div className="border rounded-lg p-6 mt-4 bg-white shadow-lg">
             {listProductToPlace.length > 0 ? (
-              listProductToPlace.map((product, index) => (
-                <div
-                  key={index}
-                  className="mt-2 px-2 py-2 border-b last:border-none"
-                >
-                  {/* Hình ảnh và thông tin sản phẩm */}
-                  <div className="flex gap-6 text-sm mb-3">
-                    <img
-                      className="w-24 sm:w-32 object-cover rounded-lg border shadow-md"
-                      src={product.IMG}
-                      alt={product.productName}
-                    />
-                    <div className="flex-1">
-                      <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                        {product.productName || "Sản phẩm không xác định"}
-                      </h2>
-
-                      {/* Giá và Số lượng */}
-                      <div className="mt-2">
-                        <p className="text-gray-600">
-                          <span className="font-medium text-lg">Giá:</span>{" "}
-                          {product.sale > 0 ? (
-                            <>
-                              <span className="line-through mr-2 text-gray-500">
-                                {formatCurrency(product.price)}
-                              </span>
-                              <span className="font-bold text-red-600 text-2xl">
-                                {formatCurrency(
-                                  product.price * (1 - product.sale)
-                                )}
-                              </span>
-                              <span className="ml-2 text-sm text-red-500">
-                                (-{product.sale * 100}%)
-                              </span>
-                            </>
-                          ) : (
-                            <span className="text-2xl">
-                              {formatCurrency(product.price)}
-                            </span>
-                          )}
-                        </p>
-
-                        {/* Số lượng */}
-                        <p className="text-gray-600 text-sm mt-2">
-                          <span className="font-medium">Số lượng:</span>{" "}
-                          {product.quantity}
-                        </p>
-                      </div>
-
-                      {/* Thuộc tính dưới dạng ô nhỏ */}
-                      {product.listAtt.length > 0 && (
-                        <div className="flex gap-3 mt-3">
-                          {product.listAtt.map(
-                            (att, idx) =>
-                              att && (
-                                <div
-                                  key={idx}
-                                  className="inline-flex items-center px-3 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-lg border"
-                                >
-                                  <span className="mr-1">
-                                    {att.value || att}
-                                  </span>
-                                </div>
-                              )
+                <div className="space-y-4">
+                  {listProductToPlace.map((product, index) => (
+                      <div
+                          key={index}
+                          className="px-4 py-4 border-b last:border-none flex flex-wrap gap-4 items-start"
+                      >
+                        {/* Hình ảnh sản phẩm */}
+                        <img
+                            className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-lg border shadow-md"
+                            src={product.IMG}
+                            alt={product.productName}
+                        />
+                        {/* Thông tin sản phẩm */}
+                        <div className="flex-1">
+                          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                            {product.productName || "Sản phẩm không xác định"}
+                          </h2>
+                          {/* Giá và Số lượng */}
+                          <div className="text-sm text-gray-600">
+                            <p className="mb-1">
+                              <span className="font-medium text-base">Giá:</span>{" "}
+                              {product.sale > 0 ? (
+                                  <>
+                        <span className="line-through mr-2 text-gray-500">
+                          {formatCurrency(product.price)}
+                        </span>
+                                    <span className="font-bold text-red-600 text-xl">
+                          {formatCurrency(product.price * (1 - product.sale))}
+                        </span>
+                                    <span className="ml-2 text-sm text-red-500">
+                          (-{product.sale * 100}%)
+                        </span>
+                                  </>
+                              ) : (
+                                  <span className="text-xl">
+                        {formatCurrency(product.price)}
+                      </span>
+                              )}
+                            </p>
+                            <p className="mt-1">
+                              <span className="font-medium">Số lượng:</span>{" "}
+                              {product.quantity}
+                            </p>
+                          </div>
+                          {/* Thuộc tính dưới dạng ô nhỏ */}
+                          {product.listAtt.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mt-3">
+                                {product.listAtt.map((att, idx) => (
+                                    att && (
+                                        <div
+                                            key={idx}
+                                            className="inline-flex items-center px-3 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-lg border"
+                                        >
+                                          {att.value || att}
+                                        </div>
+                                    )
+                                ))}
+                              </div>
                           )}
                         </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Hiển thị khi không có thuộc tính */}
-                  {product.listAtt.length === 0 && (
-                    <p className="text-gray-500 text-sm mt-2">
-                      Không có thuộc tính
-                    </p>
-                  )}
+                      </div>
+                  ))}
                 </div>
-              ))
             ) : (
-              <p className="text-gray-500 text-center">
-                Không có sản phẩm để đặt hàng
-              </p>
+                <p className="text-gray-500 text-center">Không có sản phẩm để đặt hàng</p>
             )}
           </div>
         </div>
 
         {/* Bên phải: Hiển thị tổng cộng, phương thức thanh toán */}
-        <div className="w-full max-w-[400px]">
-          <Title text1="THÔNG TIN" text2="THANH TOÁN" />
-          <div className="border rounded p-4 mt-4">
-            <div className="w-full">
-              <div className="text-2xl">
-                <Title text1={"TỔNG"} text2={"ĐƠN"} />
-              </div>
-
-              <div className="flex flex-col gap-2 mt-2 text-sm">
-                <div className="flex justify-between">
+        <div className="w-full lg:w-[400px]">
+          <Title text1="THÔNG TIN" text2="THANH TOÁN"/>
+          <div className="border rounded-lg p-6 mt-4 bg-white shadow-lg">
+            <div className="space-y-4">
+              {/* Tổng đơn hàng */}
+              <div>
+                <Title text1="TỔNG" text2="ĐƠN"/>
+                <div className="flex justify-between mt-2 text-sm">
                   <p>Tổng hàng</p>
                   <p>{formatCurrency(calculateTotal())}</p>
                 </div>
+                <hr className="my-2"/>
+                <div className="flex justify-between text-sm">
+                  <p>Phí ship</p>
+                  <p>{formatCurrency(fakeShippingFee)}</p>
+                </div>
+                <hr className="my-2"/>
+                <div className="flex justify-between font-bold text-base">
+                  <p>Tổng cộng</p>
+                  <p>{formatCurrency(calculateTotal() + fakeShippingFee)}</p>
+                </div>
               </div>
-              <hr />
-              <div className="flex justify-between">
-                <p>Phí ship</p>
-                <p>{formatCurrency(fakeShippingFee)}</p>
-              </div>
-              <hr />
-              <div className="flex justify-between">
-                <b>Tổng cộng</b>
-                {/* <b>{currency} {getCartAmount() === 0 ? 0 : String(getCartAmount() + delivery_fee) + '.00'}</b> */}
-                <b>{formatCurrency(calculateTotal() + fakeShippingFee)} </b>
-              </div>
-            </div>
-            <div className="mt-8">
-              <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN" />
-              <div className="flex gap-3 flex-col mt-4">
-                <div
-                    onClick={() => setMethod("zalo_wallet")}
-                    className="flex items-center gap-3 border p-2 cursor-pointer"
-                >
-                  <p
-                      className={`w-4 h-4 border rounded-full ${
-                          method === "zalo_wallet" ? "bg-green-400" : ""
-                      }`}
-                  ></p>
-                  <img className="h-5 mx-4" src={assets.zalo} alt=""/>
-                  <p className="text-gray-500 text-sm font-medium mx-4">
-                    Ví ZaloPay
-                  </p>
 
-                </div>
-                <div
-                    onClick={() => setMethod("visa")}
-                    className="flex items-center gap-3 border p-2 cursor-pointer"
-                >
-                  <p
-                      className={`w-4 h-4 border rounded-full ${
-                          method === "visa" ? "bg-green-400" : ""
-                      }`}
-                  ></p>
-                  <p className="text-gray-500 text-sm font-medium mx-4">
-                    Visa, Mastercard, JCB (qua cổng ZaloPay)
-                  </p>
-                </div>
-                <div
-                    onClick={() => setMethod("atm")}
-                    className="flex items-center gap-3 border p-2 cursor-pointer"
-                >
-                  <p
-                      className={`w-4 h-4 border rounded-full ${
-                          method === "atm" ? "bg-green-400" : ""
-                      }`}
-                  ></p>
-                  <p className="text-gray-500 text-sm font-medium mx-4">
-                    Thẻ ATM (qua cổng ZaloPay)
-                  </p>
-                </div>
-                <div
-                    onClick={() => setMethod("cod")}
-                    className="flex items-center gap-3 border p-2 cursor-pointer"
-                >
-                  <p
-                      className={`w-4 h-4 border rounded-full ${
-                          method === "cod" ? "bg-green-400" : ""
-                      }`}
-                  ></p>
-                  <p className="text-gray-500 text-sm font-medium mx-4">
-                    Thanh toán khi nhận hàng
-                  </p>
+              {/* Phương thức thanh toán */}
+              <div>
+                <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN"/>
+                <div className="flex flex-col gap-4 mt-4">
+                  {[
+                    {id: "zalo_wallet", label: "Ví ZaloPay", icon: assets.zalo},
+                    {id: "visa", label: "Visa, Mastercard, JCB (qua cổng ZaloPay)"},
+                    {id: "atm", label: "Thẻ ATM (qua cổng ZaloPay)"},
+                    {id: "cod", label: "Thanh toán khi nhận hàng"},
+                  ].map(({id, label, icon}) => (
+                      <div
+                          key={id}
+                          onClick={() => setMethod(id)}
+                          className="flex items-center gap-4 border p-3 cursor-pointer rounded-lg hover:shadow-md"
+                      >
+                        <div
+                            className={`w-5 h-5 border rounded-full flex items-center justify-center ${
+                                method === id ? "bg-green-500" : ""
+                            }`}
+                        ></div>
+                        {icon && <img className="h-6" src={icon} alt=""/>}
+                        <p className="text-sm text-gray-700 font-medium">{label}</p>
+                      </div>
+                  ))}
                 </div>
               </div>
+
+              {/* Nút đặt hàng */}
               <button
                   onClick={() => handlePlaceOrder(selectedAddressId, listProductToPlace, method)}
-                  className={`bg-black text-white px-8 py-3 mt-6 text-sm active:bg-gray-700 w-full flex items-center justify-center`}
+                  className="bg-black text-white px-8 py-3 mt-6 text-sm rounded-lg hover:bg-gray-700 w-full flex items-center justify-center disabled:bg-gray-300 disabled:cursor-not-allowed"
                   disabled={loading}
               >
                 {loading ? (
-                    <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />
+                    <AiOutlineLoading3Quarters className="animate-spin text-white text-lg"/>
                 ) : (
                     "Đặt Hàng"
                 )}
@@ -366,6 +316,7 @@ const PlaceOrder = () => {
           </div>
         </div>
       </div>
+
     </div>
   );
 };
