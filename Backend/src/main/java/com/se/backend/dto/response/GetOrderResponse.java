@@ -18,6 +18,7 @@ public class GetOrderResponse {
         private String seller;
         private String method;
         private Boolean isCOD;
+        private LocalDate placeOrderDate;
         private Double shipping_fee;
         private LocalDate deliveryDate;
         private LocalDate expectedDeliveryDate;

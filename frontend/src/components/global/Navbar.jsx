@@ -8,7 +8,7 @@ import { logOut } from '../../fetchAPI/fetchAccount';
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const { search, setSearch, curState, setCurState, setAccount, totalQuantityInCart, role, location } = useContext(ShopContext);
-  const pagesWithoutSearch = ['/login', '/reset', '/regist', '/admin', '/shop', '/RegistSeller', '/FakeAPI', `/payment`];
+  const pagesWithoutSearch = ['/login', '/reset', '/regist', '/admin', '/shop', '/RegistSeller', '/FakeAPI', `/payment`, 'Login'];
 
   const onSubmitHandler = async () => {
     try {

@@ -108,43 +108,49 @@ const Orders = () => {
                   {/* Trạng thái giao hàng và các nút hủy/xác nhận đơn */}
                   <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-4">
-    <span
-        className={`px-3 py-1 rounded-full text-sm font-medium ${
-            order.deliveryState === "WAITING"
-                ? "bg-gray-100 text-gray-600" // Chờ duyệt
-                : order.deliveryState === "APPROVED"
-                    ? "bg-blue-100 text-blue-600" // Đã duyệt
-                    : order.deliveryState === "SHIPPING"
-                        ? "bg-yellow-100 text-yellow-600" // Đang giao
-                        : order.deliveryState === "COMPLETED"
-                            ? "bg-green-100 text-green-600" // Đã giao
-                            : order.deliveryState === "CANCELLED"
-                                ? "bg-red-100 text-red-600" // Đã hủy
-                                : ""
-        }`}
-    >
-      {order.deliveryState === "WAITING"
-          ? "Chờ duyệt"
-          : order.deliveryState === "APPROVED"
-              ? "Đã duyệt"
-              : order.deliveryState === "SHIPPING"
-                  ? "Đang giao"
-                  : order.deliveryState === "COMPLETED"
-                      ? "Đã giao"
-                      : order.deliveryState === "CANCELLED"
-                          ? "Đã hủy"
-                          : ""}
-    </span>
-                      <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-600">
-      {!order.isCOD ? "Đã thanh toán" : ""}
-    </span>
+                  <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          order.deliveryState === "WAITING"
+                              ? "bg-gray-100 text-gray-600" // Chờ duyệt
+                              : order.deliveryState === "APPROVED"
+                                  ? "bg-blue-100 text-blue-600" // Đã duyệt
+                                  : order.deliveryState === "SHIPPING"
+                                      ? "bg-yellow-100 text-yellow-600" // Đang giao
+                                      : order.deliveryState === "COMPLETED"
+                                          ? "bg-green-100 text-green-600" // Đã giao
+                                          : order.deliveryState === "CANCELLED"
+                                              ? "bg-red-100 text-red-600" // Đã hủy
+                                              : ""
+                      }`}
+                  >
+                    {order.deliveryState === "WAITING"
+                        ? "Chờ duyệt"
+                        : order.deliveryState === "APPROVED"
+                            ? "Đã duyệt"
+                            : order.deliveryState === "SHIPPING"
+                                ? "Đang giao"
+                                : order.deliveryState === "COMPLETED"
+                                    ? "Đã giao"
+                                    : order.deliveryState === "CANCELLED"
+                                        ? "Đã hủy"
+                                        : ""}
+                  </span>
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium
+                       ${order.isCOD
+                          ?  "bg-yellow-100 text-yellow-600"
+                          :  "bg-green-100 text-green-600"
+                        }
+                      }`}
+                      >
+                        {!order.isCOD ? "Đã thanh toán" : "Chưa thanh toán"}
+                      </span>
                     </div>
 
                     {/* Nút hủy đơn */}
                     <button
                         onClick={() => handleCancelOrder(order.orderId)}
                         disabled={order.deliveryState !== "WAITING" || !order.isCOD}
-                        className="px-4 py-2 rounded border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
+                        className="px-4 py-2 rounded-full border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
                     >
                       Hủy đơn hàng
                     </button>
@@ -210,7 +216,7 @@ const Orders = () => {
                     <div className="flex-[2] p-4 bg-gray-50 rounded-lg border border-gray-200">
                       <h3 className="font-semibold text-lg mb-2">Trạng thái đơn hàng</h3>
                       <p>
-                        <strong>Ngày đặt:</strong> {order.placeOrderDate}
+                        <strong>Ngày đặt:</strong> {(order.placeOrderDate)}
                       </p>
                       <p>
                         <strong>Ngày nhận dự kiến:</strong> {(order.expectedDeliveryDate)}

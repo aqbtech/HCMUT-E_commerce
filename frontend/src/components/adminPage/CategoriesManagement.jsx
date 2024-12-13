@@ -6,7 +6,7 @@ import Title from "../Title";
 const CategoriesManagement = () => {
     const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0); 
+    const [totalPages, setTotalPages] = useState(1);
     const [modalMode, setModalMode] = useState(""); 
     const [modalCategory, setModalCategory] = useState(null);
     const [categoryName, setCategoryName] = useState("");
