@@ -17,6 +17,8 @@ public class GetOrderResponse {
         private DeliveryAddress_of_GetOrderResponse deliveryAddress;
         private String seller;
         private String method;
+        private Boolean isCOD;
+        private LocalDate placeOrderDate;
         private Double shipping_fee;
         private LocalDate deliveryDate;
         private LocalDate expectedDeliveryDate;

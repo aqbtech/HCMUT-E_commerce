@@ -1,6 +1,7 @@
 // src/components/PasswordTab.js
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import Title from "../Title.jsx";
 
 const PasswordTab = ({ onChangePass }) => {
     const [curPass, setCurPass] = useState('');
@@ -28,7 +29,9 @@ const PasswordTab = ({ onChangePass }) => {
 
     return (
         <div>
-            <h2 className="text-2xl font-bold mb-2">Đổi Mật Khẩu</h2>
+            <h2 className="text-2xl font-bold mb-4">
+                <Title text1="Đổi" text2="Mật Khẩu"/>
+            </h2>
             <p className="text-gray-500 mb-4">Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác</p>
 
             <label className="block mb-2">Mật khẩu hiện tại </label>

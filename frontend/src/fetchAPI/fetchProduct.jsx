@@ -1,48 +1,8 @@
-import {axiosClient, axiosClient2, axiosPublic} from '../fetchAPI/axios';
-import { categories } from '../assets/assets';
-import {comment} from "postcss";
+import { axiosClient2, axiosPublic} from '../fetchAPI/axios';
 import Cookies from "js-cookie";
+import axios from "axios";
 
 
-
-export const getAllProducts = async (api) =>{
-  const res = await axiosClient.get(`/result1`);
-  
-  return res.data;
-}
-
-export const getDetailProduct = async (api) =>{
-  const res = await axiosClient.get(`/productDetail`);
-  console.log(`Lấy thành công sản phẩm:`, res);
-  return res.data;
-}
-
-export const getReview = async (api) => {
-  const res = await axiosClient.get(`/productDetail/${api}`);
-  
-  return res.data;
-}
-
-export const fetchProductsWithFilters = async () => {
-  const res = await axiosClient.get(`/keyword`);
-  
-  return res.data;
-}
-
-
-export const getProductForShopView =  async () => {  
-  try {
-    const res = await axiosClient.get(`/productShop`)
-    console.log(`Lấy thành công sản phẩm:`, res);
-    return res.data;
-  } catch(err) {
-      console.log(`Lỗi khi lấy thông tin shop: `, err );
-      throw err;
-  }
-}
-
-
-//-----
 export const getProduct = async (page) => {
   try {
     const res =  await axiosPublic.get(`/home-page?page=${page}`)
@@ -168,23 +128,29 @@ export const getProductOfCategory = async (category, page) => {
   }
 }
 
+export const axiosUpload = axios.create({
+    baseURL: import.meta.env.VITE_BASE_URL,
+    timeout: 10000,
+});
+
 export const uploadIMG = async (file, productId) => {
     const formData = new FormData();
     formData.append('file', file);
-    console.log("Hài cot", formData);
     const token = Cookies.get("token");
     try {
-        const res = await fetch(`http://localhost:8080/upload?productId=${productId}`,{
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                // 'Content-Type': 'multipart/form-data',
-            },
-            body: formData
-        });
+        const res = await axiosUpload.post(`/upload?productId=${productId}`,
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        );
         return res.data;
     } catch (error) {
         console.error('Lỗi upload ảnh:', error.response || error.message);
         throw error;
     }
 };
+

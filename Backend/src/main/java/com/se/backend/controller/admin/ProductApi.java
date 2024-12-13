@@ -31,7 +31,7 @@ public class ProductApi {
     @GetMapping("/all-product")
     public ResponseAPITemplate<Page<ProductSummaryResponseForSeller>> getAllProductOfSeller(@RequestParam(value = "page", defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("name").ascending());
-        Page<Product> products = productRepository.findAll(pageable);
+        Page<Product> products = productRepository.findAllProductAdmin(pageable);
         List<Product> productsList = products.getContent();
         var response = productSummaryForSellerMapper.toProductSummariesForSeller(productsList);
         Page<ProductSummaryResponseForSeller> res = new PageImpl<>(response, pageable, products.getTotalElements());

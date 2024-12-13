@@ -4,7 +4,6 @@ import { ShopContext } from "../context/ShopContext";
 import { getProductForShop } from "../fetchAPI/fetchProduct";
 import { getInfo, follow, unfollow } from "../fetchAPI/fetchShop";
 import { toast } from "react-toastify";
-import ErrorMessage from "/src/components/errorMessage";
 import { assets } from '../../src/assets/assets';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import ProductItem from "../components/ProductItem";
@@ -34,7 +33,8 @@ const ShopView = () => {
       const response = await getInfo(shopId);
       setShopInfo(response);
     } catch (err) {
-      toast.error("Lỗi khi lấy sản phẩm của shop");
+      toast.error("Lỗi khi lấy thông tin của shop");
+
     }
     setIsLoading(false);
   };
@@ -48,7 +48,7 @@ const ShopView = () => {
       setListProduct((prev) => (page === 0 ? products : [...prev, ...products]));
       setHasMore(page + 1 < response.productSummaryPage.page.totalPages);
     } catch (err) {
-      console.log(err);
+      toast.error("Lỗi khi lấy sản phẩm  của shop");
     }
     setLoadingProduct(false);
   };
@@ -163,7 +163,7 @@ const ShopView = () => {
       <div className="flex items-center justify-between mb-4 mt-4">
         {/* Sort Option */}
         <select
-          className="border px-3 py-2 rounded-lg"
+          className="border px-3 py-2 rounded-lg w-40"
           value={selectedCategory}
           onChange={handleCategoryChange}
         >
@@ -177,16 +177,16 @@ const ShopView = () => {
 
         {/* Sort Price */}
         <select
-            onChange={handleSortChange}
-            value={sort}
-            className="border-2 border-gray-300 text-sm px-2 rounded-lg"
-          >
-            {listSorting.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.name}
-              </option>
-            ))}
-          </select>
+          onChange={handleSortChange}
+          value={sort}
+          className="border px-3 py-2 rounded-lg w-40"
+        >
+          {listSorting.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {
@@ -205,6 +205,7 @@ const ShopView = () => {
                 price={item.minPrice}
                 image={item.img}
                 rating={item.rating}
+                sale={item.sale}
               />
             ))
           ) : (

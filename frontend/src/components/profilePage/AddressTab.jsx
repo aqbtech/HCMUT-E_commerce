@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AddressModal from './AddressModal';
+import Title from "../Title.jsx";
 
 const AddressTab = ({ addresses, onAddAddress, onDeleteAddress, onUpdateAddress }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,7 +19,11 @@ const AddressTab = ({ addresses, onAddAddress, onDeleteAddress, onUpdateAddress 
     };
 
     return (
-        <div className="p-4">
+
+        <div className="">
+            <h2 className="text-2xl font-bold mb-4">
+                <Title text1="Địa Chỉ" text2="Giao Hàng"/>
+            </h2>
             {/* Nút Thêm địa chỉ mới căn phải */}
             <div className="text-right mb-4">
                 <button

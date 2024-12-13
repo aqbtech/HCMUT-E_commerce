@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { assets } from '../../assets/assets';
 import { Link, NavLink } from 'react-router-dom';
 import { ShopContext } from '../../context/ShopContext';
@@ -8,7 +8,7 @@ import { logOut } from '../../fetchAPI/fetchAccount';
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const { search, setSearch, curState, setCurState, setAccount, totalQuantityInCart, role, location } = useContext(ShopContext);
-  const pagesWithoutSearch = ['/login', '/reset', '/regist', '/admin', '/shop', '/RegistSeller', '/FakeAPI'];
+  const pagesWithoutSearch = ['/login', '/reset', '/regist', '/admin', '/shop', '/RegistSeller', '/FakeAPI', `/payment`, 'Login'];
 
   const onSubmitHandler = async () => {
     try {
@@ -48,7 +48,7 @@ const Navbar = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={handleKeyDown}
                 type="text"
-                placeholder="Search please!!!"
+                placeholder="Tìm kiếm ngay!!!"
                 className="w-full px-4 py-2 rounded-full outline-none text-gray-800"
               />
               <button
@@ -69,10 +69,10 @@ const Navbar = () => {
               <div className="flex flex-col gap-2 w-44 py-3 px-5 bg-slate-100 text-gray-500 rounded">
                 {curState === 'UnLogin' ? (
                   <>
-                    <Link to="/Login">
+                    <Link to="/login">
                       <p className="cursor-pointer hover:text-black">Đăng nhập</p>
                     </Link>
-                    <Link to="/Regist">
+                    <Link to="/regist">
                       <p className="cursor-pointer hover:text-black">Đăng ký</p>
                     </Link>
                     <Link to="/RegistSeller">

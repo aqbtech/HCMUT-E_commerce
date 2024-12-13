@@ -4,10 +4,10 @@ import {getProduct, getProductOfSeller} from "../../fetchAPI/fetchProduct.jsx";
 import ProductItem from "../ProductItem.jsx";
 import ProductTestItem from "../ProductTestItem.jsx";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import Title from "../Title.jsx";
 
 
 const ProductManagement = () => {
-    const [selectProduct, setSelectProduct] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listProduct, setListProduct] = useState([]);
     const [loading, setLoading] = useState(false); // Trạng thái loading khi gọi API
@@ -54,8 +54,10 @@ const ProductManagement = () => {
         }
     };
     return (
-        <div className="p-4">
-
+        <div className="">
+            <h2 className="text-2xl font-bold mb-4">
+                <Title text1="Quản Lý" text2="Sản Phẩm"/>
+            </h2>
             <div className="flex justify-end mb-4">
                 <button
                     onClick={() => setIsModalOpen(true)}
@@ -68,17 +70,30 @@ const ProductManagement = () => {
             {
                 loading ? (
                     <div className="flex justify-center mt-32 h-screen">
-                        <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl" />
+                        <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-4xl"/>
+                    </div>
+                ) : listProduct.length === 0 ? (
+                    // Hiển thị thông báo khi không có sản phẩm
+                    <div className="flex justify-center mt-32 h-screen">
+                        <p className="text-gray-500 text-lg">Không có sản phẩm nào!</p>
                     </div>
                 ) : (
-                listProduct.map((item, index) => (
-                    <div key={index} className='flex gap-2'>
-                        <ProductTestItem name={item.name} price={item.minPrice} image={item.img} rating={item.rating} status={item.status} productId={item.productId} setSelectProduct={setSelectProduct} />
-                    </div>
-                ))
+                    listProduct.map((item, index) => (
+                        <div key={index} className="flex gap-2">
+                            <ProductTestItem
+                                name={item.name}
+                                price={item.minPrice}
+                                image={item.img}
+                                rating={item.rating}
+                                status={item.status}
+                                productId={item.productId}
+                            />
+                        </div>
+                    ))
                 )
             }
-           
+
+
             {hasMore && (
                 <div className="text-center mt-6">
                     <button

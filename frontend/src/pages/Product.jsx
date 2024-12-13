@@ -115,6 +115,12 @@ const Product = () => {
     updateSelectedInstant();
   }, [selectedAttributes, productData?.listInstants]);
 
+  const getRandomShippingFee = () => {
+    const min = 100; // phí ship tối thiểu
+    const max = 500; // phí ship tối đa
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }; 
+
   const placeOrder = async (
     productName,
     productId,
@@ -139,6 +145,8 @@ const Product = () => {
         value,
       })
     );
+    
+    const fakeShippingFee = getRandomShippingFee();
 
     const body = {
       IMG: IMG,
@@ -149,7 +157,8 @@ const Product = () => {
       quantity: quantity,
       price: selectedInstant.price,
       isCart: false,
-      sale: sale
+      sale: sale,
+      fakeShippingFee : fakeShippingFee
     };
 
     // Ghi đè trực tiếp `ListProductToPlace` trong localStorage với `body`
@@ -218,27 +227,60 @@ const Product = () => {
             </span>
             <img src={assets.star_icon} alt="Star" className="w-4 h-4" />
           </div>
+
           <p className="mt-5 text-3xl font-medium">
             {selectedInstant === null ? (
-              `${formatCurrency(productData.minPrice * (1 - productData.sale))}`
+              <div className="mt-5">
+                {productData.sale > 0 ? (
+                  <div className="flex items-center space-x-3">
+                    {/* Giá gốc (gạch ngang) */}
+                    <span className="text-lg line-through">
+                      {formatCurrency(productData.minPrice)}
+                    </span>
+                    {/* Giá sau giảm */}
+                    <span className="text-3xl font-medium text-red-600">
+                      {formatCurrency(
+                        productData.minPrice * (1 - productData.sale)
+                      )}
+                    </span>
+                    {/* Phần trăm giảm giá */}
+                    <span className="text-sm text-white bg-red-500 px-2 py-1 rounded">
+                      -{Math.round(productData.sale * 100)}%
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-3xl font-medium">
+                    {formatCurrency(productData.minPrice)}
+                  </span>
+                )}
+              </div>
             ) : selectedInstant === "not_found" ? (
               "Sản phẩm đã hết :((("
             ) : (
-              <>
-                {/* Kiểm tra nếu có giảm giá */}
-                <span className="text-lg text-red-600 line-through mr-2">
-                  {selectedInstant.sale > 0 &&
-                    formatCurrency(selectedInstant.price)}
-                </span>
-                {/* Hiển thị giá sau giảm */}
-                <span className="text-3xl font-medium">
-                  {productData.sale > 0
-                    ? formatCurrency(
+              <div className="mt-5">
+                {productData.sale > 0 ? (
+                  <div className="flex items-center space-x-3">
+                    {/* Hiển thị giá gốc (gạch ngang) */}
+                    <span className="text-lg line-through">
+                      {formatCurrency(selectedInstant.price)}
+                    </span>
+                    {/* Hiển thị giá giảm */}
+                    <span className="text-3xl font-medium text-red-600">
+                      {formatCurrency(
                         selectedInstant.price * (1 - productData.sale)
-                      )
-                    : formatCurrency(selectedInstant.price)}
-                </span>
-              </>
+                      )}
+                    </span>
+                    {/* Hiển thị phần trăm giảm giá */}
+                    <span className="text-sm text-white bg-red-500 px-2 py-1 rounded">
+                      -{Math.round(productData.sale * 100)}%
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-3xl font-medium ">
+                    {formatCurrency(selectedInstant.price)}
+                  </span>
+                )}
+              </div>
             )}
           </p>
 
@@ -344,9 +386,9 @@ const Product = () => {
           </button>
           <hr className="mt-8 sm:w-4/5" />
           <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
-            <p>100% Original product.</p>
-            <p>Cash on delivery is available on this product.</p>
-            <p>Easy return and exchange policy within 7 days</p>
+            <p>100% đảm bảo chất lượng sản phẩm.</p>
+            <p>Hỗ trợ thanh đa phương thức đối với sản phẩm này</p>
+            <p>Chính sách đổi trả miễn phí trong vòng 7 ngày</p>
           </div>
         </div>
       </div>
@@ -401,11 +443,12 @@ const Product = () => {
                   <span className="text-yellow-500 inline-flex items-center gap-1">
                     {[...Array(5)].map((_, index) => (
                       <span key={index}>
-                        {index + 1 <= Math.floor(reviewItem.rating)
-                          ? "★" // Sao đầy
-                          : index < reviewItem.rating
-                          ? "⭑" // Sao nửa
-                          : "☆" // Sao trống
+                        {
+                          index + 1 <= Math.floor(reviewItem.rating)
+                            ? "★" // Sao đầy
+                            : index < reviewItem.rating
+                            ? "⭑" // Sao nửa
+                            : "☆" // Sao trống
                         }
                       </span>
                     ))}

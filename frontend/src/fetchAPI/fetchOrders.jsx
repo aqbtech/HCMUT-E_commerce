@@ -1,31 +1,9 @@
-import { axiosClient2, axiosClient } from '../fetchAPI/axios';
+import { axiosClient2 } from '../fetchAPI/axios';
 
 
-
-
-
-export const getAllOrders = async (page) => {
-  const response = await axiosClient.get(`/resultOrder`)
-  console.log("lay don hang thanh cong", response);
-  return response.data;
-}
-
-export const updateOrder = async (orderId) => {
-  const response = await axiosClient.get(`/allOrders/${orderId}`)
-}
- 
-
-export const getReviewableProdcuts = async () => {
-  const response = await axiosClient.get(`/orderReview`)
-  console.log("Lấy các sản phẩm cần đánh giá thành công:", response);
-  return response.data;
-}
-
-
-//----
   export const createOrder = async (body) => {
-    const response = await axiosClient2.post(`/buyer/order`,body)
-
+    const  response = await axiosClient2.post(`/buyer/order`,body)
+    return response.data;
   };
     
   export const getListOrders = async (username, page, limmit) => {

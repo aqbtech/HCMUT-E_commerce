@@ -7,11 +7,14 @@ import com.se.backend.dto.response.*;
 import com.se.backend.entity.*;
 import com.se.backend.exception.ErrorCode;
 import com.se.backend.exception.WebServerException;
-import com.se.backend.mapper.*;
+import com.se.backend.mapper.AttributeMapper;
+import com.se.backend.mapper.DeliveryInforInOrderMapper;
+import com.se.backend.mapper.OrderMapper;
+import com.se.backend.mapper.ProductInOrderMapper;
 import com.se.backend.repository.*;
 import com.se.backend.service.CartService;
-import com.se.backend.service.storage.FileService;
 import com.se.backend.service.payment.PaymentService;
+import com.se.backend.service.storage.FileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,6 +75,12 @@ public class OrderService  {
 	@Autowired
 	private PaymentService paymentService;
 
+    public void handleRemoveProductFromCart(String username, List<Product_of_OrderRequest> ListProduct) {
+        //Handle remove in cart
+        for(Product_of_OrderRequest product : ListProduct){
+            cartService.removeProductInsFromCart(username, product.getInstantId());
+        }
+    }
     @Transactional
     public CreateOrderResponse create(CreateOrderRequest createOrderRequest){
         long addressId;
@@ -97,16 +107,19 @@ public class OrderService  {
         PaymentOrder paymentOrder = new PaymentOrder();
 
         if(!deliveryInfor.getBuyer().equals(buyer)){
-            CreateOrderResponse response = CreateOrderResponse.builder().msg("address of buyer does not exist").build();
-            return response;
+            return CreateOrderResponse.builder()
+                    .msg("address of buyer does not exist").build();
         }
 
         paymentOrder.setDeliveryInfor(deliveryInfor);
         paymentOrder.setOrder(new ArrayList<>());
         paymentOrder.setReview(new ArrayList<>());
-        boolean isCod = createOrderRequest.getMethod().equals("COD");
+        boolean isCod = createOrderRequest.getMethod().equals("cod");
+        LocalDate createDate = LocalDate.now();
         long totalPay = 0;
         paymentOrder.setPayment_method(createOrderRequest.getMethod());
+        paymentOrder.setIsCOD(isCod);
+        paymentOrder.setCreateDate(createDate);
         paymentOrderRepository.save(paymentOrder);
         //----------------------
 
@@ -123,8 +136,8 @@ public class OrderService  {
 
             // Kiểm tra số lượng trong kho
             if (productInstance.getQuantityInStock() < quantity) {
-                CreateOrderResponse response = CreateOrderResponse.builder().msg("Some products are out of quantity in stock").build();
-                return response;
+                return CreateOrderResponse.builder()
+                        .msg("out of quantity in stock").build();
 //                throw new WebServerException(ErrorCode.INSUFFICIENT_STOCK);
             }
 
@@ -173,10 +186,6 @@ public class OrderService  {
                 Product product = productInstance.getBuildProduct().get(0).getProduct();
                 orderProducts.add(orderProductInstance);
 
-                //Handle remove in cart
-                if(createOrderRequest.getIsCart()) {
-                    cartService.removeProductInsFromCart(username, productInstance.getId());
-                }
                 // Handle Sale here
                 List<ShopPolicy> shopPolicy = shopPolicyRepository.findBySellerId(product.getSeller().getUsername());
                 shopPolicy.sort(Comparator.comparing(ShopPolicy::getSale).reversed());
@@ -191,7 +200,7 @@ public class OrderService  {
                         try {
                             shopPolicyRepository.save(shop);
                         } catch (WebServerException e){
-                            throw e;
+                            throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
                         }
                         break;
                     }
@@ -203,7 +212,7 @@ public class OrderService  {
                         try {
                             categoryPolicyRepository.save(cate);
                         } catch (WebServerException e){
-                            throw e;
+                            throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
                         }
                         break;
                     }
@@ -225,10 +234,8 @@ public class OrderService  {
             order.setDeliveryJoinDate(deliveryResponse.getDeliveryJoinDate());
             order.setExpectedDeliveryDate(deliveryResponse.getExpectedDeliveryDate());
             order.setDeliveryStatus(deliveryResponse.getDeliveryStatus());
-            Double shipping_fee = (double) deliveryResponse.getFee();
             order.setTotalPrice(totalPrice);
             order.setDelieryFee((double) createOrderRequest.getFakeShippingFee());
-//            order.setDelivery(deliveryInfor);
             try {
                 orderRepository.save(order);
                 for(Order_ProductInstance e: orderProducts){
@@ -242,7 +249,10 @@ public class OrderService  {
                 throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
             }
             paymentOrder.getOrder().add(order);
-
+            // add price of order to total pay for create payment if it not cod payment
+            if(!isCod) {
+                totalPay += (order.getTotalPrice().longValue() +  order.getDelieryFee().longValue());
+            }
         }
         long paymentOrderCode = paymentOrderRepository.save(paymentOrder).getPaymentOrderCode();
         if (!isCod) {
@@ -339,6 +349,8 @@ public class OrderService  {
         DeliveryInfor deliveryInfor = order.getPaymentOrder().getDeliveryInfor();
         result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
         String method = order.getPaymentOrder().getPayment_method();
+        Boolean isCOD = order.getPaymentOrder().getIsCOD();
+        LocalDate placeOrderDate = order.getPaymentOrder().getCreateDate();
         List<Product_of_GetOrderResponse> product_of_getOrderResponseList = new ArrayList<>();
 
         List<Long> quantityOfProduct = new ArrayList<>();
@@ -426,6 +438,8 @@ public class OrderService  {
         result.setDeliveryDate(order.getDeliveryDate());
         result.setExpectedDeliveryDate(order.getExpectedDeliveryDate());
         result.setMethod(method);
+        result.setIsCOD(isCOD);
+        result.setPlaceOrderDate(placeOrderDate);
         return result;
     }
     public Page<GetOrderResponse> getOrderForBuyer(String username, Pageable pageable){

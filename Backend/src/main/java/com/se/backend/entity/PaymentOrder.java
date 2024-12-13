@@ -3,6 +3,7 @@ package com.se.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -18,6 +19,8 @@ public class PaymentOrder {
 	@Column(name = "payment_order_id")
 	private Long paymentOrderCode;
 	private String payment_method;
+	private Boolean isCOD;
+	private LocalDate createDate;
 	// -- Relationships -- //
 	// mapping delivery info
 	@ManyToOne(optional = false)

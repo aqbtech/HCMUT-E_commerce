@@ -22,31 +22,32 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * FileDAO is a database access object responsible for managing file operations
+ * within Firebase Storage. This includes uploading files, generating public URLs
+ * for downloads, managing files in folders, and removing files from storage.
+ */
 @Slf4j
 @Repository
 public class FileDAO {
 
+	/**
+	 * Upload file lên Firebase Storage.
+	 */
 	public void uploadFile(MultipartFile file, FileInfo fileInfo) {
 		try {
-			// Construct the file path
 			String fileName = constructFilePath(fileInfo);
-
-			// Generate a token for public access
 			String token = UUID.randomUUID().toString();
 
-			// Access the bucket
 			Bucket bucket = StorageClient.getInstance().bucket();
 
-			// Create metadata with the token
 			BlobInfo blobInfo = BlobInfo.newBuilder(bucket.getName(), fileName)
-					.setContentType(file.getContentType()) // Set MIME type
-					.setMetadata(ImmutableMap.of("firebaseStorageDownloadTokens", token)) // Add the token
+					.setContentType(file.getContentType())
+					.setMetadata(ImmutableMap.of("firebaseStorageDownloadTokens", token))
 					.build();
 
-			// Upload the file using WriteChannel
 			try (WriteChannel writer = bucket.getStorage().writer(blobInfo);
 				 InputStream inputStream = file.getInputStream()) {
 				byte[] buffer = new byte[1024];
@@ -55,88 +56,100 @@ public class FileDAO {
 					writer.write(ByteBuffer.wrap(buffer, 0, limit));
 				}
 			}
-
 		} catch (IOException e) {
+			log.error("Error uploading file: {}", fileInfo.getFileName(), e);
 			throw new WebServerException(ErrorCode.FILE_SERVICE_ERROR);
 		}
 	}
 
-
-
+	/**
+	 * Download một file - Lấy URL công khai từ Firebase Storage.
+	 */
 	public ResponseEntity<String> downloadFile(FileInfo fileInfo) {
 		try {
-			// Lấy Blob từ Google Cloud Storage
 			Blob blob = getFileFromBucket(fileInfo);
-			if (!blob.exists()) {
+			if (blob == null || !blob.exists()) {
 				throw new RuntimeException("File not found: " + fileInfo.getFileName());
 			}
 
-			String firebaseFilePath = constructFilePath(fileInfo);
-
-			// Lấy token từ metadata
-			String token = Objects.requireNonNull(blob.getMetadata()).get("firebaseStorageDownloadTokens");
-			if (token == null) {
-				throw new RuntimeException("Token not generated for file: " + fileInfo.getFileName());
-			}
-
-			// Tạo URL công khai với token
-			String publicUrl = String.format("https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media&token=%s",
-					blob.getBucket(),
-					URLEncoder.encode(firebaseFilePath, StandardCharsets.UTF_8),
-					token);
-
-			// Trả về URL công khai
+			String publicUrl = generatePublicUrl(blob);
 			return ResponseEntity.ok(publicUrl);
-		} catch (NullPointerException e) {
-			log.error("File not found: {}", fileInfo.getFileName());
-			throw new IllegalArgumentException("File not found: " + fileInfo.getFileName());
 		} catch (Exception e) {
+			log.error("Error downloading file: {}", fileInfo.getFileName(), e);
 			throw new RuntimeException("Error downloading and generating URL for file", e);
 		}
 	}
+
+	/**
+	 * Download tất cả các file trong một folder.
+	 */
 	public List<String> downloadFiles(String folder) {
 		Bucket bucket = StorageClient.getInstance().bucket();
 		Iterable<Blob> blobs = bucket.list(Storage.BlobListOption.prefix(folder)).iterateAll();
+
 		List<String> fileLinks = new ArrayList<>();
-
 		for (Blob blob : blobs) {
-			// Generate public URL for each file
-			String token = Objects.requireNonNull(blob.getMetadata()).get("firebaseStorageDownloadTokens");
-			String fileUrl = String.format(
-					"https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media&token=%s",
-					bucket.getName(),
-					blob.getName().replace("/", "%2F"), // Encode the file path for URL
-					token
-			);
-			fileLinks.add(fileUrl);
+			// Chỉ xử lý các blob hợp lệ (có kích thước > 0 và metadata với token)
+			if (blob.getSize() > 0 && blob.getMetadata() != null && blob.getMetadata().containsKey("firebaseStorageDownloadTokens")) {
+				String fileUrl = generatePublicUrl(blob);
+				fileLinks.add(fileUrl);
+			} else {
+				log.warn("Ignoring invalid blob: {}", blob.getName());
+			}
 		}
-
 		return fileLinks;
 	}
+
+	/**
+	 * Xóa file khỏi Firebase Storage.
+	 */
 	public void deleteFile(FileInfo fileInfo) {
-		Blob blob = getFileFromBucket(fileInfo);
 		try {
-			blob.delete();
-		} catch (NullPointerException e) {
-			throw new IllegalArgumentException("File not found: " + fileInfo.getFileName());
+			Blob blob = getFileFromBucket(fileInfo);
+			if (blob != null && blob.exists()) {
+				blob.delete();
+				log.info("File deleted successfully: {}", fileInfo.getFileName());
+			} else {
+				log.warn("File not found: {}", fileInfo.getFileName());
+			}
+		} catch (Exception e) {
+			log.error("Error deleting file: {}", fileInfo.getFileName(), e);
+			throw new RuntimeException("Error deleting file", e);
 		}
 	}
 
-	// Helper to construct file path
+	/**
+	 * Tạo đường dẫn đầy đủ đường dẫn file trong Firebase Storage.
+	 */
 	private String constructFilePath(FileInfo fileInfo) {
 		return (fileInfo.getFolder() == null || fileInfo.getFolder().isEmpty())
 				? fileInfo.getFileName()
 				: fileInfo.getFolder() + "/" + fileInfo.getFileName();
 	}
 
-	// Helper to retrieve Blob object from the bucket
+	/**
+	 * Lấy Blob từ bucket dựa trên thông tin FileInfo.
+	 */
 	private Blob getFileFromBucket(FileInfo fileInfo) {
 		String fullPath = constructFilePath(fileInfo);
 		Bucket bucket = StorageClient.getInstance().bucket();
-		Blob blob = bucket.get(fullPath);
-		if (blob == null) {
-			throw new RuntimeException("File not found in bucket: " + fullPath);
+		return bucket.get(fullPath);
+	}
+
+	/**
+	 * Sinh URL công khai từ Blob.
+	 */
+	private String generatePublicUrl(Blob blob) {
+		String token = blob.getMetadata() != null ? blob.getMetadata().get("firebaseStorageDownloadTokens") : null;
+		if (token == null) {
+			throw new RuntimeException("Token not generated for file: " + blob.getName());
 		}
-		return blob;
+
+		return String.format(
+				"https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media&token=%s",
+				blob.getBucket(),
+				URLEncoder.encode(blob.getName(), StandardCharsets.UTF_8),
+				token
+		);
 	}
 }

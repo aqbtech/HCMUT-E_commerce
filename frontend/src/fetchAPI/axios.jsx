@@ -1,14 +1,6 @@
 import axios from "axios";
 import Cookies from 'js-cookie'
 import { toast } from "react-toastify";
-   
-export const axiosClient = axios.create({
-    baseURL: `http://localhost:3000`,
-    timeout: 10000,
-    headers : {
-        'Content-Type' : 'application/json'
-    }
-});
 
 export const axiosClient2 = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,

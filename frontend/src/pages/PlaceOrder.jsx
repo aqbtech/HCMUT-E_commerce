@@ -9,7 +9,7 @@ import AddressModal from "../components/profilePage/AddressModal";
 import { createAddress } from "../fetchAPI/fetchAddress";
 import Cookies from "js-cookie";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import {getMininalProfile} from "../fetchAPI/fetchAccount.jsx";
+import { getMininalProfile } from "../fetchAPI/fetchAccount.jsx";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState("cod");
@@ -18,7 +18,10 @@ const PlaceOrder = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listProductToPlace, setListProductToPlace] = useState([]);
-  const { navigate, formatCurrency, setTotalQuantityInCart } = useContext(ShopContext);
+  const { navigate, formatCurrency, setTotalQuantityInCart } =
+    useContext(ShopContext);
+  const [fakeShippingFee, setFakeShippingFee] = useState(0);
+  
   // Lấy danh sách địa chỉ từ API
   useEffect(() => {
     const loadAddresses = async () => {
@@ -36,7 +39,9 @@ const PlaceOrder = () => {
   useEffect(() => {
     const savedListProductToPlace = localStorage.getItem("ListProductToPlace");
     if (savedListProductToPlace) {
-      setListProductToPlace(JSON.parse(savedListProductToPlace));
+      const parsedList = JSON.parse(savedListProductToPlace); 
+      setListProductToPlace(parsedList);
+      setFakeShippingFee(parsedList[0]?.fakeShippingFee * 100 || 0); 
     }
   }, []);
 
@@ -44,7 +49,7 @@ const PlaceOrder = () => {
   const handleSaveAddress = async (newAddress) => {
     try {
       const savedAddress = await createAddress(newAddress);
-      const addressData = await getAddress()
+      const addressData = await getAddress();
       setAddresses(addressData);
       setSelectedAddressId(savedAddress.id); // Chọn địa chỉ mới làm mặc định
       setIsModalOpen(false); // Đóng modal
@@ -72,14 +77,12 @@ const PlaceOrder = () => {
     }, 0);
   };
 
-  const getRandomShippingFee = () => {
-    const min = 100; // phí ship tối thiểu
-    const max = 500; // phí ship tối đa
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-  let fakeShippingFee = getRandomShippingFee() * 100;
   // Xử lý đặt hàng
-  const handlePlaceOrder = async (selectedAddressId, listProductToPlace, method) => {
+  const handlePlaceOrder = async (
+    selectedAddressId,
+    listProductToPlace,
+    method
+  ) => {
     if (loading) return;
 
     if (!selectedAddressId) {
@@ -88,7 +91,7 @@ const PlaceOrder = () => {
     }
 
     const deliveryAddress = addresses.find(
-        (address) => address.id === selectedAddressId
+      (address) => address.id === selectedAddressId
     );
 
     if (!deliveryAddress) {
@@ -101,7 +104,7 @@ const PlaceOrder = () => {
       instantId: product.instantId,
       quantity: product.quantity,
     }));
-    let isCart = false
+    let isCart = false;
     if (listProductToPlace[0].isCart) isCart = true;
     const bodyRequest = {
       username: Cookies.get("username"),
@@ -110,23 +113,29 @@ const PlaceOrder = () => {
       method: method,
       total: calculateTotal(),
       isCart: isCart,
-      fakeShippingFee: fakeShippingFee
+      fakeShippingFee: fakeShippingFee,
     };
-
     try {
-      const res = await createOrder(bodyRequest);
-      setListProductToPlace([]); // Đặt lại listProductToPlace thành array rỗng
-      const response = await getMininalProfile();
-      setTotalQuantityInCart(response.totalQuantityInCart);
-      if(method === "zalo") {
-          navigate("/payment");
-      }else{
-        toast.success("Đặt hàng thành công!");
-        navigate("/orders");
-      }
+        const res = await createOrder(bodyRequest);
+
+        const response = await getMininalProfile();
+        setTotalQuantityInCart(response.totalQuantityInCart);
+        if(method !== 'cod') {
+          if (res?.result?.url) {
+            window.location.href = res.result.url;
+          } else {
+            console.error("URL không hợp lệ.", res);
+            toast.error("Đã xảy ra lỗi khi thanh toán!")
+            navigate("/orders")
+          }
+        } else {
+          toast.success("Đặt hàng thành công!");
+          navigate("/orders");
+        }
+      setListProductToPlace([]);
       setLoading(false);
     } catch (err) {
-      toast.error("Quá trình đặt hàng bị lỗi, vui lòng thử lại");
+      toast.error(err.response.data.message);
       setLoading(false);
       console.log("lỗi khi đặt đơn hàng:", err);
     }
@@ -165,166 +174,149 @@ const PlaceOrder = () => {
         </select>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col lg:flex-row gap-8">
         {/* Bên trái: Hiển thị sản phẩm trong listProductToPlace */}
         <div className="flex-1">
-          <Title text1="SẢN PHẨM" text2="ĐẶT HÀNG" />
+          <Title text1="SẢN PHẨM" text2="ĐẶT HÀNG"/>
           <div className="border rounded-lg p-6 mt-4 bg-white shadow-lg">
             {listProductToPlace.length > 0 ? (
-              listProductToPlace.map((product, index) => (
-                <div
-                  key={index}
-                  className="mb-6 px-3 border-b last:border-none"
-                >
-                  {/* Hình ảnh và thông tin sản phẩm */}
-                  <div className="flex items-start gap-6 text-sm mb-3">
-                    <img
-                      className="w-16 sm:w-20 object-cover rounded-lg border"
-                      src={product.IMG}
-                      alt={product.productName}
-                    />
-                    <div>
-                      <h2 className="text-lg font-semibold text-gray-900">
-                        {product.productName || "Sản phẩm không xác định"}
-                      </h2>
-
-                      {/* Giá và Số lượng */}
-                      <div className="flex items-center justify-between mt-2">
-                        <p className="text-gray-600">
-                          <span className="font-medium">Giá:</span>{" "}
-                          {product.sale > 0 ? (
-                              <>
-                                <span className="line-through text-red-500 mr-2">
-                                  {formatCurrency(product.price)}
-                                </span>
-                                <span className="font-bold text-green-600">
-                                {formatCurrency(product.price * (1 - product.sale))}
-                                </span>
-                                <span className="ml-2 text-sm text-gray-500">(-{product.sale * 100}%)</span>
-                              </>
-                            ) : (
-                            <span>{formatCurrency(product.price)}</span>
-                            )
-                          }
-                        </p>
-                        <p className="text-gray-600">
-                          <span className="font-medium">Số lượng:</span>{" "}
-                          {product.quantity}
-                        </p>
-                      </div>
-                      {/* Thuộc tính dưới dạng ô nhỏ */}
-                      {product.listAtt.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-3">
-                          {product.listAtt.map((att, idx) => (
-                            (att &&
-                            <div
-                              key={idx}
-                              className="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-lg border"
-                            >
-                              <span className="mr-1">{att.value || att}</span>
-                            </div>
-                            )
-                          ))}
+                <div className="space-y-4">
+                  {listProductToPlace.map((product, index) => (
+                      <div
+                          key={index}
+                          className="px-4 py-4 border-b last:border-none flex flex-wrap gap-4 items-start"
+                      >
+                        {/* Hình ảnh sản phẩm */}
+                        <img
+                            className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-lg border shadow-md"
+                            src={product.IMG}
+                            alt={product.productName}
+                        />
+                        {/* Thông tin sản phẩm */}
+                        <div className="flex-1">
+                          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                            {product.productName || "Sản phẩm không xác định"}
+                          </h2>
+                          {/* Giá và Số lượng */}
+                          <div className="text-sm text-gray-600">
+                            <p className="mb-1">
+                              <span className="font-medium text-base">Giá:</span>{" "}
+                              {product.sale > 0 ? (
+                                  <>
+                        <span className="line-through mr-2 text-gray-500">
+                          {formatCurrency(product.price)}
+                        </span>
+                                    <span className="font-bold text-red-600 text-xl">
+                          {formatCurrency(product.price * (1 - product.sale))}
+                        </span>
+                                    <span className="ml-2 text-sm text-red-500">
+                          (-{product.sale * 100}%)
+                        </span>
+                                  </>
+                              ) : (
+                                  <span className="text-xl">
+                        {formatCurrency(product.price)}
+                      </span>
+                              )}
+                            </p>
+                            <p className="mt-1">
+                              <span className="font-medium">Số lượng:</span>{" "}
+                              {product.quantity}
+                            </p>
+                          </div>
+                          {/* Thuộc tính dưới dạng ô nhỏ */}
+                          {product.listAtt.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mt-3">
+                                {product.listAtt.map((att, idx) => (
+                                    att && (
+                                        <div
+                                            key={idx}
+                                            className="inline-flex items-center px-3 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-lg border"
+                                        >
+                                          {att.value || att}
+                                        </div>
+                                    )
+                                ))}
+                              </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Hiển thị khi không có thuộc tính */}
-                  {product.listAtt.length === 0 && (
-                    <p className="text-gray-500 text-sm mt-2">
-                      
-                    </p>
-                  )}
+                      </div>
+                  ))}
                 </div>
-              ))
             ) : (
-              <p className="text-gray-500 text-center">
-                Không có sản phẩm để đặt hàng
-              </p>
+                <p className="text-gray-500 text-center">Không có sản phẩm để đặt hàng</p>
             )}
           </div>
         </div>
 
         {/* Bên phải: Hiển thị tổng cộng, phương thức thanh toán */}
-        <div className="w-full max-w-[400px]">
-          <Title text1="THÔNG TIN" text2="THANH TOÁN" />
-          <div className="border rounded p-4 mt-4">
-            <div className="w-full">
-              <div className="text-2xl">
-                <Title text1={"CART"} text2={"TOTAL"}/>
-              </div>
-
-              <div className="flex flex-col gap-2 mt-2 text-sm">
-                <div className="flex justify-between">
+        <div className="w-full lg:w-[400px]">
+          <Title text1="THÔNG TIN" text2="THANH TOÁN"/>
+          <div className="border rounded-lg p-6 mt-4 bg-white shadow-lg">
+            <div className="space-y-4">
+              {/* Tổng đơn hàng */}
+              <div>
+                <Title text1="TỔNG" text2="ĐƠN"/>
+                <div className="flex justify-between mt-2 text-sm">
                   <p>Tổng hàng</p>
                   <p>{formatCurrency(calculateTotal())}</p>
                 </div>
-              </div>
-              <hr/>
-              <div className="flex justify-between">
-                <p>Phí ship</p>
-                <p>{formatCurrency(fakeShippingFee)}</p>
-              </div>
-              <hr/>
-              <div className="flex justify-between">
-                <b>Tổng cộng</b>
-                {/* <b>{currency} {getCartAmount() === 0 ? 0 : String(getCartAmount() + delivery_fee) + '.00'}</b> */}
-                <b>{formatCurrency(calculateTotal() + fakeShippingFee)}  </b>
-              </div>
-            </div>
-            <div className="mt-8">
-              <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN"/>
-              <div className="flex gap-3 flex-col mt-4">
-                <div
-                  onClick={() => setMethod("zalo")}
-                  className="flex items-center gap-3 border p-2 cursor-pointer"
-                >
-                  <p
-                    className={`w-4 h-4 border rounded-full ${
-                      method === "zalo" ? "bg-green-400" : ""
-                    }`}
-                  ></p>
-                  <img className="h-5 mx-4" src={assets.zalo} alt="" /> zalo
+                <hr className="my-2"/>
+                <div className="flex justify-between text-sm">
+                  <p>Phí ship</p>
+                  <p>{formatCurrency(fakeShippingFee)}</p>
                 </div>
-                <div
-                  onClick={() => setMethod("cod")}
-                  className="flex items-center gap-3 border p-2 cursor-pointer"
-                >
-                  <p
-                    className={`w-4 h-4 border rounded-full ${
-                      method === "cod" ? "bg-green-400" : ""
-                    }`}
-                  ></p>
-                  <p className="text-gray-500 text-sm font-medium mx-4">
-                    Thanh toán khi nhận hàng
-                  </p>
+                <hr className="my-2"/>
+                <div className="flex justify-between font-bold text-base">
+                  <p>Tổng cộng</p>
+                  <p>{formatCurrency(calculateTotal() + fakeShippingFee)}</p>
                 </div>
               </div>
-              {loading ? (
-                <AiOutlineLoading3Quarters />
-              ) : (
-                <button
-                  onClick={() =>
-                    handlePlaceOrder(
-                      selectedAddressId,
-                      listProductToPlace,
-                      method
-                    )
-                  }
-                  className="bg-black text-white px-8 py-3 text-sm mt-6 w-full"
-                >
-                  {loading ? (
-                    <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />
-                  ) : (
+
+              {/* Phương thức thanh toán */}
+              <div>
+                <Title text1="PHƯƠNG THỨC" text2="THANH TOÁN"/>
+                <div className="flex flex-col gap-4 mt-4">
+                  {[
+                    {id: "zalo_wallet", label: "Ví ZaloPay", icon: assets.zalo},
+                    {id: "visa", label: "Visa, Mastercard, JCB (qua cổng ZaloPay)"},
+                    {id: "atm", label: "Thẻ ATM (qua cổng ZaloPay)"},
+                    {id: "cod", label: "Thanh toán khi nhận hàng"},
+                  ].map(({id, label, icon}) => (
+                      <div
+                          key={id}
+                          onClick={() => setMethod(id)}
+                          className="flex items-center gap-4 border p-3 cursor-pointer rounded-lg hover:shadow-md"
+                      >
+                        <div
+                            className={`w-5 h-5 border rounded-full flex items-center justify-center ${
+                                method === id ? "bg-green-500" : ""
+                            }`}
+                        ></div>
+                        {icon && <img className="h-6" src={icon} alt=""/>}
+                        <p className="text-sm text-gray-700 font-medium">{label}</p>
+                      </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Nút đặt hàng */}
+              <button
+                  onClick={() => handlePlaceOrder(selectedAddressId, listProductToPlace, method)}
+                  className="bg-black text-white px-8 py-3 mt-6 text-sm rounded-lg hover:bg-gray-700 w-full flex items-center justify-center disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  disabled={loading}
+              >
+                {loading ? (
+                    <AiOutlineLoading3Quarters className="animate-spin text-white text-lg"/>
+                ) : (
                     "Đặt Hàng"
-                  )}
-                </button>
-              )}
+                )}
+              </button>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   );
 };

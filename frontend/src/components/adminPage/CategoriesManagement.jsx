@@ -6,7 +6,7 @@ import Title from "../Title";
 const CategoriesManagement = () => {
     const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0); 
+    const [totalPages, setTotalPages] = useState(1);
     const [modalMode, setModalMode] = useState(""); 
     const [modalCategory, setModalCategory] = useState(null);
     const [categoryName, setCategoryName] = useState("");
@@ -93,7 +93,7 @@ const CategoriesManagement = () => {
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">
-                <Title text1="Quản Lý" text2="Người Bán" />
+                <Title text1="Quản Lý" text2="Danh Mục" />
             </h2>
 
             <div className="mb-4 flex justify-end">
@@ -109,8 +109,8 @@ const CategoriesManagement = () => {
                 <thead>
                     <tr className="bg-gray-100">
                         <th className="border border-gray-200 p-3 text-left">ID</th>
-                        <th className="border border-gray-200 p-3 text-left">Category Name</th>
-                        <th className="border border-gray-200 p-3 text-left">Actions</th>
+                        <th className="border border-gray-200 p-3 text-left">Danh Mục</th>
+                        <th className="border border-gray-200 p-3 text-left"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -185,7 +185,7 @@ const CategoriesManagement = () => {
                                 }}
                                 className="bg-gray-500 text-white px-3 py-1 rounded mr-2"
                             >
-                                Cancel
+                                Hủy
                             </button>
                             <button
                                 onClick={handleSave}
