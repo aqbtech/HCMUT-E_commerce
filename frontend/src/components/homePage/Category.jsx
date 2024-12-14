@@ -27,7 +27,7 @@ const Category = ({ data, onCategorySelect }) => {
             >
                 {/* Danh mục Tất cả */}
                 <div
-                    className={`flex-none w-32 h-32 ${
+                    className={`flex-none w-24 h-24 ${
                         selectedCategory === '' ? 'bg-blue-700 text-white' : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
                     } rounded-full flex items-center justify-center text-center cursor-pointer hover:scale-105 transform transition duration-300`}
                     onClick={() => handleCategoryClick('')}
@@ -40,7 +40,7 @@ const Category = ({ data, onCategorySelect }) => {
                     <div
                         key={item.name}
                         onClick={() => handleCategoryClick(item.name)}
-                        className={`flex-none w-32 h-32 ${
+                        className={`flex-none w-24 h-24 ${
                             selectedCategory === item.name ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-800'
                         } rounded-full flex items-center justify-center text-center cursor-pointer hover:bg-gray-300 hover:scale-105 transform transition duration-300`}
                     >

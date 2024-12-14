@@ -6,7 +6,7 @@ const LatestProduct = ({data}) => {
 
   return ( 
     <div className='my-10'>
-    <div className="text-left py-8 text-xl">
+    <div className="text-left py-8 text-3xl">
         <Title text1={'SẢN'} text2={'PHẨM'} />
         <p className='text-xs sm:text-sm md:text-base text-gray-600'>
             ATOM là một sự lựa chọn tuyệt vời dành cho bạn
