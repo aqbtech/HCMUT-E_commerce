@@ -15,7 +15,7 @@ We are a group of enthusiastic students from the Computer Science and Engineerin
 |2212825 | Từ Văn Nguyễn Anh Quân | Project manager, Backend Developer
 |2212801 | Nguyễn Minh Quân       | Backend Developer, Frontend Developer
 |2212865 | Đoàn Ngọc Văn Quý      | Backend Developer, Frontend Developer
-|2210387 | Đặng Trần Công Chính   | Business analyst, Quanlity Control
+|2210387 | Đặng Trần Công Chính   | Business analyst, Quality Control
 
 Together, we aim to leverage our diverse skills to create an innovative and user-friendly e-commerce platform.
 
@@ -82,10 +82,19 @@ HCMUT_E-commerce/
       SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
       SPRING_DATASOURCE_USERNAME=your-username
       SPRING_DATASOURCE_PASSWORD=your-password
+      CORS_ALLOWED_ORIGINS=http://localhost:5173
+      JWT_SIGNER_KEY=<a-jwt-key>
+      FIREBASE_CONFIG_PATH=<path-to-your-file-service-firebase>
+      ZALO_APP_ID=<your-app-id>
+      ZALO_SECRET_KEY=<your-secret-key>
+      ZALO_PUBLIC_KEY=<your-public-key>
+      ZALO_ENDPOINT=<endpoint-of-zalo>
+      ZALO_CALLBACK=<your-callback-url>
       ```
 
 3. Build and run the backend:
    ```
+   ./mvn clean package
    ./mvnw spring-boot:run
    ```
 
@@ -103,7 +112,7 @@ HCMUT_E-commerce/
 
 3. Start the React development server:
    ```
-   npm start
+   npm run dev
    ```
 
 
