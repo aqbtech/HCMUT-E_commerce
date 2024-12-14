@@ -1,6 +1,7 @@
 package com.se.backend.exception;
 
 import com.se.backend.dto.response.ResponseAPITemplate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -8,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalHandler {
 	private ResponseEntity<ResponseAPITemplate<String>> handleException(Exception e, HttpStatus status) {
@@ -34,5 +36,9 @@ public class GlobalHandler {
 	public ResponseEntity<ResponseAPITemplate<String>> handleAuthenticationServiceException(AuthenticationServiceException e) {
 		return handleException(e, HttpStatus.UNAUTHORIZED);
 	}
-	// more exception handlers
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ResponseAPITemplate<String>> handleException(Exception e) {
+		log.error("Unexpected exception", e);
+		return handleException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }
