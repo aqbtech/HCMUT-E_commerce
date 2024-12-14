@@ -33,3 +33,9 @@ payment:
         callback-url: ${ZALO_CALLBACK}
         redirect-url: ${ZALO_REDIRECT:"https://hcmut-e-commerce.vercel.app/orders"}
 
+
+security:
+    cors:
+        allowed-origins: ${CORS_ALLOWED_ORIGINS}
+        allowed-methods: ${CORS_ALLOWED_METHODS:*}
+        allowed-headers: ${CORS_ALLOWED_HEADERS:*}

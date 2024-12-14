@@ -1,6 +1,7 @@
 package com.se.backend.config;
 
 import com.se.backend.service.CustomJwtDecoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -34,6 +35,12 @@ public class Security {
 	public Security(CustomJwtDecoder customJwtDecoder) {
 		this.customJwtDecoder = customJwtDecoder;
 	}
+	@Value("${security.cors.allowed-origins}")
+	private String allowedOrigin;
+	@Value("${security.cors.allowed-headers}")
+	private String allowedHeader;
+	@Value("${security.cors.allowed-methods}")
+	private String allowedMethod;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
@@ -52,9 +59,9 @@ public class Security {
 		security.csrf(AbstractHttpConfigurer::disable);
 		security.cors(cors -> cors.configurationSource(request -> {
 			CorsConfiguration corsConfig = new CorsConfiguration();
-			corsConfig.addAllowedOrigin("http://localhost:5173");
-			corsConfig.addAllowedMethod("*");
-			corsConfig.addAllowedHeader("*");
+			corsConfig.addAllowedOrigin(allowedOrigin);
+			corsConfig.addAllowedMethod(allowedMethod);
+			corsConfig.addAllowedHeader(allowedHeader);
 			return corsConfig;
 		}));
 		return security.build();

@@ -6,6 +6,7 @@ import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -15,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FirebaseConfig {
@@ -32,6 +34,7 @@ public class FirebaseConfig {
 
 			FirebaseApp.initializeApp(options);
 		} catch (FileNotFoundException e) {
+			log.error("Firebase config file not found {}", FIREBASE_CONFIG_PATH);
 			throw new FileNotFoundException("File not found");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
