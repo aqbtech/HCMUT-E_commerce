@@ -276,7 +276,7 @@ const SaleOffManagement = () => {
                             <div className="mb-4">
                                 <label className="block text-sm font-medium mb-1">
                                     {activeTab === 'SHOP'
-                                        ? 'Tên Shop (phân cách bằng dấu phẩy)'
+                                        ? 'Tài khoản cửa hàng (phân cách bằng dấu phẩy)'
                                         : 'Chọn Danh Mục'}
                                 </label>
                                 {activeTab === 'SHOP' ? (
@@ -284,7 +284,7 @@ const SaleOffManagement = () => {
                                         name="shop_targets"
                                        defaultValue={Array.isArray(currentPolicy?.target) ? currentPolicy.target.join(', ') : ''}
                                         className="w-full border px-3 py-2 rounded"
-                                        placeholder="Nhập tên các shop, phân cách bằng dấu phẩy"
+                                        placeholder="Nhập tài khoản các shop, phân cách bằng dấu phẩy"
                                         required
                                     />
                                 ) : (

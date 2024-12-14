@@ -103,7 +103,7 @@ const ShopInfo = () => {
     if(!shopName) return toast.error("Vui lòng nhập tên shop!")
     try {
       const updatedInfo = {
-        shopName: shopInfo.shopName,
+        shopName: shopName,
         address: {
           province,
           district,
