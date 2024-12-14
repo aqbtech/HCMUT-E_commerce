@@ -264,6 +264,7 @@ public class OrderService  {
                 log.info("url {}", url);
                 log.info("appTransId {}", appTransId);
                 paymentOrderSaved.setAppTransId(appTransId);
+                paymentOrderSaved.setStatus("3");
                 paymentOrderRepository.save(paymentOrderSaved);
                 CreateOrderResponse response = CreateOrderResponse.builder().msg("successful").url(url).build();
                 return response;
@@ -353,10 +354,12 @@ public class OrderService  {
         GetOrderResponse result = orderMapper.OrderToResponse(order);
         Double totalPrice = order.getTotalPrice();
 
+        var paymentOrder = order.getPaymentOrder();
         DeliveryInfor deliveryInfor = order.getPaymentOrder().getDeliveryInfor();
         result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
         String method = order.getPaymentOrder().getPayment_method();
         String appTransId = order.getPaymentOrder().getAppTransId();
+        String status = order.getPaymentOrder().getStatus();
         Boolean isCOD = order.getPaymentOrder().getIsCOD();
         LocalDate placeOrderDate = order.getPaymentOrder().getCreateDate();
         List<Product_of_GetOrderResponse> product_of_getOrderResponseList = new ArrayList<>();
@@ -447,13 +450,27 @@ public class OrderService  {
         result.setExpectedDeliveryDate(order.getExpectedDeliveryDate());
         result.setMethod(method);
         result.setIsCOD(isCOD);
-        if (!(appTransId == null || appTransId.isEmpty())) {
-            try {
-                String checkoutRes = paymentService.checkoutOrder(appTransId);
-                result.setStatus(checkoutRes);
-            } catch (Exception e) {
-                throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+        if (isCOD) {
+            result.setStatus("2");
+        } else if ("3".equals(status)) {
+            if (!(appTransId == null || appTransId.isEmpty())) {
+                try {
+                    String checkoutRes = paymentService.checkoutOrder(appTransId);
+                    if (!"3".equals(checkoutRes)) {
+                        result.setStatus(checkoutRes);
+                        paymentOrder.setStatus(checkoutRes);
+                        paymentOrderRepository.save(paymentOrder);
+                    } else {
+                        result.setStatus("3");
+                    }
+                } catch (Exception e) {
+                    throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+                }
+            } else {
+                result.setStatus("3");
             }
+        } else {
+            result.setStatus(status);
         }
         result.setPlaceOrderDate(placeOrderDate);
         return result;

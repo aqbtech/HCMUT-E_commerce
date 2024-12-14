@@ -136,21 +136,21 @@ const Orders = () => {
                                         : ""}
                   </span>
                       <span className={`px-3 py-1 rounded-full text-sm font-medium
-                       ${order.isCOD === 1
+                       ${order.status === "2"
                           ?  "bg-red-100 text-red-600"
-                          :  order.isCOD === 0
+                          :  order.status === "1"
                             ? "bg-green-100 text-green-600" 
-                            : order.isCOD === 2
+                            : order.status === "3"
                                 ? "bg-yellow-100 text-yellow-600"
                                 : ""
                       }
                       }`}
                       >
-                        {order.isCOD === 1
+                        {order.status === "2"
                             ? "Chưa thanh toán"
-                            : order.isCOD === 0
+                            : order.status === "1"
                               ? "Đã thanh toán"
-                              : order.isCOD === 2
+                              : order.status === "3"
                                 ?  "Đang xử lý"
                                 : ""
                         }
@@ -160,7 +160,7 @@ const Orders = () => {
                     {/* Nút hủy đơn */}
                     <button
                         onClick={() => handleCancelOrder(order.orderId)}
-                        disabled={order.deliveryState !== "WAITING" || !order.isCOD}
+                        disabled={order.deliveryState !== "WAITING" || order.status === "1"}
                         className="px-4 py-2 rounded-full border text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
                     >
                       Hủy đơn hàng

@@ -22,6 +22,7 @@ public class PaymentOrder {
 	private Boolean isCOD; // 0 da thanh toan, 1 chua thanh toan, 2 dang xu ly
 	private LocalDate createDate;
 	private String appTransId;
+	private String status;
 	// -- Relationships -- //
 	// mapping delivery info
 	@ManyToOne(optional = false)
