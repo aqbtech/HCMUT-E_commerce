@@ -114,7 +114,16 @@ HCMUT_E-commerce/
    ```
    npm run dev
    ```
-
+### Some account for test on deployment
+1. Buyer
+- username: buyer1
+- password: buyer
+2. Seller
+- username: seller1
+- password: seller
+3. Admin
+- username: admin
+- password: admin
 
 
 ## Contact
