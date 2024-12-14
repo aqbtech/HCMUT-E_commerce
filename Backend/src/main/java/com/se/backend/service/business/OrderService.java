@@ -235,7 +235,7 @@ public class OrderService  {
             order.setExpectedDeliveryDate(deliveryResponse.getExpectedDeliveryDate());
             order.setDeliveryStatus(deliveryResponse.getDeliveryStatus());
             order.setTotalPrice(totalPrice);
-            order.setDelieryFee((double) createOrderRequest.getFakeShippingFee());
+            order.setDeliveryFee((double) createOrderRequest.getFakeShippingFee());
             try {
                 orderRepository.save(order);
                 for(Order_ProductInstance e: orderProducts){
@@ -251,7 +251,7 @@ public class OrderService  {
             paymentOrder.getOrder().add(order);
             // add price of order to total pay for create payment if it not cod payment
             if(!isCod) {
-                totalPay += (order.getTotalPrice().longValue() +  order.getDelieryFee().longValue());
+                totalPay += (order.getTotalPrice().longValue() +  order.getDeliveryFee().longValue());
             }
         }
         long paymentOrderCode = paymentOrderRepository.save(paymentOrder).getPaymentOrderCode();
@@ -431,7 +431,7 @@ public class OrderService  {
         for(int i = 0; i < quantityOfProduct.size(); i++){
             product_of_getOrderResponseList.get(i).setQuantity(quantityOfProduct.get(i));
         }
-        Double shipping_fee = order.getDelieryFee();
+        Double shipping_fee = order.getDeliveryFee();
         result.setPrice(String.valueOf(totalPrice+ shipping_fee));
         result.setShipping_fee(shipping_fee);
         result.setListProduct(product_of_getOrderResponseList);
