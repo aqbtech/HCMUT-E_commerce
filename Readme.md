@@ -12,10 +12,10 @@ Welcome to our E-commerce website project! This project is part of the "Programm
 We are a group of enthusiastic students from the Computer Science and Engineering department at HCMUT. Our team members include:
 |MSSV    | FullName               | Role |
 |--------|------------------------|------|
-|2212825 | Từ Văn Nguyễn Anh Quân | Project manager, Backend Developer
+|2212825 | Từ Văn Nguyễn Anh Quân | Project manager, Backend Developer, Software Architect
 |2212801 | Nguyễn Minh Quân       | Backend Developer, Frontend Developer
 |2212865 | Đoàn Ngọc Văn Quý      | Backend Developer, Frontend Developer
-|2210387 | Đặng Trần Công Chính   | Business analyst, Quality Control
+|2210387 | Đặng Trần Công Chính   | Business analyst, Quality Control, Frontend Developer
 
 Together, we aim to leverage our diverse skills to create an innovative and user-friendly e-commerce platform.
 
@@ -74,9 +74,9 @@ HCMUT_E-commerce/
    cd HCMUT_E-commerce/Backend
    ```
 
-2. Configure the database:
+2. Configure the database and environment variable:
     - Create `.env` in `src/main/`.
-    - Update the MySQL connection details:
+    - Update the MySQL connection details, payment integration infomation, firebase service key and jwt signer key:
       ```
       SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3309/e-commerce
       SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
