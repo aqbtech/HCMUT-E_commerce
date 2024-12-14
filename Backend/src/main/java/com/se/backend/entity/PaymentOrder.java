@@ -19,8 +19,9 @@ public class PaymentOrder {
 	@Column(name = "payment_order_id")
 	private Long paymentOrderCode;
 	private String payment_method;
-	private Boolean isCOD;
+	private Boolean isCOD; // 0 da thanh toan, 1 chua thanh toan, 2 dang xu ly
 	private LocalDate createDate;
+	private String appTransId;
 	// -- Relationships -- //
 	// mapping delivery info
 	@ManyToOne(optional = false)

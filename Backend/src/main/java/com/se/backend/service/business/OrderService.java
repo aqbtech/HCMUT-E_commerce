@@ -254,11 +254,17 @@ public class OrderService  {
                 totalPay += (order.getTotalPrice().longValue() +  order.getDeliveryFee().longValue());
             }
         }
-        long paymentOrderCode = paymentOrderRepository.save(paymentOrder).getPaymentOrderCode();
+        var paymentOrderSaved = paymentOrderRepository.save(paymentOrder);
+        long paymentOrderCode = paymentOrderSaved.getPaymentOrderCode();
         if (!isCod) {
             try {
-                String url = paymentService.createPaymentOrder((int) paymentOrderCode, (int) totalPay, "Payment for order", createItem(orderProducts), username);
+                Map<String, String> res = paymentService.createPaymentOrder((int) paymentOrderCode, (int) totalPay, "Payment for order", createItem(orderProducts), username);
+                String url = res.get("order_url");
+                String appTransId = res.get("app_trans_id");
                 log.info("url {}", url);
+                log.info("appTransId {}", appTransId);
+                paymentOrderSaved.setAppTransId(appTransId);
+                paymentOrderRepository.save(paymentOrderSaved);
                 CreateOrderResponse response = CreateOrderResponse.builder().msg("successful").url(url).build();
                 return response;
             } catch (Exception e) {
@@ -267,6 +273,7 @@ public class OrderService  {
                 return response;
             }
         }
+
         CreateOrderResponse response = CreateOrderResponse.builder()
                 .msg("successful")
                 .payment_method(createOrderRequest.getMethod())
@@ -349,6 +356,7 @@ public class OrderService  {
         DeliveryInfor deliveryInfor = order.getPaymentOrder().getDeliveryInfor();
         result.setDeliveryAddress(deliveryInforInOrderMapper.toDeliveryInforInOrder(deliveryInfor));
         String method = order.getPaymentOrder().getPayment_method();
+        String appTransId = order.getPaymentOrder().getAppTransId();
         Boolean isCOD = order.getPaymentOrder().getIsCOD();
         LocalDate placeOrderDate = order.getPaymentOrder().getCreateDate();
         List<Product_of_GetOrderResponse> product_of_getOrderResponseList = new ArrayList<>();
@@ -427,7 +435,7 @@ public class OrderService  {
             product.setListAtt(attrOfGetOrderResponseList);
             product_of_getOrderResponseList.add(product);
         }
-        
+
         for(int i = 0; i < quantityOfProduct.size(); i++){
             product_of_getOrderResponseList.get(i).setQuantity(quantityOfProduct.get(i));
         }
@@ -439,6 +447,14 @@ public class OrderService  {
         result.setExpectedDeliveryDate(order.getExpectedDeliveryDate());
         result.setMethod(method);
         result.setIsCOD(isCOD);
+        if (!(appTransId == null || appTransId.isEmpty())) {
+            try {
+                String checkoutRes = paymentService.checkoutOrder(appTransId);
+                result.setStatus(checkoutRes);
+            } catch (Exception e) {
+                throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
+            }
+        }
         result.setPlaceOrderDate(placeOrderDate);
         return result;
     }

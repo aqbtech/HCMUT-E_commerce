@@ -13,6 +13,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -25,6 +26,10 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PaymentService {
 	private final PaymentConfig config;
+	@Value( "${payment.zalo.redirect-url}")
+	private String redirectUrl;
+	@Value( "${payment.zalo.callback-url}")
+	private String callbackUrl;
 	public static String getCurrentTimeString(String format) {
 		Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT+7"));
 		SimpleDateFormat fmt = new SimpleDateFormat(format);
@@ -53,17 +58,19 @@ public class PaymentService {
 			throw new RuntimeException(e);
 		}
 	}
-	public String createPaymentOrder(int paymentOrderId, int amount, String description, JSONObject[] item, String username) {
+	public Map<String, String> createPaymentOrder(int paymentOrderId, int amount, String description, JSONObject[] item, String username) {
+		String app_trans_id = getCurrentTimeString("yyMMdd") + "_" + paymentOrderId;
 		Map<String, Object> order = new HashMap<>() {{
 			put("app_id", config.getAPP_ID());
-			put("app_trans_id", getCurrentTimeString("yyMMdd") + "_" + paymentOrderId); // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
+			put("app_trans_id", app_trans_id);
 			put("app_time", System.currentTimeMillis()); // miliseconds
 			put("app_user", username);
 			put("amount", amount);
 			put("description", description);
 			put("bank_code", "");
 			put("item", Arrays.toString(item));
-			put("embed_data", "{}");
+			put("embed_data", "{\"redirecturl\":" +  redirectUrl + "}");
+			put("callback_url", callbackUrl);
 		}};
 		String data = order.get("app_id") + "|" + order.get("app_trans_id") + "|" + order.get("app_user") + "|" + order.get("amount")
 				+ "|" + order.get("app_time") + "|" + order.get("embed_data") + "|" + order.get("item");
@@ -79,7 +86,10 @@ public class PaymentService {
 			Set<String> keys = result.keySet();
 			if (keys.contains("order_url")) {
 				log.info("Payment order app_trans_id: {}", order.get("app_trans_id"));
-				return result.getString("order_url");
+				Map<String, String> res = new HashMap<>();
+				res.put("order_url", result.get("order_url").toString());
+				res.put("app_trans_id", order.get("app_trans_id").toString());
+				return res;
 				// save order to database
 			} else {
 				log.error("Error while creating payment order: {}", result.getString("return_message"));

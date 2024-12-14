@@ -30,3 +30,6 @@ payment:
         secret-key: ${ZALO_SECRET_KEY}
         public-key: ${ZALO_PUBLIC_KEY}
         endpoint: ${ZALO_ENDPOINT}
+        callback-url: ${ZALO_CALLBACK}
+        redirect-url: ${ZALO_REDIRECT:"https://hcmut-e-commerce.vercel.app/orders"}
+
