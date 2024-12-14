@@ -130,7 +130,7 @@ export const getProductOfCategory = async (category, page) => {
 
 export const axiosUpload = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
-    timeout: 10000,
+    timeout: 20000,
 });
 
 export const uploadIMG = async (file, productId) => {

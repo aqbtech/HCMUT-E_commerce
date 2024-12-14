@@ -201,7 +201,7 @@ public class PolicyServiceImpl implements PolicyService{
             List<Seller> sellerList = shopPolicy.getSellers();
             List<String> target = new ArrayList<>();
             for(Seller seller : sellerList){
-                target.add(seller.getShopName());
+                target.add(seller.getUsername());
             }
             PolicyResponse r1 = policyMapper.toPolicyDetail(shopPolicy);
             r1.setTarget(target);
