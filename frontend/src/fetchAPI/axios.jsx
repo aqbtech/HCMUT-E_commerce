@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 export const axiosClient2 = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
-    timeout: 10000,
+    timeout: 20000,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -12,7 +12,7 @@ export const axiosClient2 = axios.create({
 
 export const axiosPublic = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
-    timeout: 10000,
+    timeout: 20000,
     headers: {
         'Content-Type': 'application/json'
     }

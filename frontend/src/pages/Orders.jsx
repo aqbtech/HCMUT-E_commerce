@@ -136,13 +136,24 @@ const Orders = () => {
                                         : ""}
                   </span>
                       <span className={`px-3 py-1 rounded-full text-sm font-medium
-                       ${order.isCOD
-                          ?  "bg-yellow-100 text-yellow-600"
-                          :  "bg-green-100 text-green-600"
-                        }
+                       ${order.isCOD === 1
+                          ?  "bg-red-100 text-red-600"
+                          :  order.isCOD === 0
+                            ? "bg-green-100 text-green-600" 
+                            : order.isCOD === 2
+                                ? "bg-yellow-100 text-yellow-600"
+                                : ""
+                      }
                       }`}
                       >
-                        {!order.isCOD ? "Đã thanh toán" : "Chưa thanh toán"}
+                        {order.isCOD === 1
+                            ? "Chưa thanh toán"
+                            : order.isCOD === 0
+                              ? "Đã thanh toán"
+                              : order.isCOD === 2
+                                ?  "Đang xử lý"
+                                : ""
+                        }
                       </span>
                     </div>
 
