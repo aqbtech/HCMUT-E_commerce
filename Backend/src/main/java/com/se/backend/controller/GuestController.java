@@ -7,6 +7,7 @@ import com.se.backend.dto.request.UserRegister;
 import com.se.backend.dto.request.UserSellerRegister;
 import com.se.backend.dto.response.*;
 import com.se.backend.service.GuestService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Sample API", description = "Sample operations for demonstration")
 public class GuestController {
 	private final GuestService guestService;
 
