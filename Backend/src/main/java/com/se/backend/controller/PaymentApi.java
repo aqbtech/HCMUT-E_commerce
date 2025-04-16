@@ -25,7 +25,7 @@ public class PaymentApi {
 	}
 	@PostMapping("/create")
 	public ResponseEntity<String> create() {
-		String url = paymentService.createPaymentOrder(100121, 100000, "description", new JSONObject[]{}, "username").get("order_url");
+		String url = paymentService.createPaymentOrder(1001212, 100000, "description", new JSONObject[]{}, "username").get("order_url");
 		return ResponseEntity.ok(url);
 	}
 }

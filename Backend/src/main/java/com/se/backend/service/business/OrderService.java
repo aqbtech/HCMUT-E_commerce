@@ -255,7 +255,9 @@ public class OrderService  {
             }
         }
         var paymentOrderSaved = paymentOrderRepository.save(paymentOrder);
-        long paymentOrderCode = paymentOrderSaved.getPaymentOrderCode();
+        Random rand = new Random();
+        int random_id = rand.nextInt(1000000);
+        long paymentOrderCode = paymentOrderSaved.getPaymentOrderCode() + random_id;
         if (!isCod) {
             try {
                 Map<String, String> res = paymentService.createPaymentOrder((int) paymentOrderCode, (int) totalPay, "Payment for order", createItem(orderProducts), username);
