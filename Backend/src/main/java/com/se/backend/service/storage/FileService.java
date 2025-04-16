@@ -42,7 +42,8 @@ public class FileService implements IFileService {
 
 	@Override
 	public ResponseEntity<String> downloadFile(FileInfo fileInfo) {
-		return fileDAO.downloadFile(fileInfo);
+		String url = fileDAO.downloadFile(fileInfo);
+		return ResponseEntity.ok(url);
 	}
 	@Override
 	public void deleteFile(FileInfo fileInfo) {
