@@ -12,10 +12,10 @@ Welcome to our E-commerce website project! This project is part of the "Programm
 We are a group of enthusiastic students from the Computer Science and Engineering department at HCMUT. Our team members include:
 |MSSV    | FullName               | Role |
 |--------|------------------------|------|
-|2212825 | Từ Văn Nguyễn Anh Quân | Project manager, Backend Developer
+|2212825 | Từ Văn Nguyễn Anh Quân | Project manager, Backend Developer, Software Architect
 |2212801 | Nguyễn Minh Quân       | Backend Developer, Frontend Developer
 |2212865 | Đoàn Ngọc Văn Quý      | Backend Developer, Frontend Developer
-|2210387 | Đặng Trần Công Chính   | Business analyst, Quanlity Control
+|2210387 | Đặng Trần Công Chính   | Business analyst, Quality Control, Frontend Developer
 
 Together, we aim to leverage our diverse skills to create an innovative and user-friendly e-commerce platform.
 
@@ -74,18 +74,27 @@ HCMUT_E-commerce/
    cd HCMUT_E-commerce/Backend
    ```
 
-2. Configure the database:
+2. Configure the database and environment variable:
     - Create `.env` in `src/main/`.
-    - Update the MySQL connection details:
+    - Update the MySQL connection details, payment integration infomation, firebase service key and jwt signer key:
       ```
       SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3309/e-commerce
       SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
       SPRING_DATASOURCE_USERNAME=your-username
       SPRING_DATASOURCE_PASSWORD=your-password
+      CORS_ALLOWED_ORIGINS=http://localhost:5173
+      JWT_SIGNER_KEY=<a-jwt-key>
+      FIREBASE_CONFIG_PATH=<path-to-your-file-service-firebase>
+      ZALO_APP_ID=<your-app-id>
+      ZALO_SECRET_KEY=<your-secret-key>
+      ZALO_PUBLIC_KEY=<your-public-key>
+      ZALO_ENDPOINT=<endpoint-of-zalo>
+      ZALO_CALLBACK=<your-callback-url>
       ```
 
 3. Build and run the backend:
    ```
+   ./mvn clean package
    ./mvnw spring-boot:run
    ```
 
@@ -103,9 +112,18 @@ HCMUT_E-commerce/
 
 3. Start the React development server:
    ```
-   npm start
+   npm run dev
    ```
-
+### Some account for test on deployment
+1. Buyer
+- username: buyer1
+- password: buyer
+2. Seller
+- username: seller1
+- password: seller
+3. Admin
+- username: admin
+- password: admin
 
 
 ## Contact
