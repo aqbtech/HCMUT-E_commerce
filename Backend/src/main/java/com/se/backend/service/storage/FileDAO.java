@@ -11,10 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * FileDAO is a database access object responsible for managing file operations
@@ -42,7 +39,7 @@ public class FileDAO {
 
 			Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
 					"public_id", publicId,
-					"folder", fileInfo.getFolder(), // redundant nhưng rõ ràng
+					"folder", fileInfo.getFolder(),
 					"resource_type", "image",
 					"use_filename", false,
 					"overwrite", true
@@ -60,6 +57,9 @@ public class FileDAO {
 	 * Sinh URL ảnh public (nếu biết publicId)
 	 */
 	public String downloadFile(FileInfo fileInfo) {
+		if (!Objects.equals(fileInfo.getProduct().getId(), fileInfo.getFolder())) {
+			return fileInfo.getFolder();
+		}
 		String publicId = fileInfo.getFolder() + "/" + fileInfo.getFileName();
 		try {
 			ApiResponse result = cloudinary.api().resourcesByIds(List.of(publicId), ObjectUtils.emptyMap());
