@@ -33,8 +33,9 @@ public class FileService implements IFileService {
 		try {
 			Product p = productRepository.findProductSummaryById(fileInfo.getFolder());
 			fileInfo.addProduct(p);
+			String link = fileDAO.uploadFile(file, fileInfo);
+			fileInfo.setFolder(link);
 			fileInfoRepo.save(fileInfo);
-			fileDAO.uploadFile(file, fileInfo);
 		} catch (Exception e) {
 			throw new WebServerException(ErrorCode.UNKNOWN_ERROR);
 		}
@@ -42,7 +43,8 @@ public class FileService implements IFileService {
 
 	@Override
 	public ResponseEntity<String> downloadFile(FileInfo fileInfo) {
-		return fileDAO.downloadFile(fileInfo);
+		String url = fileDAO.downloadFile(fileInfo);
+		return ResponseEntity.ok(url);
 	}
 	@Override
 	public void deleteFile(FileInfo fileInfo) {
