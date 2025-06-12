@@ -84,7 +84,7 @@ const ProductTestItem = ({image, name, price, rating, status, productId}) => {
             <div className="flex flex-col items-center space-y-3 p-4">
                 <button
                     onClick={handleUpdate}
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-300"
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-28 h-10 transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-300"
                 >
                     Cập nhật
                 </button>
@@ -98,7 +98,7 @@ const ProductTestItem = ({image, name, price, rating, status, productId}) => {
                     onClick={() => toggleVisibility(productId)}
                     className={`${
                         isVisible ? "bg-gray-500 hover:bg-gray-600" : "bg-green-500 hover:bg-green-600"
-                    } text-white py-1 px-3 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-300`}
+                    } text-white px-4 py-2 rounded w-28 h-10 transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-300`}
                 >
                     {isVisible ? "Ẩn" : "Hiện"}
                 </button>

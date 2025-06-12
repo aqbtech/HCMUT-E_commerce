@@ -4,6 +4,8 @@ import {getAllCategory} from "../../fetchAPI/fetchCategory.jsx";
 import {createProduct, uploadIMG} from "../../fetchAPI/fetchProduct.jsx";
 import {toast} from "react-toastify";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { FaTag, FaInfo, FaImages, FaListUl, FaDollarSign, FaBoxes, FaTimes, FaPlus } from "react-icons/fa";
+import { BsFillTrashFill } from "react-icons/bs";
 const AddProductModal = ({isOpen, onClose}) => {
     const [formData, setFormData] = useState({
         username: Cookies.get('username'),
@@ -339,280 +341,406 @@ const AddProductModal = ({isOpen, onClose}) => {
     }
     if (!isOpen) return null;
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="p-6 flex justify-center items-center w-full">
-                <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-7xl h-[90vh] overflow-y-auto">
-                    <div className="relative">
-                        <button
-                            className="absolute right-4 text-red-500 text-5xl font-bold"
-                            onClick={onClose}
-                        >
-                            &times;
-                        </button>
-                        <h2 className="text-2xl font-bold mb-4 text-gray-800">Thêm sản phẩm</h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 backdrop-blur-sm">
+            <div className="flex justify-center items-center w-full">
+                <div className="bg-white p-0 rounded-xl shadow-lg w-full max-w-7xl h-[90vh] overflow-y-auto border border-gray-200 relative">
+                    {/* Sticky Header */}
+                    <div className="sticky top-0 left-0 right-0 bg-white z-50 border-b border-gray-200 shadow-md px-8 py-4">
+                        <div className="relative flex items-center justify-between">
+                            <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                                <FaTag className="text-blue-500" /> Thêm sản phẩm mới
+                            </h2>
+                            <button
+                                className="text-gray-500 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50"
+                                onClick={onClose}
+                            >
+                                <FaTimes className="text-xl" />
+                            </button>
+                        </div>
+                    </div>
+                    {/* Main Content */}
+                    <div className="space-y-10 px-8 pt-0 pb-8">
 
                         {/* Product Name */}
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Tên</label>
-                            <input
-                                type="text"
-                                className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-800"
-                                value={formData.name}
-                                onChange={(e) => handleChange("name", e.target.value)}
-                            />
-                        </div>
-
-                        {/* Description */}
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Mô tả</label>
-                            <input
-                                type="text"
-                                className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-800"
-                                value={formData.description}
-                                onChange={(e) => handleChange("description", e.target.value)}
-                            />
-                        </div>
-
-                        {/* IMG */}
-                        <div className="mt-6">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Hình ảnh</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-800"
-                                onChange={(e) => handleImageUpload(e.target.files)}
-                            />
-                            <div className="mt-4 flex gap-4 flex-wrap">
-                                {images.map((image, index) => (
-                                    <div key={index} className="relative w-32 h-32">
-                                    <img
-                                        src={URL.createObjectURL(image)}
-                                        alt={`Preview ${index}`}
-                                        className="w-full h-full object-cover rounded-md shadow-md"
-                                    />
-                                    <button
-                                        type="button"
-                                        className="absolute top-1 right-1 text-red-500 text-lg bg-white rounded-full"
-                                        onClick={() => removeImage(index)}
-                                    >
-                                        &times;
-                                    </button>
-                                    </div>
-                                ))}
+                        <div className="mb-4 pt-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                                <FaTag className="text-blue-500" /> <span>Tên sản phẩm</span>
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg p-3 pl-3 shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                    value={formData.name}
+                                    onChange={(e) => handleChange("name", e.target.value)}
+                                    placeholder="Nhập tên sản phẩm" 
+                                />
                             </div>
                         </div>
 
-                        {/* Category */}
-                        <div>
-                            <label className="mb-4">
-                                Danh mục
+                        {/* Description */}
+                        <div className="mb-4 pt-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                                <FaInfo className="text-blue-500" /> <span>Mô tả sản phẩm</span>
                             </label>
-                            <select
-                                value={formData.category}
-                                onChange={(e) => handleChange("category", e.target.value)}  // Sửa lại handleChange để cập nhật category
-                                className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-800"
-                            >
-                                <option value="" disabled></option>
-                                {/* Lặp qua các category để hiển thị */}
-                                {categories.map((category) => (
-                                    <option key={category.id} value={category.id}>
-                                        {category.name}
-                                    </option>
-                                ))}
-                            </select>
+                            <textarea
+                                className="w-full border border-gray-300 rounded-lg p-3 shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 min-h-[100px]"
+                                value={formData.description}
+                                onChange={(e) => handleChange("description", e.target.value)}
+                                placeholder="Nhập mô tả chi tiết về sản phẩm"
+                            ></textarea>
                         </div>
 
-
-                        {/* Attributes */}
-                        <div className="mt-4">
-                            {/* <label className="block text-sm font-medium text-gray-700 mb-2">Thuộc tính</label> */}
-                            {formData.attributes.map((attribute, attrIndex) => (
-                                <div key={attrIndex} className="border border-gray-300 p-4 rounded-md mb-4 relative">
-                                    {/* Nút xóa thuộc tính ở góc phải */}
-                                    <button
-                                        type="button"
-                                        className="absolute top-0 right-1 text-red-500 text-4xl"
-                                        onClick={() => removeAttribute(attrIndex)}
-                                    >
-                                        &times;
-                                    </button>
-
-                                    <div className="mt-4 mb-2">
-                                        <input
-                                            type="text"
-                                            className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                            value={attribute.name}
-                                            placeholder="Tên thuộc tính"
-                                            onChange={(e) =>
-                                                handleArrayChange("attributes", attrIndex, e.target.value, "name")
-                                            }
-                                        />
+                        {/* IMG */}
+                        <div className="mt-10 bg-gray-50 p-5 rounded-lg border border-gray-200">
+                            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                                <FaImages className="text-blue-500" /> <span>Hình ảnh sản phẩm</span>
+                            </label>
+                            <div className="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:bg-gray-100 transition-colors duration-200 cursor-pointer">
+                                <div className="space-y-1 text-center">
+                                    <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                    <div className="flex justify-center text-sm text-gray-600">
+                                        <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+                                            <span>Tải lên hình ảnh</span>
+                                            <input 
+                                                type="file" 
+                                                className="sr-only" 
+                                                accept="image/*" 
+                                                multiple 
+                                                onChange={(e) => handleImageUpload(e.target.files)}
+                                            />
+                                        </label>
                                     </div>
-
-                                    <div className="flex flex-col gap-2">
-                                        {attribute.values.map((value, valueIndex) => (
-                                            <div key={valueIndex} className="flex items-center gap-2">
-                                                <input
-                                                    type="text"
-                                                    className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                    value={value}
-                                                    placeholder="Giá trị thuộc tính"
-                                                    onChange={(e) =>
-                                                        handleArrayChange("attributes", attrIndex, e.target.value, "values", valueIndex)
-                                                    }
-                                                />
+                                    <p className="text-xs text-gray-500">PNG, JPG, GIF - Tối đa 5MB</p>
+                                </div>
+                            </div>
+                            
+                            {images.length > 0 && (
+                                <div className="mt-4">
+                                    <p className="text-sm text-gray-600 mb-2">Hình ảnh đã chọn ({images.length}):</p>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                        {images.map((image, index) => (
+                                            <div key={index} className="relative group overflow-hidden rounded-lg shadow-md border border-gray-200">
+                                                <div className="aspect-w-1 aspect-h-1 w-full">
+                                                    <img
+                                                        src={URL.createObjectURL(image)}
+                                                        alt={`Preview ${index}`}
+                                                        className="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
+                                                    />
+                                                </div>
                                                 <button
                                                     type="button"
-                                                    className="text-red-500 text-4xl"
-                                                    onClick={() => removeAttributeValue(attrIndex, valueIndex)}
+                                                    className="absolute top-1 right-1 p-1 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition-colors"
+                                                    onClick={() => removeImage(index)}
                                                 >
-                                                    &times;
+                                                    <BsFillTrashFill size={16} />
                                                 </button>
                                             </div>
                                         ))}
                                     </div>
+                                </div>
+                            )}
+                        </div>
 
-                                    <button
-                                        className="text-blue-500 text-sm mt-2"
-                                        onClick={() => addAttributeValue(attrIndex)}
+                        {/* Category */}
+                        <div className="mt-10 bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                            <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                                <FaListUl className="text-blue-500" /> <span>Danh mục sản phẩm</span>
+                            </label>
+                            <div className="relative">
+                                <select
+                                    value={formData.category}
+                                    onChange={(e) => handleChange("category", e.target.value)}
+                                    className="w-full border border-gray-300 rounded-lg py-3 px-4 appearance-none bg-white focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                >
+                                    <option value="" disabled>Chọn danh mục sản phẩm</option>
+                                    {categories.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {/* Attributes */}
+                        <div className="mt-10 bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                            <div className="flex items-center justify-between mb-4">
+                                <label className="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9a1 1 0 001 1h10a1 1 0 001-1V7a1 1 0 00-1-1H5a1 1 0 00-1 1v6z" clipRule="evenodd" />
+                                        <path d="M4 9h12v2H4z" />
+                                    </svg>
+                                    <span>Thuộc tính sản phẩm</span>
+                                </label>
+                                <button
+                                    className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
+                                    onClick={addAttribute}
+                                >
+                                    <FaPlus size={14} /> Thêm thuộc tính
+                                </button>
+                            </div>
+                            
+                            {formData.attributes.length === 0 ? (
+                                <div className="p-4 text-center border border-dashed border-gray-300 rounded-lg bg-gray-50">
+                                    <p className="text-gray-500 mb-2">Chưa có thuộc tính nào được thêm</p>
+                                    <button 
+                                        className="px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200 inline-flex items-center gap-1"
+                                        onClick={addAttribute}
                                     >
-                                        + Thêm giá trị
+                                        <FaPlus size={14} /> Thêm thuộc tính đầu tiên
                                     </button>
                                 </div>
-                            ))}
+                            ) : (
+                                <div className="space-y-4">
+                                    {formData.attributes.map((attribute, attrIndex) => (
+                                        <div key={attrIndex} className="border border-gray-200 bg-gray-50 p-4 rounded-lg mb-4 relative shadow-sm">
+                                            <div className="flex justify-between items-center mb-3">
+                                                <h3 className="text-sm font-medium text-gray-700">Thuộc tính #{attrIndex + 1}</h3>
+                                                <button
+                                                    type="button"
+                                                    className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors duration-200"
+                                                    onClick={() => removeAttribute(attrIndex)}
+                                                >
+                                                    <FaTimes />
+                                                </button>
+                                            </div>
 
-                            <button
-                                className="text-blue-500 text-sm mt-4"
-                                onClick={addAttribute}
-                            >
-                                + Thêm thuộc tính
-                            </button>
+                                            <div className="mb-3">
+                                                <input
+                                                    type="text"
+                                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                                    value={attribute.name}
+                                                    placeholder="Tên thuộc tính (ví dụ: Màu sắc, Kích thước, ...)"
+                                                    onChange={(e) =>
+                                                        handleArrayChange("attributes", attrIndex, e.target.value, "name")
+                                                    }
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <div className="text-xs text-gray-500 mb-1">Các giá trị của thuộc tính:</div>
+                                                {attribute.values.map((value, valueIndex) => (
+                                                    <div key={valueIndex} className="flex items-center gap-2">
+                                                        <input
+                                                            type="text"
+                                                            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                                            value={value}
+                                                            placeholder={`Giá trị thuộc tính ${attribute.name || ''} (ví dụ: Đỏ, Xanh, ...)`}
+                                                            onChange={(e) =>
+                                                                handleArrayChange("attributes", attrIndex, e.target.value, "values", valueIndex)
+                                                            }
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors duration-200"
+                                                            onClick={() => removeAttributeValue(attrIndex, valueIndex)}
+                                                        >
+                                                            <FaTimes size={16} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            <button
+                                                className="mt-3 inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                                                onClick={() => addAttributeValue(attrIndex)}
+                                            >
+                                                <FaPlus size={12} /> Thêm giá trị
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
 
                         {/* Product Instances */}
-                        <div className="mb-6 mt-6">
-                            {formData.productInstances.map((instance, instanceIndex) => (
-                                <div
-                                    key={instanceIndex}
-                                    className="mb-4 border border-gray-300 p-4 rounded-md relative"
+                        <div className="mt-10 bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                            <div className="flex items-center justify-between mb-4">
+                                <label className="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                                    <FaBoxes className="text-blue-500" /> <span>Biến thể sản phẩm</span>
+                                </label>
+                                <button
+                                    className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
+                                    onClick={() =>
+                                        addField("productInstances", {
+                                            attributeValues: [""],
+                                            price: "",
+                                            quantityInStock: "",
+                                        })
+                                    }
                                 >
-                                    {/* Attribute Values */}
-                                    <div>
-                                        <div className="flex flex-col gap-2">
-                                            {formData.attributes.map((attribute, attrIndex) => (
-                                                <div key={attrIndex} className="mb-2">
-                                                    <label className="block text-sm font-medium text-gray-700">
-                                                        {attribute.name || `Thuộc tính ${attrIndex + 1}`}
-                                                    </label>
-                                                    <select
-                                                        value={formData.productInstances[instanceIndex].attributeValues[attrIndex] || ""}
-                                                        onChange={(e) =>
-                                                            handleNestedArrayChange(
-                                                                "productInstances",
-                                                                instanceIndex,
-                                                                attrIndex,
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        className="w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                    >
-                                                        <option value="" disabled>
-                                                        </option>
-                                                        {attribute.values.map((value, valueIndex) => (
-                                                            <option key={valueIndex} value={value}>
-                                                                {value}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
+                                    <FaPlus size={14} /> Thêm biến thể
+                                </button>
+                            </div>
 
-                                    {/* Price */}
-                                    <div className="mt-4">
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Giá tiền
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className={`w-full border-2 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-800`}
-                                            value={instance.price}
-                                            onChange={(e) => {
-                                                const value = Math.max(1, (e.target.value));
-                                                handleArrayChange(
-                                                    "productInstances",
-                                                    instanceIndex,
-                                                    value,
-                                                    "price"
-                                                )
-                                            }}
-                                        />
-                                    </div>
-
-
-                                    {/* Quantity */}
-                                    <div className="mt-4">
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Số lượng
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className={`w-full border-2 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-800`}
-                                            value={instance.quantityInStock}
-                                            onChange={(e) => {
-                                                const value = Math.max(1, (e.target.value));
-                                                handleArrayChange(
-                                                    "productInstances",
-                                                    instanceIndex,
-                                                    value,
-                                                    "quantityInStock"
-                                                )
-                                            }}
-                                        />
-                                    </div>
-
-
-                                    {/* Remove Button */}
-                                    <button
-                                        className="absolute top-0 right-1 text-red-500 text-4xl"
-                                        onClick={() => removeField("productInstances", instanceIndex)}
+                            {formData.productInstances.length === 0 ? (
+                                <div className="p-4 text-center border border-dashed border-gray-300 rounded-lg bg-gray-50">
+                                    <p className="text-gray-500 mb-2">Chưa có biến thể sản phẩm nào được thêm</p>
+                                    <button 
+                                        className="px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200 inline-flex items-center gap-1"
+                                        onClick={() =>
+                                            addField("productInstances", {
+                                                attributeValues: [""],
+                                                price: "",
+                                                quantityInStock: "",
+                                            })
+                                        }
                                     >
-                                        &times;
+                                        <FaPlus size={14} /> Thêm biến thể đầu tiên
                                     </button>
                                 </div>
-                            ))}
-                            <button
-                                className="text-blue-500 text-sm mt-4"
-                                onClick={() =>
-                                    addField("productInstances", {
-                                        attributeValues: [""],
-                                        price: "",
-                                        quantityInStock: "",
-                                    })
-                                }
-                            >
-                                + Thêm sản phẩm cụ thể
-                            </button>
+                            ) : (
+                                <div className="space-y-10 pt-2">
+                                    {formData.productInstances.map((instance, instanceIndex) => (
+                                        <div
+                                            key={instanceIndex}
+                                            className="p-4 border border-gray-200 bg-gray-50 rounded-lg relative shadow-sm hover:shadow-md transition-shadow duration-200"
+                                        >
+                                            <div className="absolute top-3 right-3">
+                                                <button
+                                                    className="p-1.5 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded-full transition-colors duration-200"
+                                                    onClick={() => removeField("productInstances", instanceIndex)}
+                                                >
+                                                    <FaTimes size={16} />
+                                                </button>
+                                            </div>
+
+                                            <h3 className="text-sm font-medium text-gray-800 mb-3 pb-2 border-b border-gray-200">
+                                                Biến thể #{instanceIndex + 1}
+                                            </h3>
+
+                                            {/* Attribute Values */}
+                                            {formData.attributes.length > 0 && (
+                                                <div className="mb-4 pt-4">
+                                                    <h4 className="text-xs text-gray-500 mb-2">Cấu hình sản phẩm:</h4>
+                                                    <div className="grid gap-3 md:grid-cols-2">
+                                                        {formData.attributes.map((attribute, attrIndex) => (
+                                                            <div key={attrIndex} className="">
+                                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                                    {attribute.name || `Thuộc tính ${attrIndex + 1}`}
+                                                                </label>
+                                                                <div className="relative">
+                                                                    <select
+                                                                        value={formData.productInstances[instanceIndex].attributeValues[attrIndex] || ""}
+                                                                        onChange={(e) =>
+                                                                            handleNestedArrayChange(
+                                                                                "productInstances",
+                                                                                instanceIndex,
+                                                                                attrIndex,
+                                                                                e.target.value
+                                                                            )
+                                                                        }
+                                                                        className="w-full border border-gray-300 rounded-lg p-2 appearance-none bg-white focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                                                    >
+                                                                        <option value="" disabled>Chọn giá trị</option>
+                                                                        {attribute.values.map((value, valueIndex) => (
+                                                                            <option key={valueIndex} value={value}>
+                                                                                {value}
+                                                                            </option>
+                                                                        ))}
+                                                                    </select>
+                                                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                                                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                                                        </svg>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="grid gap-4 md:grid-cols-2">
+                                                {/* Price */}
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+                                                        <FaDollarSign className="text-green-600" /> Giá tiền
+                                                    </label>
+                                                    <div className="relative rounded-md shadow-sm">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <span className="text-gray-500 sm:text-sm">VNĐ</span>
+                                                        </div>
+                                                        <input
+                                                            type="number"
+                                                            className="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                                            value={instance.price}
+                                                            placeholder="0"
+                                                            onChange={(e) => {
+                                                                const value = Math.max(1, (e.target.value));
+                                                                handleArrayChange(
+                                                                    "productInstances",
+                                                                    instanceIndex,
+                                                                    value,
+                                                                    "price"
+                                                                )
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                {/* Quantity */}
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+                                                        <svg className="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                        </svg> 
+                                                        Số lượng
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                                                        value={instance.quantityInStock}
+                                                        placeholder="0"
+                                                        onChange={(e) => {
+                                                            const value = Math.max(1, (e.target.value));
+                                                            handleArrayChange(
+                                                                "productInstances",
+                                                                instanceIndex,
+                                                                value,
+                                                                "quantityInStock"
+                                                            )
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                        <div className="mt-6 flex justify-end">
+                        <div className="mt-8 flex justify-end">
                             <button
                                 disabled={loading}
-                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-300"
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-300 ease-in-out transform hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70 min-w-[160px] flex items-center justify-center gap-2"
                                 onClick={handleCreateProduct}
                             >
-                                {loading ? ( <AiOutlineLoading3Quarters className="animate-spin text-blue-500 text-2xl" />) : (<div>Tạo sản phẩm</div>)}
+                                {loading ? (
+                                    <AiOutlineLoading3Quarters className="animate-spin text-white text-xl" />
+                                ) : (
+                                    <>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                                        </svg>
+                                        <span>Tạo sản phẩm</span>
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-    )
-        ;
+    );
 };
 
 export default AddProductModal;

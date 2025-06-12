@@ -212,13 +212,24 @@ const OrderManagement = () => {
                                                           : ""}
                                     </span>
                                     <span className={`px-3 py-1 rounded-full text-sm font-medium
-                                   ${order.isCOD
-                                                    ? "bg-yellow-100 text-yellow-600"
-                                                    : "bg-green-100 text-green-600"
-                                                }
-                                  }`}
-                                                >
-                                    {!order.isCOD ? "Đã thanh toán" : "Chưa thanh toán"}
+                                   ${order.status === "2"
+                                    ?  "bg-red-100 text-red-600"
+                                    :  order.status === "1"
+                                      ? "bg-green-100 text-green-600" 
+                                      : order.status === "3"
+                                          ? "bg-yellow-100 text-yellow-600"
+                                          : ""
+                                }
+                                }`}
+                                >
+                                  {order.status === "2"
+                                      ? "Chưa thanh toán"
+                                      : order.status === "1"
+                                        ? "Đã thanh toán"
+                                        : order.status === "3"
+                                          ?  "Đang xử lý"
+                                          : ""
+                                  }
                                   </span>
                                 </div>
 
