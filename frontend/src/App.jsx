@@ -38,138 +38,138 @@ const App = () => {
   const isAuthenticated = curState === 'Login';
 
   return (
-   
-
-    <div className='bg-[#FDF0E7]'>
-      <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
+    <div className='bg-[#FDF0E7] min-h-screen flex flex-col'>
+      <div className='flex-grow flex flex-col px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
         <ToastContainer/>
         <Navbar/>
-        <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path = '/search' element={<Search />}></Route>
-          <Route path = '/about' element={<About />}></Route>
-          <Route path='/contact' element={<Contact />}></Route>
-          <Route path='/product/:productId' element={<Product />}></Route>
-          <Route path='/RegistSeller' element={<RegistSeller/>}></Route>
-          <Route path='/Error_403'  element={<Error_403/>}></Route>
-          <Route path='/test' element={<Test />}></Route>
-          <Route path='/login' element={<Login />}></Route>
-          <Route path='/regist' element={<Regist />}></Route>
-          <Route path='/shopView/:shopId' element={<ShopView />}></Route>
-          <Route path='/reset' element={<ResetPassword/>}></Route>
+        <div className="flex-grow">
+          <Routes>
+            <Route path='/' element={<Home/>}/>
+            <Route path = '/search' element={<Search />}></Route>
+            <Route path = '/about' element={<About />}></Route>
+            <Route path='/contact' element={<Contact />}></Route>
+            <Route path='/product/:productId' element={<Product />}></Route>
+            <Route path='/RegistSeller' element={<RegistSeller/>}></Route>
+            <Route path='/Error_403'  element={<Error_403/>}></Route>
+            <Route path='/test' element={<Test />}></Route>
+            <Route path='/login' element={<Login />}></Route>
+            <Route path='/regist' element={<Regist />}></Route>
+            <Route path='/shopView/:shopId' element={<ShopView />}></Route>
+            <Route path='/reset' element={<ResetPassword/>}></Route>
 
-          <Route
-            path='/cart'
-            element={
-              <ProtectedRoute
-                isAuthenticated={isAuthenticated}
-                allowedRoles={['BUYER']}
-                userRole={role}
-              >
-                <Cart />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/orders'
-            element={
-              <ProtectedRoute
-                isAuthenticated={isAuthenticated}
-                allowedRoles={['BUYER']}
-                userRole={role}
-              >
-                <Order />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/myProfile'
-            element={
-              <ProtectedRoute
-                isAuthenticated={isAuthenticated}
-                allowedRoles={['BUYER']}
-                userRole={role}
-              >
-                <MyProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/place-order'
-            element={
-              <ProtectedRoute
-                isAuthenticated={isAuthenticated}
-                allowedRoles={['BUYER']}
-                userRole={role}
-              >
-                <PlaceOrder />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/review'
-            element={
-              <ProtectedRoute
-                isAuthenticated={isAuthenticated}
-                allowedRoles={['BUYER']}
-                userRole={role}
-              >
-                <ReviewPage/>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/payment'
-            element={
-              <ProtectedRoute
-                isAuthenticated={isAuthenticated}
-                allowedRoles={['BUYER']}
-                userRole={role}
-              >
-                <Payment/>
-              </ProtectedRoute>
-            }
-          />
-          
-          <Route
-            path='/admin'
-            element={
-              <ProtectedRoute
-                isAuthenticated={isAuthenticated}
-                allowedRoles={['ADMIN']}
-                userRole={role}
-              >
-                <Admin />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/FakeAPI'
-            element={
-              <ProtectedRoute
-                isAuthenticated={isAuthenticated}
-                allowedRoles={['ADMIN']}
-                userRole={role}
-              >
-                <FakeAPI/>
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path='/cart'
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  allowedRoles={['BUYER']}
+                  userRole={role}
+                >
+                  <Cart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/orders'
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  allowedRoles={['BUYER']}
+                  userRole={role}
+                >
+                  <Order />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/myProfile'
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  allowedRoles={['BUYER']}
+                  userRole={role}
+                >
+                  <MyProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/place-order'
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  allowedRoles={['BUYER']}
+                  userRole={role}
+                >
+                  <PlaceOrder />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/review'
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  allowedRoles={['BUYER']}
+                  userRole={role}
+                >
+                  <ReviewPage/>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/payment'
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  allowedRoles={['BUYER']}
+                  userRole={role}
+                >
+                  <Payment/>
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path='/admin'
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  allowedRoles={['ADMIN']}
+                  userRole={role}
+                >
+                  <Admin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/FakeAPI'
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  allowedRoles={['ADMIN']}
+                  userRole={role}
+                >
+                  <FakeAPI/>
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path='/shop'
-            element={
-              <ProtectedRoute
-                isAuthenticated={isAuthenticated}
-                allowedRoles={['SELLER']}
-                userRole={role}
-              >
-                <ShopManagement/>
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route
+              path='/shop'
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  allowedRoles={['SELLER']}
+                  userRole={role}
+                >
+                  <ShopManagement/>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
         <Footer/>
       </div>
     </div>
