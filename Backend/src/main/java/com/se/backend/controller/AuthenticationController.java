@@ -8,10 +8,9 @@ import com.se.backend.dto.request.RefreshRequest;
 import com.se.backend.dto.response.AuthenticationResponse;
 import com.se.backend.dto.response.IntrospectResponse;
 import com.se.backend.dto.response.ResponseAPITemplate;
-import com.se.backend.exception.WebServerException;
 import com.se.backend.service.AuthenticationProvider;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +20,15 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true)
 public class AuthenticationController {
 	// This class is used to handle all authentication requests
 	private AuthenticationProvider authService;
+
+	@Autowired
+	public AuthenticationController(AuthenticationProvider authService) {
+		this.authService = authService;
+	}
 
 	@PostMapping("/token")
 	public ResponseAPITemplate<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authReq) {

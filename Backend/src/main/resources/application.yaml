@@ -20,7 +20,6 @@ spring:
     web:
         resources:
             add-mappings: true
-
 jwt:
     signerKey: ${JWT_SIGNER_KEY}
     valid-duration: 3600 # in second
@@ -56,3 +55,6 @@ openapi:
         title: ${OPENAPI_SERVICE_TITLE}
         version: ${OPENAPI_SERVICE_VERSION}
         server: ${OPENAPI_SERVICE_SERVER}
+springdoc:
+    swagger-ui:
+        path: ${SWAGGER_UI_PATH:/docs}
